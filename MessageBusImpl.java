@@ -1,9 +1,9 @@
 package bgu.spl.mics;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -15,22 +15,35 @@ import java.util.Queue;
  */
 public class MessageBusImpl implements MessageBus {
 
+	private static MessageBusImpl instance = null;
 	
 	private final Map<MicroService, BlockingQueue<Message>> queues= new ConcurrentHashMap<>(); // Mapping each MicroService to its private message queue
 	private final Map<Class<? extends Event>, Queue<MicroService>> eventSubscribers = new ConcurrentHashMap<>();// Mapping each Event type to a queue of its subscribers (supports Round-Robin)
 	private final Map<Class<? extends Broadcast>, List<MicroService>> broadcastSubscribers = new ConcurrentHashMap<>(); // Mapping each Broadcast type to a list of its subscribers
 	private final Map<Event<?>, Future<?>> eventFutures = new ConcurrentHashMap<>();
 
-	public MessageBusImpl(){}
+	private MessageBusImpl(){}
+
+	//Added method: thread-safe singleton
+	public static synchronized MessageBusImpl getInstance() {
+        if (instance == null) {
+            instance = new MessageBusImpl();
+        }
+        return instance;
+    }
 
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
 		// Register a MicroService as a subscriber to an Event type
         // Using LinkedList to facilitate Round-Robin distribution
-		eventSubscribers.computeIfAbsent(type, k -> new LinkedList<>()).add(m);
-		
-		// Why LinkedList: LinkedList is efficient for managing Round-Robin distribution of Events
-        // No need for external synchronization or complex data structures
+		eventSubscribers.computeIfAbsent(type, k -> new ConcurrentLinkedQueue<>()).add(m);
+
+		// Ensure the MicroService has a queue in the `queues` map
+		queues.putIfAbsent(m, new LinkedBlockingDeque<>());
+
+		// Why ConcurrentLinkedQueue:
+		// It ensures thread safety without the need for external synchronization, unlike LinkedList.
+		// Ideal for systems where multiple threads may concurrently add or remove subscribers from the queue.
 	}
 
 	@Override
@@ -42,6 +55,8 @@ public class MessageBusImpl implements MessageBus {
 		// Why CopyOnWriteArrayList: Ideal for scenarios with frequent reads and infrequent writes
         // Provides thread-safe operations without external synchronization
 
+		 // Ensure the MicroService has a queue in the `queues` map
+		 queues.putIfAbsent(m, new LinkedBlockingDeque<>());
 	}
 
 	@Override
