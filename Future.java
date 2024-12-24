@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Future<T> {
 	private T result;
-	private boolean isDone;
+	private boolean isDone;	// MAYBE USE 'VOLATILE' HERE SO ALL THREADS CAN SEE THE STATE IN REAL TIME
 	
 	/**
 	 * This should be the the only public constructor in this class.
