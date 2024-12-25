@@ -136,7 +136,6 @@ public class MessageBusImpl implements MessageBus {
 			throw new IllegalStateException("MicroService not registered");
 		}
 		return queue.take(); // Waits until a message is available
-	
 	}
 
 	

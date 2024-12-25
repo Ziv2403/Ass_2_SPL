@@ -2,6 +2,7 @@ package bgu.spl.mics;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The MicroService is an abstract class that any micro-service in the system
@@ -25,7 +26,7 @@ public abstract class MicroService implements Runnable {
 
     private boolean terminated = false;
     private final String name;
-    private final Map<Class<? extends Message>, Callback<?>> callbacks = new HashMap<>();
+    private final Map<Class<? extends Message>, Callback<? extends Message>> callbacks = new  ConcurrentHashMap<>();
 
 
     /**
@@ -100,8 +101,7 @@ public abstract class MicroService implements Runnable {
      * 	       			null in case no micro-service has subscribed to {@code e.getClass()}.
      */
     protected final <T> Future<T> sendEvent(Event<T> e) {
-        //TODO: implement this.
-        return null; //TODO: delete this line :)
+        return MessageBusImpl.getInstance().sendEvent(e);
     }
 
     /**
@@ -111,8 +111,8 @@ public abstract class MicroService implements Runnable {
      * @param b The broadcast message to send
      */
     protected final void sendBroadcast(Broadcast b) {
-        //TODO: implement this.
-    }
+        MessageBusImpl.getInstance().sendBroadcast(b);
+   }
 
     /**
      * Completes the received request {@code e} with the result {@code result}
@@ -125,7 +125,7 @@ public abstract class MicroService implements Runnable {
      *               {@code e}.
      */
     protected final <T> void complete(Event<T> e, T result) {
-        //TODO: implement this.
+        MessageBusImpl.getInstance().complete(e, result);
     }
 
     /**
@@ -150,15 +150,27 @@ public abstract class MicroService implements Runnable {
     }
 
     /**
-     * The entry point of the micro-service. TODO: you must complete this code
+     * The entry point of the micro-service. 
      * otherwise you will end up in an infinite loop.
      */
     @Override
     public final void run() {
+        MessageBusImpl.getInstance().register(this);
         initialize();
         while (!terminated) {
-            System.out.println("NOT IMPLEMENTED!!!"); //TODO: you should delete this line :)
+            try {
+                Message message = MessageBusImpl.getInstance().awaitMessage(this); //If there is no message in the queue, it waits until there is a message.
+                Callback<Message> callBack = (Callback<Message>) callbacks.get(message.getClass());//Receiving the message
+                if (callBack != null) {//Checks if there is a suitable callback in the callbacks map.
+                    callBack.call(message); //Message processing
+                }
+            } catch (InterruptedException e) {
+                terminate();
+            }
         }
+        //Resource cleaning:
+        MessageBusImpl.getInstance().unregister(this);
+
     }
 
 }
