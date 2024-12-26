@@ -26,6 +26,7 @@ public class MessageBusImpl implements MessageBus {
 
 	//Added method: thread-safe singleton
 	public static synchronized MessageBusImpl getInstance() {
+		
         if (instance == null) {
             instance = new MessageBusImpl();
         }
