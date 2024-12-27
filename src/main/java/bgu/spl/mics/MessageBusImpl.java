@@ -22,7 +22,9 @@ public class MessageBusImpl implements MessageBus {
 	private final Map<Class<? extends Broadcast>, List<MicroService>> broadcastSubscribers = new ConcurrentHashMap<>(); // Mapping each Broadcast type to a list of its subscribers
 	private final Map<Event<?>, Future<?>> eventFutures = new ConcurrentHashMap<>();
 
-	private MessageBusImpl(){}
+	private MessageBusImpl(){
+
+	}
 
 	//Added method: thread-safe singleton
 	public static synchronized MessageBusImpl getInstance() {

@@ -9,7 +9,7 @@ import bgu.spl.mics.example.messages.ExampleEvent;
 
 public class ExampleMessageSenderService extends MicroService {
 
-    private boolean broadcast;
+    private final boolean broadcast;
 
     public ExampleMessageSenderService(String name, String[] args) {
         super(name);
