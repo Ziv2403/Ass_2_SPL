@@ -15,8 +15,8 @@ public class FusionSlam {
     }
 
 // --------------------- fields -------------------------
-    private List<LandMark> landmarks;
-    private List<Pose> poses;
+    private final List<LandMark> landmarks;
+    private final List<Pose> poses;
 
 // --------------------- constructor --------------------
     public FusionSlam(){

@@ -10,9 +10,9 @@ import java.util.ArrayList;
  */
 public class GPSIMU {
 // --------------------- fields --------------------
-    private int currentTick;
-    private STATUS status;
-    private List<Pose> poseList;
+    private final int currentTick;
+    private final STATUS status;
+    private final List<Pose> poseList;
 
 // --------------------- constructor --------------------
     public GPSIMU(int currentTick, STATUS status){

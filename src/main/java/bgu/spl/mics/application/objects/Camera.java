@@ -10,27 +10,24 @@ import java.util.ArrayList;
  */
 public class Camera {
    // --------------------- fields --------------------
-   private int Id;
-   private int frequence;
-   private STATUS status;
-   private List<StampedDetectedObjects> detectedObjectsList;
+   private final int Id;
+   private final int frequency;
+   private final STATUS status;
+   private final List<StampedDetectedObjects> detectedObjectsList;
 
    // --------------------- constructor --------------------
-    public Camera(int id, int frequence, STATUS status ){
+    public Camera(int id, int frequency, STATUS status ){
         this.Id = id;
-        this.frequence = frequence;
+        this.frequency = frequency;
         this.status = status;
         this.detectedObjectsList = new ArrayList<>();
     }
 
    // --------------------- methods --------------------
    public int getId() {return Id;}
-   public int getFrequence() {return frequence;}
+   public int getFrequency() {return frequency;}
    public STATUS getStatus() {return status;}
    public List<StampedDetectedObjects> getDetectedObjectsList() {return detectedObjectsList;}
 }
-// --------------------- fields --------------------
-// --------------------- constructor --------------------
-// --------------------- methods --------------------
 
 
