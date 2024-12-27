@@ -6,6 +6,19 @@ package bgu.spl.mics.application.objects;
  */
 public class Pose {
 // --------------------- fields -------------------------
+    private final float x;
+    private final float y;
+    private final float yaw;
+    private final int time;
 // --------------------- constructor --------------------
+    public Pose(float x, float y, float yaw, int time) {
+        this.x = x;
+        this.y = y;
+        this.yaw = yaw;
+        this.time = time;
+    }
 // --------------------- methods ------------------------
-}
+    public float getX() {return x;}
+    public float getY() {return y;}
+    public float getYaw() {return yaw;}
+    public int getTime() {return time;}}

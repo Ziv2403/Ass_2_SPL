@@ -9,9 +9,9 @@ import java.util.ArrayList;
  */
 public class StampedCloudPoints {
 // --------------------- fields -------------------------
-    private String id;
-    private int time;
-    private List<List<Double>> cloudPoints;
+    private final String id;
+    private final int time;
+    private final List<List<Double>> cloudPoints;
 
 // --------------------- constructor --------------------
     public StampedCloudPoints(String id, int time){
