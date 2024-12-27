@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.objects;
 
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Represents a group of cloud points corresponding to a specific timestamp.
@@ -13,6 +14,13 @@ public class StampedCloudPoints {
     private List<List<Double>> cloudPoints;
 
 // --------------------- constructor --------------------
-    public StampedCloudPoints()
+    public StampedCloudPoints(String id, int time){
+        this.id = id;
+        this.time = time;
+        this.cloudPoints = new ArrayList<>();
+    }
 // --------------------- methods ------------------------
+    public String getId() {return id;}
+    public int getTime() {return time;}
+    public List<List<Double>> getCloudPoints() {return cloudPoints;}
 }
