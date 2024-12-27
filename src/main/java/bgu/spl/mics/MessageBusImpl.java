@@ -36,7 +36,7 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
 		// Register a MicroService as a subscriber to an Event type
-        // Using LinkedList to facilitate Round-Robin distribution
+        // Using Linked to facilitate Round-Robin distribution
 		eventSubscribers.computeIfAbsent(type, k -> new ConcurrentLinkedQueue<>()).add(m);
 
 		// Ensure the MicroService has a queue in the `queues` map

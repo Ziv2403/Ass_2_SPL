@@ -5,5 +5,7 @@ package bgu.spl.mics.application.objects;
  * Includes the time of detection and a list of detected objects.
  */
 public class StampedDetectedObjects {
-    // TODO: Define fields and methods.
+// --------------------- fields -------------------------
+// --------------------- constructor --------------------
+// --------------------- methods ------------------------
 }

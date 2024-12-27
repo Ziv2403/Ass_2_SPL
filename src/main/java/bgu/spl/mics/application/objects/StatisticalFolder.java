@@ -6,5 +6,7 @@ package bgu.spl.mics.application.objects;
  * the number of objects detected and tracked, and the number of landmarks identified.
  */
 public class StatisticalFolder {
-    // TODO: Define fields and methods for statistics tracking.
+// --------------------- fields -------------------------
+// --------------------- constructor --------------------
+// --------------------- methods ------------------------
 }

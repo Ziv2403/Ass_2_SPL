@@ -7,5 +7,7 @@ package bgu.spl.mics.application.objects;
  */
 public class LiDarWorkerTracker {
 
-    // TODO: Define fields and methods.
+// --------------------- fields -------------------------
+// --------------------- constructor --------------------
+// --------------------- methods ------------------------
 }

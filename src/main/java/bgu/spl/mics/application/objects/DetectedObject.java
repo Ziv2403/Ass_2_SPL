@@ -6,5 +6,18 @@ package bgu.spl.mics.application.objects;
  */
 public class DetectedObject {
 
-    // TODO: Define fields and methods.
+// --------------------- fields -------------------------
+    private String Id;
+    private String description;
+
+// --------------------- constructor --------------------
+    public DetectedObject(String id, String description){
+        this.Id = id;
+        this.description = description;
+    }
+
+// --------------------- methods ------------------------
+    public String getId() {return Id;}
+    public String getDescription() {return description;}
+
 }

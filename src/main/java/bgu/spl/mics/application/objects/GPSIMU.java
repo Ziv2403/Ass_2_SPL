@@ -1,9 +1,29 @@
 package bgu.spl.mics.application.objects;
 
+import java.util.List;
+import java.util.ArrayList;
+
+
 /**
  * Represents the robot's GPS and IMU system.
  * Provides information about the robot's position and movement.
  */
 public class GPSIMU {
-    // TODO: Define fields and methods.
+// --------------------- fields --------------------
+    private int currentTick;
+    private STATUS status;
+    private List<Pose> poseList;
+
+// --------------------- constructor --------------------
+    public GPSIMU(int currentTick, STATUS status){
+        this.currentTick = currentTick;
+        this.status = status;
+        this.poseList = new ArrayList<>();
+    }
+
+// --------------------- methods --------------------
+    public int getCurrenttick() {return currentTick;}
+    public STATUS getStatus() {return status;}
+    public List<Pose> getPoseList() {return poseList;}
+
 }
