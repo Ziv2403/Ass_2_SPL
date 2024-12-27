@@ -6,8 +6,8 @@ package bgu.spl.mics.application.objects;
  */
 public class LandMark {
 // --------------------- fields --------------------
-    private String Id;
-    private String description;
+    private final String Id;
+    private final String description;
 
 // --------------------- constructor --------------------
     public LandMark(String id, String description){

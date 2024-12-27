@@ -7,8 +7,8 @@ package bgu.spl.mics.application.objects;
 public class CloudPoint {
 
 // --------------------- fields -------------------------
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
 
 // --------------------- constructor --------------------
     public CloudPoint(int x, int y){
