@@ -11,8 +11,8 @@ import java.util.List;
 public class LiDarWorkerTracker {
     private final int Id;
     private final int frequency;
-    private final STATUS status;
-    private final List<TrackedObject> lastTrackedObjects;
+    private  STATUS status;
+    private  List<TrackedObject> lastTrackedObjects;
 
     // --------------------- constructor --------------------
     public LiDarWorkerTracker(int id, int frequency, STATUS status ){
@@ -23,9 +23,22 @@ public class LiDarWorkerTracker {
     }
 
     // --------------------- methods --------------------
+
+    //Getters
     public int getId() {return Id;}
     public int getFrequency() {return frequency;}
     public STATUS getStatus() {return status;}
     public List<TrackedObject> getLastTrackedObjects() {return lastTrackedObjects;}
+
+    //Setter
+    public void setStatus(STATUS status) {
+        this.status = status;
+    }
+    
+    //otherMethods
+    public void addTrackedObject(TrackedObject trackedObject) {
+        this.lastTrackedObjects.add(trackedObject);
+    }
+    
 
 }

@@ -12,8 +12,8 @@ public class Camera {
    // --------------------- fields --------------------
    private final int Id;
    private final int frequency;
-   private final STATUS status;
-   private final List<StampedDetectedObjects> detectedObjectsList;
+   private STATUS status;
+   private List<StampedDetectedObjects> detectedObjectsList;
 
    // --------------------- constructor --------------------
     public Camera(int id, int frequency, STATUS status ){
@@ -24,10 +24,22 @@ public class Camera {
     }
 
    // --------------------- methods --------------------
-   public int getId() {return Id;}
-   public int getFrequency() {return frequency;}
-   public STATUS getStatus() {return status;}
-   public List<StampedDetectedObjects> getDetectedObjectsList() {return detectedObjectsList;}
+   //Getters
+    public int getId() {return Id;}
+    public int getFrequency() {return frequency;}
+    public STATUS getStatus() {return status;}
+    public List<StampedDetectedObjects> getDetectedObjectsList() {return detectedObjectsList;}
+
+    //Setter
+    public void setStatus(STATUS status) {
+        this.status = status;
+    }
+
+    //otherMethods
+    public void addDetectedObject(StampedDetectedObjects detectedObject) {
+        this.detectedObjectsList.add(detectedObject);
+    }
+
 }
 
 
