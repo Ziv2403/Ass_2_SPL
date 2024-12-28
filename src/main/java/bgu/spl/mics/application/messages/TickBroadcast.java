@@ -1,5 +1,7 @@
 package bgu.spl.mics.application.messages;
 
+import bgu.spl.mics.Broadcast;
+
 /**
  * TickBroadcast
  * •
@@ -7,5 +9,14 @@ package bgu.spl.mics.application.messages;
  * •
  * Used for: Timing message publications and processing.
  */
-public class TickBroadcast {
+public class TickBroadcast implements Broadcast{
+// --------------------- fields -------------------------
+    private int currentTick;
+// --------------------- constructor --------------------
+    public TickBroadcast(int tick){
+        this.currentTick = tick;
+    }
+// --------------------- Methods ------------------------
+//Getters
+    public int getTick() {return currentTick;}
 }

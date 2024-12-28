@@ -19,6 +19,11 @@ C:\Users\yzalz\Documents\GitHub\New folder\Ass_2_SPL\src\main\java\bgu\spl\mics\
 C:\Users\yzalz\Documents\GitHub\New folder\Ass_2_SPL\src\main\java\bgu\spl\mics\application\objects\StatisticalFolder.java
 C:\Users\yzalz\Documents\GitHub\New folder\Ass_2_SPL\src\main\java\bgu\spl\mics\application\objects\STATUS.java
 C:\Users\yzalz\Documents\GitHub\New folder\Ass_2_SPL\src\main\java\bgu\spl\mics\application\objects\TrackedObject.java
+C:\Users\yzalz\Documents\GitHub\New folder\Ass_2_SPL\src\main\java\bgu\spl\mics\application\services\CameraService.java
+C:\Users\yzalz\Documents\GitHub\New folder\Ass_2_SPL\src\main\java\bgu\spl\mics\application\services\FusionSlamService.java
+C:\Users\yzalz\Documents\GitHub\New folder\Ass_2_SPL\src\main\java\bgu\spl\mics\application\services\LiDarService.java
+C:\Users\yzalz\Documents\GitHub\New folder\Ass_2_SPL\src\main\java\bgu\spl\mics\application\services\PoseService.java
+C:\Users\yzalz\Documents\GitHub\New folder\Ass_2_SPL\src\main\java\bgu\spl\mics\application\services\TimeService.java
 C:\Users\yzalz\Documents\GitHub\New folder\Ass_2_SPL\src\main\java\bgu\spl\mics\Broadcast.java
 C:\Users\yzalz\Documents\GitHub\New folder\Ass_2_SPL\src\main\java\bgu\spl\mics\Callback.java
 C:\Users\yzalz\Documents\GitHub\New folder\Ass_2_SPL\src\main\java\bgu\spl\mics\Event.java
