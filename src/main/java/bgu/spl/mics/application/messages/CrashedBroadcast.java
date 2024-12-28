@@ -3,7 +3,7 @@ package bgu.spl.mics.application.messages;
 /**
  * CrashedBroadcast
  * •
- * Sent by all the sensors
+ * Sent by one of the sensors
  * •
  * Used for: notifying all other services that the sender service has crashed.
  */
