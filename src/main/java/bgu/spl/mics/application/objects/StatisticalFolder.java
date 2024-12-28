@@ -14,13 +14,12 @@ public class StatisticalFolder {
  * It eliminates the need for explicit synchronization or locks, 
  * making it ideal for handling frequent updates in a concurrent environment.
  */
-
     private final AtomicInteger systemRuntime = new AtomicInteger(0);
     private final AtomicInteger numDetectedObjects = new AtomicInteger(0);
     private final AtomicInteger numTrackedObjects = new AtomicInteger(0);
     private final AtomicInteger numLandmarks = new AtomicInteger(0);
 
-// --------------------- Singleton Holder -------------------------
+// --------------------- SingletonImplemment -------------------------
     private static class StatisticalFolderHolder {
         private static final StatisticalFolder INSTANCE = new StatisticalFolder();
     }
