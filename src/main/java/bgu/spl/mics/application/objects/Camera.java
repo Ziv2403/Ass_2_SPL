@@ -14,13 +14,15 @@ public class Camera {
    private final int frequency;
    private STATUS status;
    private List<StampedDetectedObjects> detectedObjectsList;
+   private String key;
 
    // --------------------- constructor --------------------
-    public Camera(int id, int frequency, STATUS status ){
+    public Camera(int id, int frequency, STATUS status, String key ){
         this.Id = id;
         this.frequency = frequency;
         this.status = status;
         this.detectedObjectsList = new ArrayList<>();
+        this.key = key;
     }
 
    // --------------------- methods --------------------
@@ -29,6 +31,7 @@ public class Camera {
     public int getFrequency() {return frequency;}
     public STATUS getStatus() {return status;}
     public List<StampedDetectedObjects> getDetectedObjectsList() {return detectedObjectsList;}
+    public String getKey() {return key;}
 
     //Setter
     public void setStatus(STATUS status) {

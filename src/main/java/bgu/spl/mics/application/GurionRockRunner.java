@@ -1,5 +1,11 @@
 package bgu.spl.mics.application;
 
+import com.google.gson.Gson;
+import java.io.FileReader;
+import java.io.IOException;
+
+
+
 /**
  * The main entry point for the GurionRock Pro Max Ultra Over 9000 simulation.
  * <p>
@@ -20,7 +26,34 @@ public class GurionRockRunner {
         System.out.println("Hello World!");
 
         // TODO: Parse configuration file.
+        String configFilePath = args[0];
+        Gson gson = new Gson();
+        try (FileReader reader = new FileReader(configFilePath)) {
+            Configuration config = gson.fromJson(reader, Configuration.class);
+
+            // Use the configuration
+            System.out.println("Pose JSON File: " + config.getPoseJsonFile());
+            System.out.println("Tick Time: " + config.getTickTime());
+            System.out.println("Duration: " + config.getDuration());
+
+            // Access cameras
+            config.getCameras().getCamerasConfigurations().forEach(camera -> {
+                System.out.println("Camera ID: " + camera.getId());
+                System.out.println("Camera Frequency: " + camera.getFrequency());
+                System.out.println("Camera Key: " + camera.getKey());
+            });
+
+            // Access LiDAR workers
+            config.getLidarWorkers().getLidarConfigurations().forEach(lidar -> {
+                System.out.println("LiDAR ID: " + lidar.getId());
+                System.out.println("LiDAR Frequency: " + lidar.getFrequency());
+            });
+        } catch (IOException e) {
+            System.err.println("Error reading configuration file: " + e.getMessage());
+        }
         // TODO: Initialize system components and services.
         // TODO: Start the simulation.
     }
+
+
 }
