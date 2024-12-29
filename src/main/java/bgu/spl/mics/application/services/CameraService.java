@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.objects.Camera;
 //
 /**
  * CameraService is responsible for processing data from the camera and
@@ -10,6 +11,7 @@ import bgu.spl.mics.MicroService;
  * the system's StatisticalFolder upon sending its observations.
  */
 public class CameraService extends MicroService {
+    private final Camera camera;
 
     /**
      * Constructor for CameraService.
@@ -17,8 +19,8 @@ public class CameraService extends MicroService {
      * @param camera The Camera object that this service will use to detect objects.
      */
     public CameraService(Camera camera) {
-        super("Change_This_Name");
-        // TODO Implement this
+        super("CameraService");
+        this.camera = camera;
     }
 
     /**

@@ -21,4 +21,4 @@ public class StampedDetectedObjects {
     public int getTime() {return time;}
     public List<DetectedObject> getDetectedObjectsList() {return detectedObjectsList;}
 }
-//111
+
