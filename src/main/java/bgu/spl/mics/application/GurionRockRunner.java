@@ -5,11 +5,14 @@ import bgu.spl.mics.application.objects.*;
 import bgu.spl.mics.application.services.*;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.lang.reflect.Type;
+import java.util.Map;
 
 
 /**
@@ -39,6 +42,22 @@ public class GurionRockRunner {
 
             MessageBusImpl messageBus = MessageBusImpl.getInstance();
 
+            String poseFilePath = resolveRelativePath(configFilePath, config.getPoseJsonFile());
+            String cameraFilePath = resolveRelativePath(configFilePath, config.getCameras().getCameraDatasPath());
+            String lidarFilePath = resolveRelativePath(configFilePath, config.getLidarWorkers().getLidarsDataPath());
+
+            List<Pose> poses = loadJsonData(poseFilePath, new TypeToken<List<Pose>>() {}.getType());
+            Map<String, List<StampedDetectedObjects>> cameraData = loadJsonData(cameraFilePath, new TypeToken<Map<String, List<StampedDetectedObjects>>>() {}.getType());
+            List<StampedCloudPoints> lidarData = loadJsonData(lidarFilePath, new TypeToken<List<StampedCloudPoints>>() {}.getType());
+
+            // Create and register services
+            TimeService timeService = new TimeService(config.getTickTime(), config.getDuration());
+            messageBus.register(timeService);
+
+            // Start services
+            new Thread(timeService).start();
+
+            System.out.println("test");
         } catch (IOException e) {
             System.err.println("Error: " + e.getMessage());
         }
@@ -48,12 +67,12 @@ public class GurionRockRunner {
     }
 
     // Initializing Camera Objects
-    public void initCameras(Configuration config) {
+    public void initCameraData(String filepath) {
 
     }
 
     // Initializing LiDar Objects
-    public void initLiDar(Configuration config) {
+    public void initLiDarData(String filepath) {
 
     }
 
@@ -66,6 +85,9 @@ public class GurionRockRunner {
         }
     }
 
+    private static String resolveRelativePath(String configFilePath, String relativePath) {
+        return new java.io.File(new java.io.File(configFilePath).getParent(), relativePath).getAbsolutePath();
+    }
 
 
 

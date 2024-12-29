@@ -14,16 +14,17 @@ public class StampedDetectedObjects {
 
 // --------------------- constructors --------------------
     public StampedDetectedObjects(int time){
-        this.detectedObjectsList = new ArrayList<>();
-    }
-
-    public StampedDetectedObjects(int time, DetectedObject detectedObject){
         this.time = time;
         this.detectedObjectsList = new ArrayList<>();
     }
 
+
 // --------------------- methods ------------------------
     public int getTime() {return time;}
     public List<DetectedObject> getDetectedObjectsList() {return detectedObjectsList;}
+
+    public  void addDetectedObject(DetectedObject detectedObject) {
+        this.detectedObjectsList.add(detectedObject);
+    }
 }
 //111
