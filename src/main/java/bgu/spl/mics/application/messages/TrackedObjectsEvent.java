@@ -1,5 +1,10 @@
 package bgu.spl.mics.application.messages;
 
+import java.util.List;
+
+import bgu.spl.mics.Event;
+import bgu.spl.mics.application.objects.TrackedObject;
+
 /**
  * TrackedObjectsEvent
  * •
@@ -21,5 +26,15 @@ package bgu.spl.mics.application.messages;
  * •
  * If previously detected, updates measurements by averaging with previous data.
  */
-public class TrackedObjectsEvent {
+public class TrackedObjectsEvent implements Event<List<TrackedObject>>{
+    // --------------------- fields -------------------------
+    private List<TrackedObject> trackedObject;
+    // --------------------- constructor --------------------
+    public TrackedObjectsEvent(List<TrackedObject> tracked){
+        this.trackedObject=tracked;
+    }
+    // --------------------- Methods ------------------------
+//Getters
+    public List<TrackedObject> getTrackedObjects() {return trackedObject;}
+
 }
