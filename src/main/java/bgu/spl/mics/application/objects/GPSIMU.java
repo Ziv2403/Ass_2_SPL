@@ -14,15 +14,21 @@ public class GPSIMU {
     private final STATUS status;
     private final List<Pose> poseList;
 
-// --------------------- constructor --------------------
+// --------------------- constructors --------------------
     public GPSIMU(int currentTick, STATUS status){
         this.currentTick = currentTick;
         this.status = status;
         this.poseList = new ArrayList<>();
     }
 
+    public GPSIMU(int currentTick, STATUS status, List<Pose> poseList){
+        this.currentTick = currentTick;
+        this.status = status;
+        this.poseList = poseList;
+    }
+
 // --------------------- methods --------------------
-    public int getCurrenttick() {return currentTick;}
+    public int getCurrentTick() {return currentTick;}
     public STATUS getStatus() {return status;}
     public List<Pose> getPoseList() {return poseList;}
 
