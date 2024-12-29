@@ -12,8 +12,13 @@ public class StampedDetectedObjects {
     private int time;
     private List<DetectedObject> detectedObjectsList;
 
-// --------------------- constructor --------------------
+// --------------------- constructors --------------------
     public StampedDetectedObjects(int time){
+        this.detectedObjectsList = new ArrayList<>();
+    }
+
+    public StampedDetectedObjects(int time, DetectedObject detectedObject){
+        this.time = time;
         this.detectedObjectsList = new ArrayList<>();
     }
 
