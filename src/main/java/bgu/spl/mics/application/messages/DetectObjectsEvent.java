@@ -19,4 +19,5 @@ package bgu.spl.mics.application.messages;
  * After the LiDar Worker completes the event, it saves the coordinates in the lastObjects variable in DataBase and sends True value to the Camera.
  */
 public class DetectObjectsEvent {
+
 }
