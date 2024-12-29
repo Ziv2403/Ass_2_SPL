@@ -29,28 +29,27 @@ public class Configuration {
     public void setDuration(int duration) { Duration = duration; }
 
 
-
     public static class CamerasConfiguration {
         private List<Camera> CamerasConfigurations;
-        private String cameras_datas_path;
+        private String camera_datas_path;
 
         public List<Camera> getCamerasConfigurations() { return CamerasConfigurations; }
         public void setCamerasConfigurations(List<Camera> camerasConfigurations) { CamerasConfigurations = camerasConfigurations; }
 
-        public String getCameraDatasPath() { return cameras_datas_path; }
-        public void setCameraDatasPath(String cameraDatasPath) { this.cameras_datas_path = cameraDatasPath; }
+        public String getCameraDatasPath() { return camera_datas_path; }
+        public void setCameraDatasPath(String cameraDatasPath) { this.camera_datas_path = cameraDatasPath; }
     }
 
 
 
     public static class LidarWorkersConfiguration {
         private List<LiDarWorkerTracker> LidarConfigurations;
-        private String Lidars_data_path;
+        private String lidars_data_path;
 
         public List<LiDarWorkerTracker> getLidarConfigurations() { return LidarConfigurations; }
         public void setLidarConfigurations(List<LiDarWorkerTracker> lidarConfigurations) { LidarConfigurations = lidarConfigurations; }
 
-        public String getLidarsDataPath() { return Lidars_data_path; }
-        public void setLidarsDataPath(String lidarsDataPath) { this.Lidars_data_path = lidarsDataPath; }
+        public String getLidarsDataPath() { return lidars_data_path; }
+        public void setLidarsDataPath(String lidarsDataPath) { this.lidars_data_path = lidarsDataPath; }
     }
 }

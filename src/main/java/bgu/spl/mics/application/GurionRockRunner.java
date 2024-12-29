@@ -26,13 +26,15 @@ public class GurionRockRunner {
         System.out.println("Hello World!");
 
         // TODO: Parse configuration file.
-        String configFilePath = args[0];
+        String configFilePath = args[0] + " " + args[1];
         Gson gson = new Gson();
         try (FileReader reader = new FileReader(configFilePath)) {
             Configuration config = gson.fromJson(reader, Configuration.class);
 
             // Use the configuration
             System.out.println("Pose JSON File: " + config.getPoseJsonFile());
+            System.out.println("Camera JSON File: " + config.getCameras().getCameraDatasPath());
+            System.out.println("Lidar JSON File: " + config.getLidarWorkers().getLidarsDataPath());
             System.out.println("Tick Time: " + config.getTickTime());
             System.out.println("Duration: " + config.getDuration());
 
@@ -40,7 +42,7 @@ public class GurionRockRunner {
             config.getCameras().getCamerasConfigurations().forEach(camera -> {
                 System.out.println("Camera ID: " + camera.getId());
                 System.out.println("Camera Frequency: " + camera.getFrequency());
-                System.out.println("Camera Key: " + camera.getKey());
+                System.out.println("Camera Key: " + camera.getCameraKey());
             });
 
             // Access LiDAR workers
