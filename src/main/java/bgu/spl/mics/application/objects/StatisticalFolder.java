@@ -24,7 +24,7 @@ public class StatisticalFolder {
     //     private static final StatisticalFolder INSTANCE = new StatisticalFolder();
     // }
 
-    private StatisticalFolder() { } // Private constructor for Singleton
+    public StatisticalFolder() { } // Private constructor for Singleton
 
     // public static StatisticalFolder getInstance() {
     //     return StatisticalFolderHolder.INSTANCE;

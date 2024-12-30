@@ -53,18 +53,19 @@ public class GurionRockRunner {
 
             GPSIMU gpsimu = new GPSIMU(0, STATUS.UP, poses);
             LiDarDataBase liDarDataBase = new LiDarDataBase(lidarData);
+            StatisticalFolder statisticalFolder = new StatisticalFolder();
 
             // ------------ Create, register and start services ------------
             List<MicroService> microServices = new ArrayList<>();
 
             // Time Service
-            TimeService timeService = new TimeService(config.getTickTime(), config.getDuration());
+            TimeService timeService = new TimeService(config.getTickTime(), config.getDuration(), statisticalFolder);
             messageBus.register(timeService);
             microServices.add(timeService);
 
             // Camera Services
             for (Camera camera : config.getCameras().getCamerasConfigurations()) {
-                CameraService cameraService = new CameraService(camera, cameraData.get(camera.getCameraKey()));
+                CameraService cameraService = new CameraService(camera, cameraData.get(camera.getCameraKey()),statisticalFolder);
                 messageBus.register(cameraService);
                 microServices.add(cameraService);
             }
@@ -73,8 +74,7 @@ public class GurionRockRunner {
 
 
             // Pose Services
-
-            PoseService poseService = new PoseService(gpsimu);
+            PoseService poseService = new PoseService(gpsimu, statisticalFolder);
             microServices.add(poseService);
 
             // FusionSlam Service

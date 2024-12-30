@@ -21,9 +21,15 @@ public class PoseService extends MicroService {
      * @param gpsimu The GPSIMU object that provides the robot's pose data.
      */
     public PoseService(GPSIMU gpsimu) {
-        super("Change_This_Name");
+        super("PoseService");
         // TODO Implement this
     }
+
+    public PoseService(GPSIMU gpsimu, StatisticalFolder statisticalFolder) {
+        super("PoseService", statisticalFolder);
+        // TODO Implement this
+    }
+
 
     /**
      * Initializes the PoseService.

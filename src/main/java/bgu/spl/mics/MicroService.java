@@ -1,6 +1,8 @@
 package bgu.spl.mics;
 
 //import java.util.HashMap;
+import bgu.spl.mics.application.objects.StatisticalFolder;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,14 +29,18 @@ public abstract class MicroService implements Runnable {
     private boolean terminated = false;
     private final String name;
     private final Map<Class<? extends Message>, Callback<? extends Message>> callbacks = new  ConcurrentHashMap<>();
+    private StatisticalFolder statisticalFolder = null;
 
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
      *             does not have to be unique)
      */
-    public MicroService(String name) {
+    public MicroService(String name) {this.name = name;}
+
+    public MicroService(String name, StatisticalFolder statisticalFolder) {
         this.name = name;
+        this.statisticalFolder = statisticalFolder;
     }
 
     /**

@@ -30,8 +30,8 @@ public class TimeService extends MicroService {
      * @param TickTime  The duration of each tick in milliseconds.
      * @param Duration  The total number of ticks before the service terminates.
      */
-    public TimeService(int TickTime, int Duration) {
-        super("TimeService");
+    public TimeService(int TickTime, int Duration, StatisticalFolder statisticalFolder) {
+        super("TimeService", statisticalFolder);
         this.tickTime = TickTime;
         this.duration = Duration;
         this.currentTick = 0; //might be 1 -> saw in the forum
