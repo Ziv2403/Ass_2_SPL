@@ -4,6 +4,8 @@ package bgu.spl.mics;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import bgu.spl.mics.application.messages.TickBroadcast;
+
 /**
  * The MicroService is an abstract class that any micro-service in the system
  * must extend. The abstract MicroService class is responsible to get and
@@ -27,6 +29,7 @@ public abstract class MicroService implements Runnable {
     private boolean terminated = false;
     private final String name;
     private final Map<Class<? extends Message>, Callback<? extends Message>> callbacks = new  ConcurrentHashMap<>();
+    private int currentTick;
 
 
     /**
@@ -35,6 +38,7 @@ public abstract class MicroService implements Runnable {
      */
     public MicroService(String name) {
         this.name = name;
+        this.currentTick = 0; // nedded to make sure that al the microService should initialize in the same time
     }
 
     /**
@@ -172,5 +176,11 @@ public abstract class MicroService implements Runnable {
         MessageBusImpl.getInstance().unregister(this);
 
     }
+
+    //Added function
+
+
+    public int getCurrentTick() {return currentTick;}
+    public void setCurrentTick(int tick){ currentTick = tick;}
 
 }

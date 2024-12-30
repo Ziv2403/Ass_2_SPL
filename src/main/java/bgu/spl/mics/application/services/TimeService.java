@@ -13,6 +13,7 @@ public class TimeService extends MicroService {
     private final int tickTime;
     private final int duration;
     private int currentTick;
+    private final StatisticalFolder stats;
 
     /**
      * Constructor for TimeService.
@@ -20,11 +21,12 @@ public class TimeService extends MicroService {
      * @param TickTime  The duration of each tick in milliseconds.
      * @param Duration  The total number of ticks before the service terminates.
      */
-    public TimeService(int TickTime, int Duration) {
+    public TimeService(int TickTime, int Duration, StatisticalFolder stats) {
         super("TimeService");
         this.tickTime = TickTime;
         this.duration = Duration;
         this.currentTick = 0; //might be 1 -> saw in the forum
+        this.stats = stats;
     }
 
     /**
@@ -39,7 +41,7 @@ public class TimeService extends MicroService {
                 sendBroadcast(new TickBroadcast(currentTick));
 
                 //Update StatisticalFolder
-                StatisticalFolder.getInstance().incrementSystemRuntime();
+                stats.incrementSystemRuntime();
 
                 //Wait until the next tick
                 Thread.sleep(tickTime);

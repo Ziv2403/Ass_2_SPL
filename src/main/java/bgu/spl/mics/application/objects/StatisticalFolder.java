@@ -20,15 +20,15 @@ public class StatisticalFolder {
     private final AtomicInteger numLandmarks = new AtomicInteger(0);
 
 // --------------------- SingletonImplemment -------------------------
-    private static class StatisticalFolderHolder {
-        private static final StatisticalFolder INSTANCE = new StatisticalFolder();
-    }
+    // private static class StatisticalFolderHolder {
+    //     private static final StatisticalFolder INSTANCE = new StatisticalFolder();
+    // }
 
     private StatisticalFolder() { } // Private constructor for Singleton
 
-    public static StatisticalFolder getInstance() {
-        return StatisticalFolderHolder.INSTANCE;
-    }
+    // public static StatisticalFolder getInstance() {
+    //     return StatisticalFolderHolder.INSTANCE;
+    //}
 
 // --------------------- methods ------------------------
 //Getters - get() => Gets the current value.
@@ -63,6 +63,10 @@ public class StatisticalFolder {
                 ", numDetectedObjects=" + numDetectedObjects +
                 ", numTrackedObjects=" + numTrackedObjects +
                 ", numLandmarks=" + numLandmarks + '}';
+    }
+
+    public void incrementDetectedObjects(int size) {
+        numDetectedObjects.addAndGet(size);
     }
 
 }
