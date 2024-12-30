@@ -70,7 +70,9 @@ public class GurionRockRunner {
 
 
             // Pose Services
-
+            GPSIMU gpsimu = new GPSIMU(0, STATUS.UP, poses);
+            PoseService poseService = new PoseService(gpsimu);
+            microServices.add(poseService);
 
             // FusionSlam Service
 

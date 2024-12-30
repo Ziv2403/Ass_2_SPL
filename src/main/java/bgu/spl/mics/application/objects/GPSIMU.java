@@ -10,8 +10,8 @@ import java.util.ArrayList;
  */
 public class GPSIMU {
 // --------------------- fields --------------------
-    private final int currentTick;
-    private final STATUS status;
+    private int currentTick;
+    private STATUS status;
     private final List<Pose> poseList;
 
 // --------------------- constructors --------------------
@@ -29,7 +29,21 @@ public class GPSIMU {
 
 // --------------------- methods --------------------
     public int getCurrentTick() {return currentTick;}
+    public void setCurrentTick(int tick) {this.currentTick = tick;}
+
     public STATUS getStatus() {return status;}
+    public void setStatus(STATUS status) {this.status = status;}
+
     public List<Pose> getPoseList() {return poseList;}
+
+    // REVIEW AGAIN
+    public Pose getPoseAtTick() {
+        for (Pose p : poseList) {
+            if (p.getTime() == currentTick) {
+                return p;
+            }
+        }
+        return null;
+    }
 
 }
