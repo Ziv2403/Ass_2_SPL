@@ -51,6 +51,9 @@ public class GurionRockRunner {
             Map<String, List<StampedDetectedObjects>> cameraData = loadJsonData(cameraFilePath, new TypeToken<Map<String, List<StampedDetectedObjects>>>() {}.getType());
             List<StampedCloudPoints> lidarData = loadJsonData(lidarFilePath, new TypeToken<List<StampedCloudPoints>>() {}.getType());
 
+            GPSIMU gpsimu = new GPSIMU(0, STATUS.UP, poses);
+            LiDarDataBase liDarDataBase = new LiDarDataBase(lidarData);
+
             // ------------ Create, register and start services ------------
             List<MicroService> microServices = new ArrayList<>();
 
@@ -70,7 +73,7 @@ public class GurionRockRunner {
 
 
             // Pose Services
-            GPSIMU gpsimu = new GPSIMU(0, STATUS.UP, poses);
+
             PoseService poseService = new PoseService(gpsimu);
             microServices.add(poseService);
 

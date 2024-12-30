@@ -28,7 +28,7 @@ import bgu.spl.mics.application.objects.TrackedObject;
  */
 public class TrackedObjectsEvent implements Event<List<TrackedObject>>{
     // --------------------- fields -------------------------
-    private List<TrackedObject> trackedObject;
+    private final List<TrackedObject> trackedObject;
     // --------------------- constructor --------------------
     public TrackedObjectsEvent(List<TrackedObject> tracked){
         this.trackedObject=tracked;

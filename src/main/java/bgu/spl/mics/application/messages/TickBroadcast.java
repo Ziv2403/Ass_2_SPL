@@ -11,12 +11,9 @@ import bgu.spl.mics.Broadcast;
  */
 public class TickBroadcast implements Broadcast{
     // --------------------- fields -------------------------
-    private int currentTick;
+    private final int currentTick;
     // --------------------- constructor --------------------
-    public TickBroadcast(int tick){
-        this.currentTick = tick;
-    }
+    public TickBroadcast(int tick) {this.currentTick = tick;}
     // --------------------- Methods ------------------------
-//Getters
     public int getTick() {return currentTick;}
 }
