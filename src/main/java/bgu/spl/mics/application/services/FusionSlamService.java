@@ -8,6 +8,11 @@ import bgu.spl.mics.MicroService;
  * 
  * This service receives TrackedObjectsEvents from LiDAR workers and PoseEvents from the PoseService,
  * transforming and updating the map with new landmarks.
+ * •
+ * Responsibilities:
+ * Does not send events.
+ * Subscribes to TickBroadcast, TrackedObjectsEvent, PoseEvent, TerminatedBroadcast, CrashedBroadcast.
+ * Manages the environmental map by processing tracked objects.
  */
 public class FusionSlamService extends MicroService {
     /**

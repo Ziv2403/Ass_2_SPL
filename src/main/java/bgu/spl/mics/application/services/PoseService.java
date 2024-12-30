@@ -5,6 +5,13 @@ import bgu.spl.mics.MicroService;
 /**
  * PoseService is responsible for maintaining the robot's current pose (position and orientation)
  * and broadcasting PoseEvents at every tick.
+ * •
+ * Responsibilities:
+ * o
+ * Holds the robot's coordinates at each tick.
+ * o
+ * Sends PoseEvents.
+ * Subscribes to TickBroadcast, CrashedBroadcast, TerminatedBroadcast.
  */
 public class PoseService extends MicroService {
 

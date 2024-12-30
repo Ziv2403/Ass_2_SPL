@@ -9,6 +9,8 @@ import bgu.spl.mics.MicroService;
  * This service interacts with the LiDarWorkerTracker object to retrieve and process
  * cloud point data and updates the system's StatisticalFolder upon sending its
  * observations.
+ * • Responsibilities:
+ * o Sends TrackedObjectsEvents (can be multiple events).
  */
 public class LiDarService extends MicroService {
 

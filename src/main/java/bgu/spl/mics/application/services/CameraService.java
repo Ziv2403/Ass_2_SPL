@@ -14,6 +14,10 @@ import java.util.List;
  *
  * This service interacts with the Camera object to detect objects and updates
  * the system's StatisticalFolder upon sending its observations.
+ *
+ * • Responsibilities:
+ * o Sends DetectObjectsEvents only.
+ * o Subscribe to TickBroadcast, TerminatedBroadcast, CrashedBroadcast.
  */
 public class CameraService extends MicroService {
     private final Camera camera;
