@@ -6,16 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="53b10173-8894-4155-a24e-f3f22038a002" name="Changes" comment="das">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/GurionRockRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/GurionRockRunner.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/messages/DetectObjectsEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/messages/DetectObjectsEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/services/CameraService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/services/CameraService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/GurionRockRunner$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/GurionRockRunner$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/GurionRockRunner$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/GurionRockRunner$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/GurionRockRunner$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/GurionRockRunner$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/GurionRockRunner.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/GurionRockRunner.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/messages/DetectObjectsEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/messages/DetectObjectsEvent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/GPSIMU.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/GPSIMU.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/services/CameraService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/services/CameraService.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
