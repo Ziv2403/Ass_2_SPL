@@ -1,6 +1,7 @@
 package bgu.spl.mics.application;
 
 import bgu.spl.mics.MessageBusImpl;
+import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.objects.*;
 import bgu.spl.mics.application.services.*;
 
@@ -50,12 +51,35 @@ public class GurionRockRunner {
             Map<String, List<StampedDetectedObjects>> cameraData = loadJsonData(cameraFilePath, new TypeToken<Map<String, List<StampedDetectedObjects>>>() {}.getType());
             List<StampedCloudPoints> lidarData = loadJsonData(lidarFilePath, new TypeToken<List<StampedCloudPoints>>() {}.getType());
 
-            // Create and register services
+            // ------------ Create, register and start services ------------
+            List<MicroService> microServices = new ArrayList<>();
+
+            // Time Service
             TimeService timeService = new TimeService(config.getTickTime(), config.getDuration());
             messageBus.register(timeService);
+            microServices.add(timeService);
+
+            // Camera Services
+            for (Camera camera : config.getCameras().getCamerasConfigurations()) {
+                CameraService cameraService = new CameraService(camera, cameraData.get(camera.getCameraKey()));
+                messageBus.register(cameraService);
+                microServices.add(cameraService);
+            }
+
+            // LiDar Services
+
+
+            // Pose Services
+
+
+            // FusionSlam Service
 
             // Start services
-            new Thread(timeService).start();
+            for (MicroService m : microServices) {
+                Thread thread = new Thread(m);
+                thread.start();
+            }
+            // -----------------------------------------------------------
 
             System.out.println("test");
         } catch (IOException e) {

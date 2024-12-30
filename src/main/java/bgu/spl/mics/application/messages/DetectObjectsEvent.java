@@ -30,19 +30,16 @@ public class DetectObjectsEvent implements Event<List<StampedDetectedObjects>>{
 
     private final StampedDetectedObjects detectedObjects ;
     private final int cameraId;
-    private final String description;
 
     // --------------------- constructor --------------------
-    public DetectObjectsEvent(StampedDetectedObjects detectedObjects, int cameraId,String description){
+    public DetectObjectsEvent(StampedDetectedObjects detectedObjects, int cameraId){
         this.detectedObjects = detectedObjects;
         this.cameraId = cameraId;
-        this.description = description;
     }
 
     // --------------------- Methods --------------------
 //Getters
     public StampedDetectedObjects getDetectedObjects() {return detectedObjects;}
     public int getCameraId() {return cameraId;}
-    public String getDescription() {return description;}
 }
 
