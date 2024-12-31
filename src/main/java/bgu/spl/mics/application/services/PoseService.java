@@ -1,4 +1,5 @@
 package bgu.spl.mics.application.services;
+import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.objects.*;
 import bgu.spl.mics.MicroService;
 //
@@ -15,6 +16,7 @@ import bgu.spl.mics.MicroService;
  */
 public class PoseService extends MicroService {
 
+    private final GPSIMU gpsimu;
     /**
      * Constructor for PoseService.
      *
@@ -22,12 +24,12 @@ public class PoseService extends MicroService {
      */
     public PoseService(GPSIMU gpsimu) {
         super("PoseService");
-        // TODO Implement this
+        this.gpsimu = gpsimu;
     }
 
     public PoseService(GPSIMU gpsimu, StatisticalFolder statisticalFolder) {
         super("PoseService", statisticalFolder);
-        // TODO Implement this
+        this.gpsimu = gpsimu;
     }
 
 
@@ -38,5 +40,25 @@ public class PoseService extends MicroService {
     @Override
     protected void initialize() {
         // TODO Implement this
+        // Subscribe to TickBroadcast
+        subscribeBroadcast(TickBroadcast.class, tick -> {
+            gpsimu.setCurrentTick(tick.getTick());
+            Pose pose = gpsimu.getPoseAtTick(); // Get pose from GPSIMU
+            if (pose != null) {
+                // Send PoseEvent
+                sendEvent(new PoseEvent(pose));
+            }
+        });
+
+        // Subscribe to CrashedBroadcast
+        subscribeBroadcast(CrashedBroadcast.class, broadcast -> {
+            terminate();
+        });
+
+        // Subscribe to CrashedBroadcast
+        subscribeBroadcast(TerminatedBroadcast.class, broadcast -> {
+            terminate();
+        });
+
     }
 }
