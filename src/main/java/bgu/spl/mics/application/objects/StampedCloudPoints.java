@@ -23,4 +23,14 @@ public class StampedCloudPoints {
     public String getId() {return id;}
     public int getTime() {return time;}
     public List<List<Double>> getCloudPoints() {return cloudPoints;}
+
+    public CloudPoint[] toCloudPointObj() {
+        CloudPoint[] points = new CloudPoint[cloudPoints.size()];
+        int i = 0;
+        for (List<Double> d : cloudPoints) {
+            points[i] = new CloudPoint(d.get(0), d.get(1));
+            i++;
+        }
+        return points;
+    }
 }

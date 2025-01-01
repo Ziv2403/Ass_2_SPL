@@ -50,7 +50,6 @@ public class CameraService extends MicroService {
         // TODO Implement this
         // Subscribe to TickBroadcast
         subscribeBroadcast(TickBroadcast.class, tick -> {
-
             if (cameraData != null) {
                 // Check for objects to detect at the current tick
                 for (StampedDetectedObjects event : cameraData) {
@@ -63,6 +62,11 @@ public class CameraService extends MicroService {
             }
         });
 
+        // Subscribe to CrashedBroadcast
+        subscribeBroadcast(CrashedBroadcast.class, broadcast -> {
+
+        });
+
         // CHECK AGAIN
         // Subscribe to TerminatedBroadcast
         subscribeBroadcast(TerminatedBroadcast.class, terminate -> {
@@ -70,7 +74,6 @@ public class CameraService extends MicroService {
             terminate();
         });
 
-        System.out.println(getName() + " initialized with camera: " + camera.getCameraKey());
     }
 }
 

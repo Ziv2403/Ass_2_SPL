@@ -42,19 +42,27 @@ public class LiDarWorkerTracker {
         this.lastTrackedObjects.add(trackedObject);
     }
 
-    // Process DetectObjectsEvent and return a TrackedObject
-    public TrackedObject processDetectObjectsEvent(DetectObjectsEvent event, LiDarDataBase liDarDataBase) {
+    // Process DetectObjectsEvent and return a list of the corresponding TrackedObjects
+    public List<TrackedObject> processDetectObjectsEvent(DetectObjectsEvent event, LiDarDataBase liDarDataBase) {
         int detectionTime = event.getDetectedObjects().getTime();
         int scheduledTime = detectionTime + frequency;
 
+        StampedDetectedObjects detectedObjects = event.getDetectedObjects();
+
         // Check if the worker is active and if the event is ready to process
         if (status == STATUS.UP) {
-            List<CloudPoint> cloudPoints = liDarDataBase.getCloudPoints(event.getObjectId());
-            if (!cloudPoints.isEmpty()) {
-                TrackedObject trackedObject = new TrackedObject(event.getObjectId(), cloudPoints, scheduledTime);
-                addTrackedObject(trackedObject);
-                return trackedObject;
+            List<TrackedObject> output = new ArrayList<>();
+            for (DetectedObject d : detectedObjects.getDetectedObjectsList()) {
+                String id = d.getId();
+                String description = d.getDescription();
+                CloudPoint[] points = liDarDataBase.getCloudPointsOfObject(id);
+                if (points != null) {
+                    TrackedObject trackedObject = new TrackedObject(id, detectionTime, description, points); // CHECK TIMING AGAIN
+                    addTrackedObject(trackedObject);
+                    output.add(trackedObject);
+                }
             }
+            return output;
         }
         return null; // No object was tracked
     }
