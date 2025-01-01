@@ -30,6 +30,7 @@ public abstract class MicroService implements Runnable {
     private boolean terminated = false;
     private final String name;
     private final Map<Class<? extends Message>, Callback<? extends Message>> callbacks = new  ConcurrentHashMap<>();
+    @SuppressWarnings("unused")//?????
     private StatisticalFolder statisticalFolder = null;
 
 
@@ -169,6 +170,7 @@ public abstract class MicroService implements Runnable {
         while (!terminated) {
             try {
                 Message message = MessageBusImpl.getInstance().awaitMessage(this); //If there is no message in the queue, it waits until there is a message.
+                @SuppressWarnings("unchecked")//???????????
                 Callback<Message> callBack = (Callback<Message>) callbacks.get(message.getClass());//Receiving the message
                 if (callBack != null) {//Checks if there is a suitable callback in the callbacks map.
                     callBack.call(message); //Message processing
