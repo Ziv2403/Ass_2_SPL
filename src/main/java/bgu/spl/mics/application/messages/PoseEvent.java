@@ -19,17 +19,17 @@ import bgu.spl.mics.application.objects.Pose;
 public class PoseEvent implements Event<Pose>{
 
 // --------------------- fields --------------------
-    private int time;
+    //private int time;
     private Pose pose;
 
 // --------------------- constructor --------------------
-    public PoseEvent(int time, Pose pose){
-        this.time = time;
+    public PoseEvent( Pose pose){
+        //this.time = time;
         this.pose = pose;
     }
 // --------------------- Methods --------------------
 //Getters
-    public int getTime() {return time;}
+   // public int getTime() {return time;}
     public Pose getPose() {return pose;}
 
 }

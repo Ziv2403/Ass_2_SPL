@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+//import java.util.function.Function;
 
 import static java.lang.Math.*;
 
@@ -132,7 +132,7 @@ public class FusionSlam {
      * @param newCoordinates The new global coordinates to integrate.
      */
     private void updateExistingLandmark(LandMark landmark, List<CloudPoint> newCoordinates) {
-        List<CloudPoint> existingCoordinates = landmark.getCoordinates();
+        List<CloudPoint> existingCoordinates = landmark.getCloudPoints();
         for (int i = 0; i < existingCoordinates.size(); i++) {
             existingCoordinates.get(i).update(newCoordinates.get(i)); 
         }

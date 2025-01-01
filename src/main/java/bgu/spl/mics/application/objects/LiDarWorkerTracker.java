@@ -1,5 +1,7 @@
 package bgu.spl.mics.application.objects;
 
+import bgu.spl.mics.application.messages.DetectObjectsEvent;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,14 +11,14 @@ import java.util.List;
  * Each worker tracks objects and sends observations to the FusionSlam service.
  */
 public class LiDarWorkerTracker {
-    private final int Id;
+    private final int id;
     private final int frequency;
     private  STATUS status;
     private  List<TrackedObject> lastTrackedObjects;
 
     // --------------------- constructor --------------------
     public LiDarWorkerTracker(int id, int frequency, STATUS status ){
-        this.Id = id;
+        this.id = id;
         this.frequency = frequency;
         this.status = status;
         this.lastTrackedObjects = new ArrayList<>();
@@ -25,7 +27,7 @@ public class LiDarWorkerTracker {
     // --------------------- methods --------------------
 
     //Getters
-    public int getId() {return Id;}
+    public int getId() {return id;}
     public int getFrequency() {return frequency;}
     public STATUS getStatus() {return status;}
     public List<TrackedObject> getLastTrackedObjects() {return lastTrackedObjects;}
@@ -35,10 +37,25 @@ public class LiDarWorkerTracker {
         this.status = status;
     }
     
-    //otherMethods
+    //other Methods
     public void addTrackedObject(TrackedObject trackedObject) {
         this.lastTrackedObjects.add(trackedObject);
     }
     
+    // Process DetectObjectsEvent and return a TrackedObject
+    public TrackedObject processDetectObjectsEvent(DetectObjectsEvent event, LiDarDataBase liDarDataBase) {
+        int detectionTime = event.getDetectedObjects().getTime();
+        int scheduledTime = detectionTime + frequency;
+        // Check if the worker is active and if the event is ready to process
+        if (status == STATUS.UP) {
+            List<CloudPoint> cloudPoints = liDarDataBase.getCloudPoints(event.getObjectId());
+            if (!cloudPoints.isEmpty()) {
+                TrackedObject trackedObject = new TrackedObject(event.getObjectId(), cloudPoints, scheduledTime);
+                addTrackedObject(trackedObject);
+                return trackedObject;
+            }
+        }
+        return null; // No object was tracked
+    }
 
 }

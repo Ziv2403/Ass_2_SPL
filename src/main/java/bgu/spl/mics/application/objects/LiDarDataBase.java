@@ -23,7 +23,10 @@ public class LiDarDataBase {
     private static class LiDarDataBaseHolder {
         private static LiDarDataBase instance = new LiDarDataBase();
     }
-// --------------------- constructor --------------------
+// --------------------- constructors --------------------
+    public LiDarDataBase(List<StampedCloudPoints> cloudPoints) {
+        this.cloudPoints = cloudPoints;
+    }
 
     // Private constructor to prevent creation of additional instances
     private LiDarDataBase(){

@@ -10,26 +10,29 @@ import java.util.ArrayList;
  */
 public class Camera {
    // --------------------- fields --------------------
-   private final int Id;
+   private final int id;
    private final int frequency;
    private STATUS status;
    private List<StampedDetectedObjects> detectedObjectsList;
+   private final String camera_key;
 
    // --------------------- constructor --------------------
-    public Camera(int id, int frequency, STATUS status ){
-        this.Id = id;
+    public Camera(int id, int frequency, STATUS status, String key ){
+        this.id = id;
         this.frequency = frequency;
         this.status = status;
         this.detectedObjectsList = new ArrayList<>();
+        this.camera_key = key;        
     }
 
    // --------------------- methods --------------------
    //Getters
-    public int getId() {return Id;}
+    public int getId() {return id;}
     public int getFrequency() {return frequency;}
     public STATUS getStatus() {return status;}
     public List<StampedDetectedObjects> getDetectedObjectsList() {return detectedObjectsList;}
-
+    public String getCameraKey() {return camera_key;}
+    
     //Setter
     public void setStatus(STATUS status) {
         this.status = status;

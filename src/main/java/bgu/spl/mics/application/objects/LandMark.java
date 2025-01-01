@@ -1,5 +1,6 @@
 package bgu.spl.mics.application.objects;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,18 +11,24 @@ public class LandMark {
 // --------------------- fields --------------------
     private final String Id;
     private final String description;
-    private final List<CloudPoint> coordinates;
+    private final List<CloudPoint> cloudPoints;
 
-// --------------------- constructor --------------------
-    public LandMark(String id, String description, List<CloudPoint> coordinates){
+// --------------------- constructors --------------------
+    public LandMark(String id, String description){
         this.Id = id;
         this.description = description;
-        this.coordinates= coordinates;
+        this.cloudPoints = new ArrayList<>();
+    }
+
+    public LandMark(String id, String description, List<CloudPoint> cloudPoints){
+        this.Id = id;
+        this.description = description;
+        this.cloudPoints = cloudPoints;
     }
 
 // --------------------- methods --------------------
     public String getId() {return Id;}
     public String getDescription() {return description;}
-    public List<CloudPoint> getCoordinates() {return coordinates;}
-
+    public List<CloudPoint> getCloudPoints() {return cloudPoints;}
+    public void addCloudPoint(CloudPoint cloudPoint) {cloudPoints.add(cloudPoint);}
 }

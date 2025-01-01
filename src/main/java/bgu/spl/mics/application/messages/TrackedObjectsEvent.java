@@ -27,12 +27,15 @@ import bgu.spl.mics.application.objects.TrackedObject;
  * If previously detected, updates measurements by averaging with previous data.
  */
 public class TrackedObjectsEvent implements Event<List<TrackedObject>>{
+
 // --------------------- fields -------------------------
-    private List<TrackedObject> trackedObject;
+    private final List<TrackedObject> trackedObject;
+
 // --------------------- constructor --------------------
     public TrackedObjectsEvent(List<TrackedObject> tracked){
         this.trackedObject=tracked;
     }
+    
 // --------------------- Methods ------------------------
 //Getters
     public List<TrackedObject> getTrackedObjects() {return trackedObject;}
