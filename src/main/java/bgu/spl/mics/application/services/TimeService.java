@@ -1,5 +1,9 @@
 package bgu.spl.mics.application.services;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.TerminatedBroadcast;
 import bgu.spl.mics.application.messages.TickBroadcast;
@@ -10,10 +14,11 @@ import bgu.spl.mics.application.objects.StatisticalFolder;
  * at regular intervals and controlling the simulation's duration.
  */
 public class TimeService extends MicroService {
-    private final int tickTime;
+    //private final int tickTime;
     private final int duration;
-    private int currentTick;
+    private int currentTick = 0;
     private final StatisticalFolder stats;
+    private final ScheduledExecutorService scheduler;
 
     /**
      * Constructor for TimeService.
@@ -21,12 +26,13 @@ public class TimeService extends MicroService {
      * @param TickTime  The duration of each tick in milliseconds.
      * @param Duration  The total number of ticks before the service terminates.
      */
-    public TimeService(int TickTime, int Duration, StatisticalFolder stats) {
+    public TimeService(int Duration, StatisticalFolder stats) {
         super("TimeService");
-        this.tickTime = TickTime;
+        //this.tickTime = TickTime;
         this.duration = Duration;
         this.currentTick = 0; //might be 1 -> saw in the forum
         this.stats = stats;
+        this.scheduler = Executors.newScheduledThreadPool(1);
     }
 
     /**
@@ -35,22 +41,48 @@ public class TimeService extends MicroService {
      */
     @Override
     protected void initialize() {
-        try {
-            while (currentTick < duration) {
-                //Send TickBroadcast to all microService
+        scheduler.scheduleAtFixedRate(() -> {
+            if(currentTick < duration){
                 sendBroadcast(new TickBroadcast(currentTick));
-
-                //Update StatisticalFolder
                 stats.incrementSystemRuntime();
-
-                //Wait until the next tick
-                Thread.sleep(tickTime);
                 currentTick++;
+            } else{
+                sendBroadcast(new TerminatedBroadcast(getName()));
+                shutdownSystem();
             }
-            //When timeOut --> send TerminatedBroadcast
-            sendBroadcast(new TerminatedBroadcast(getName()));
-        } catch (InterruptedException e) {
-            System.err.println("TimeService interrupted: " + e.getMessage());
+        }, 0, 1, TimeUnit.SECONDS);
+    }
+
+
+    private void shutdownSystem(){
+        try {
+            scheduler.shutdown();
+            if(!scheduler.awaitTermination(1, TimeUnit.SECONDS)){ //NOT SURE IF NED TO WAIT OR NOT
+                scheduler.shutdownNow();
+            }
+        } catch (InterruptedException  e) {
+            scheduler.shutdownNow();
+            Thread.currentThread().interrupt();
         }
+        //writeOutput();
+        terminate();
     }
 }
+
+// try {
+//     while (currentTick < duration) {
+//         //Send TickBroadcast to all microService
+//         sendBroadcast(new TickBroadcast(currentTick));
+
+//         //Update StatisticalFolder
+//         stats.incrementSystemRuntime();
+
+//         //Wait until the next tick
+//         Thread.sleep(tickTime);
+//         currentTick++;
+//     }
+//     //When timeOut --> send TerminatedBroadcast
+//     sendBroadcast(new TerminatedBroadcast(getName()));
+// } catch (InterruptedException e) {
+//     System.err.println("TimeService interrupted: " + e.getMessage());
+// }

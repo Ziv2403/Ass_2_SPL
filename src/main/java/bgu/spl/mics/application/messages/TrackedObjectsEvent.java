@@ -36,7 +36,11 @@ public class TrackedObjectsEvent implements Event<List<TrackedObject>>{
         this.trackedObject=tracked;
     }
     
-// --------------------- Methods ------------------------
+// public TrackedObjectsEvent(TrackedObject tracked) {
+//         //TODO Auto-generated constructor stub
+//     }
+
+    // --------------------- Methods ------------------------
 //Getters
     public List<TrackedObject> getTrackedObjects() {return trackedObject;}
 

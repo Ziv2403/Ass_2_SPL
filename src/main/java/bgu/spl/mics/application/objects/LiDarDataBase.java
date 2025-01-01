@@ -40,32 +40,46 @@ public class LiDarDataBase {
      * @param filePath The path to the LiDAR data file.
      * @return The singleton instance of LiDarDataBase.
      */
-    public static LiDarDataBase getInstance(String filePath) {
-        LiDarDataBase instance = LiDarDataBaseHolder.instance;  // Access singleton instance
-    
+    public static LiDarDataBase getInstance() {
+        return LiDarDataBaseHolder.instance;
+    }
+
+    public void loadData(String filePath) {
         try (FileReader reader = new FileReader(filePath)) {
-            // Parse JSON to List<StampedCloudPoints>
             Type listType = new TypeToken<List<StampedCloudPoints>>() {}.getType();
             Gson gson = new Gson();
-            List<StampedCloudPoints> stampedCloudPointList = gson.fromJson(reader, listType);
-    
-            // Add the parsed data to the cloudPoints field
-            instance.cloudPoints.addAll(stampedCloudPointList);
+            this.cloudPoints = gson.fromJson(reader, listType);
         } catch (IOException e) {
-            // Handle file access or parsing issues
-            System.err.println("Failed to load data from file: " + filePath);
+            System.err.println("Failed to load data from file: " + filePath);//cause to error?
             e.printStackTrace();
         }
-    
-        return instance;
     }
+    // public static LiDarDataBase getInstance(String filePath) {
+    //     LiDarDataBase instance = LiDarDataBaseHolder.instance;  // Access singleton instance
+    
+    //     try (FileReader reader = new FileReader(filePath)) {
+    //         // Parse JSON to List<StampedCloudPoints>
+    //         Type listType = new TypeToken<List<StampedCloudPoints>>() {}.getType();
+    //         Gson gson = new Gson();
+    //         List<StampedCloudPoints> stampedCloudPointList = gson.fromJson(reader, listType);
+    
+    //         // Add the parsed data to the cloudPoints field
+    //         instance.cloudPoints.addAll(stampedCloudPointList);
+    //     } catch (IOException e) {
+    //         // Handle file access or parsing issues
+    //         System.err.println("Failed to load data from file: " + filePath);
+    //         e.printStackTrace();
+    //     }
+    
+    //     return instance;
+    // }
     
     public List<StampedCloudPoints> getCloudPoints() {return cloudPoints;}
 
-    public List<CloudPoint> getCloudPoints(int objectId) {
+    public List<CloudPoint> getCloudPoints(String objectId) {
         List<CloudPoint> result = new ArrayList<>();
         for (StampedCloudPoints stamped : cloudPoints) {
-            if (stamped.getId().equals(String.valueOf(objectId))) {
+            if (stamped.getId().equals(objectId)) {
                 result.addAll(stamped.getCloudPoints());
             }
         }

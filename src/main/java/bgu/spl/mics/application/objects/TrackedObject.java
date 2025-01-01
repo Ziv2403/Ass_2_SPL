@@ -16,27 +16,27 @@ public class TrackedObject {
     private final String Id;
     private final int time; // The time the object was tracked
     private final String description;
-    private final CloudPoint[] coordinates;
+    private final List<CloudPoint> coordinates;
 
     // --------------------- constructor --------------------
-    public TrackedObject(String id, int time, String description, CloudPoint[] coordinates){
+    public TrackedObject(String id, int time, String description, List<CloudPoint> cloudPoints){
         this.Id = id;
         this.time = time;
         this.description = description;
-        this.coordinates = coordinates;
+        this.coordinates = cloudPoints;
     }
 
     //ZIV - ADDED
-    public TrackedObject(int objectId, List<CloudPoint> cloudPoints, int scheduledTime) {
+    public TrackedObject(String objectId, List<CloudPoint> cloudPoints, int scheduledTime) {
         this.Id = String.valueOf(objectId);
         this.time = scheduledTime;
         this.description = "TrackedObject" + String.valueOf(objectId);
-        this.coordinates = cloudPoints.toArray(new CloudPoint[0]);
+        this.coordinates = cloudPoints;
     }
 
     // --------------------- methods --------------------
     public String getId() {return Id;}
     public int getTime() {return time;}
     public String getDescription() {return description;}
-    public CloudPoint[] getCoordinates() {return coordinates;}
+    public List<CloudPoint> getCoordinates() {return coordinates;}
 }

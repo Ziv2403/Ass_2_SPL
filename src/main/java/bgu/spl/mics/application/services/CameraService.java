@@ -3,10 +3,11 @@ package bgu.spl.mics.application.services;
 import java.util.List;
 
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.messages.CrashedBroadcast;
-import bgu.spl.mics.application.messages.DetectObjectsEvent;
-import bgu.spl.mics.application.messages.TerminatedBroadcast;
-import bgu.spl.mics.application.messages.TickBroadcast;
+import bgu.spl.mics.application.messages.*;
+// import bgu.spl.mics.application.messages.CrashedBroadcast;
+// import bgu.spl.mics.application.messages.DetectObjectsEvent;
+// import bgu.spl.mics.application.messages.TerminatedBroadcast;
+// import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.objects.Camera;
 import bgu.spl.mics.application.objects.StampedDetectedObjects;
 import bgu.spl.mics.application.objects.StatisticalFolder;
@@ -20,8 +21,8 @@ import bgu.spl.mics.application.objects.StatisticalFolder;
  */
 public class CameraService extends MicroService {
     private final Camera camera;
-    private int lastProcessedIndex = 0;
     private final StatisticalFolder stats;
+    private int lastProcessedIndex = 0;
     private int currentTick = 0;
 
     /**

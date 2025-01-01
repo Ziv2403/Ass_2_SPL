@@ -69,4 +69,8 @@ public class StatisticalFolder {
         numDetectedObjects.addAndGet(size);
     }
 
+    public void incrementTrackedObjects(int size) {
+        numTrackedObjects.addAndGet(size);
+    }
+
 }
