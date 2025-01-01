@@ -22,6 +22,7 @@ public class CameraService extends MicroService {
     private final Camera camera;
     private int lastProcessedIndex = 0;
     private final StatisticalFolder stats;
+    private int currentTick = 0;
 
     /**
      * Constructor for CameraService.
@@ -93,5 +94,7 @@ public class CameraService extends MicroService {
         }
     }
 
+    public int getCurrentTick() {return currentTick;}
+    public void setCurrentTick(int tick) {this.currentTick = tick; }
 
 }

@@ -22,5 +22,13 @@ public class StampedCloudPoints {
 // --------------------- methods ------------------------
     public String getId() {return id;}
     public int getTime() {return time;}
-    public List<List<Double>> getCloudPoints() {return cloudPoints;}
+
+    //ZIV CHANGE: Convert a list of points (List<List<Double>>) to CloudPoint
+    public List<CloudPoint> getCloudPoints() {
+        List<CloudPoint> cloudPoints = new ArrayList<>();
+        for (List<Double> point : this.cloudPoints) {
+            cloudPoints.add(new CloudPoint(point.get(0), point.get(1)));
+        }
+        return cloudPoints;
+    }
 }

@@ -1,5 +1,7 @@
 package bgu.spl.mics.application.objects;
 
+import java.util.List;
+
 // import java.util.ArrayList;
 // import java.util.List;
 
@@ -22,6 +24,14 @@ public class TrackedObject {
         this.time = time;
         this.description = description;
         this.coordinates = coordinates;
+    }
+
+    //ZIV - ADDED
+    public TrackedObject(int objectId, List<CloudPoint> cloudPoints, int scheduledTime) {
+        this.Id = String.valueOf(objectId);
+        this.time = scheduledTime;
+        this.description = "TrackedObject" + String.valueOf(objectId);
+        this.coordinates = cloudPoints.toArray(new CloudPoint[0]);
     }
 
     // --------------------- methods --------------------

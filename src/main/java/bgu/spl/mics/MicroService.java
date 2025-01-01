@@ -1,10 +1,11 @@
 package bgu.spl.mics;
 
 //import java.util.HashMap;
+import bgu.spl.mics.application.objects.StatisticalFolder;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import bgu.spl.mics.application.messages.TickBroadcast;
+//import bgu.spl.mics.application.messages.TickBroadcast;
 
 /**
  * The MicroService is an abstract class that any micro-service in the system
@@ -29,7 +30,7 @@ public abstract class MicroService implements Runnable {
     private boolean terminated = false;
     private final String name;
     private final Map<Class<? extends Message>, Callback<? extends Message>> callbacks = new  ConcurrentHashMap<>();
-    private int currentTick;
+    private StatisticalFolder statisticalFolder = null;
 
 
     /**
@@ -38,7 +39,11 @@ public abstract class MicroService implements Runnable {
      */
     public MicroService(String name) {
         this.name = name;
-        this.currentTick = 0; // nedded to make sure that al the microService should initialize in the same time
+    }
+
+    public MicroService(String name, StatisticalFolder statisticalFolder){
+        this.name = name;
+        this.statisticalFolder = statisticalFolder;
     }
 
     /**
@@ -176,11 +181,4 @@ public abstract class MicroService implements Runnable {
         MessageBusImpl.getInstance().unregister(this);
 
     }
-
-    //Added function
-
-
-    public int getCurrentTick() {return currentTick;}
-    public void setCurrentTick(int tick){ currentTick = tick;}
-
 }

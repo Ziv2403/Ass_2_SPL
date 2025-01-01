@@ -42,6 +42,6 @@ public class DetectObjectsEvent implements Event<List<StampedDetectedObjects>>{
 // --------------------- Methods --------------------
 //Getters
     public StampedDetectedObjects getDetectedObjects() {return detectedObjects;}
-    public int getCameraId() {return cameraId;}
+    public int getObjectId() {return cameraId;}//??????????????????
     //public String getDescription() {return description;}
 }

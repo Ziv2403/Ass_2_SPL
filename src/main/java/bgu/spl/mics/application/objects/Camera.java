@@ -15,6 +15,7 @@ public class Camera {
    private STATUS status;
    private List<StampedDetectedObjects> detectedObjectsList;
    private final String camera_key;
+   
 
    // --------------------- constructor --------------------
     public Camera(int id, int frequency, STATUS status, String key ){

@@ -30,6 +30,6 @@ public class PoseEvent implements Event<Pose>{
 // --------------------- Methods --------------------
 //Getters
    // public int getTime() {return time;}
-    public Pose getPose() {return pose;}
+    public Pose getPose() {return pose;} 
 
 }
