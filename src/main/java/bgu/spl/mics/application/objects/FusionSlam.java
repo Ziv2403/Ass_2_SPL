@@ -2,7 +2,7 @@ package bgu.spl.mics.application.objects;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+//import java.util.function.Function;
 
 import static java.lang.Math.*;
 
@@ -17,6 +17,7 @@ public class FusionSlam {
     private final List<LandMark> landmarks;
     private final List<Pose> poses;
 
+
 // --------------------- SingletonImplemment -------------------------
 
     // Singleton instance holder
@@ -24,11 +25,19 @@ public class FusionSlam {
         private static final FusionSlam INSTANCE = new FusionSlam();
     }
 
-    public FusionSlam(){ //SHOULDN'T BE PRIVATE???
-            this.landmarks = new ArrayList<>();
+    /**
+     * Private constructor to enforce Singleton pattern.
+     */
+    private FusionSlam(){ 
+            this.landmarks =new ArrayList<>();
             this.poses = new ArrayList<>();
     }
 
+    /**
+     * Provides access to the single instance of FusionSlam.
+     * 
+     * @return The singleton instance of FusionSlam.
+     */
     public static FusionSlam getInstance(){
         return FusionSlamHolder.INSTANCE;
     }
@@ -39,70 +48,99 @@ public class FusionSlam {
     public List<Pose> getPoseList() {return poses;}
 
 //Adders
-    public void addLandmark (LandMark landmark){
-        this.landmarks.add(landmark);
-    }
+    // public void addLandmark (LandMark landmark){
+    //     this.landmarks.add(landmark);
+    // }
 
-    public void addPose( Pose pose){
+    /**
+     * Adds a new pose to the list of robot poses.
+     * 
+     * @param pose The pose to add.
+     */
+    public void addPose(Pose pose){
         this.poses.add(pose);
     }
 
-//Compute Global
-    // //Method that convert only one point local coordinates to a global system:
-    // public CloudPoint transformToGlobal(CloudPoint localPoint, Pose pose) {
-    //     double yawRad = toRadians(pose.getYaw());
-    //     double xGlobal = cos(yawRad) * localPoint.getX() - sin(yawRad) * localPoint.getY() + pose.getX();
-    //     double yGlobal = sin(yawRad) * localPoint.getX() + cos(yawRad) * localPoint.getY() + pose.getY();
-    //     return new CloudPoint((int) xGlobal, (int) yGlobal);
-    // }
-    
-    // //Function to update and refine the map or add a new Landmark
-    // public void updateLandmark(String id, List<CloudPoint> localCoordinates, Pose currentPose) {
-    //     // Step 1: Convert coordinates
-    //     List<CloudPoint> globalCoordinates = convertToGlobalCoordinates(localCoordinates, currentPose);
-    
-    //     // Step 2: Search Landmark
-    //     LandMark existingLandmark = findLandmarkById(id);
-    
-    //     // Step 3: Update or Add Landmark
-    //     if (existingLandmark != null) {
-    //         updateExistingLandmark(existingLandmark, globalCoordinates);
-    //     } else {
-    //         createNewLandmark(id, "New Landmark", globalCoordinates);
-    //     }
-    // }
-    
-    // //Mapping a list of local points to a global system
-    // private List<CloudPoint> convertToGlobalCoordinates(List<CloudPoint> localCoordinates, Pose currentPose) {
-    //     List<CloudPoint> globalCoordinates = new ArrayList<>();
-    //     for (CloudPoint point : localCoordinates) {
-    //         globalCoordinates.add(transformToGlobal(point, currentPose));
-    //     }
-    //     return globalCoordinates;
-    // }
-    
-    // //Is there an identical Landmark by ID?
-    // private LandMark findLandmarkById(String id) {
-    //     for (LandMark landmark : landmarks) {
-    //         if (landmark.getId().equals(id)) {
-    //             return landmark;
-    //         }
-    //     }
-    //     return null; 
-    // }
 
-    // //Update for existing Landmark
-    // private void updateExistingLandmark(LandMark landmark, List<CloudPoint> newCoordinates) {
-    //     List<CloudPoint> existingCoordinates = landmark.getCoordinates();
-    //     for (int i = 0; i < existingCoordinates.size(); i++) {
-    //         existingCoordinates.get(i).update(newCoordinates.get(i)); 
-    //     }
-    // }
-
-    // //Creating a new Landmark
-    // private void createNewLandmark(String id, String description, List<CloudPoint> globalCoordinates) {
-    //     landmarks.add(new LandMark(id, description, globalCoordinates));
-    // }
+    /**
+     * Converts a single point from the local coordinate system to the global coordinate system.
+     * 
+     * @param localPoint The point in the local coordinate system.
+     * @param pose The robot's pose at the time the point was detected.
+     * @return The point in the global coordinate system.
+     */
+    public CloudPoint transformToGlobal(CloudPoint localPoint, Pose pose) {
+        double yawRad = toRadians(pose.getYaw());
+        double xGlobal = cos(yawRad) * localPoint.getX() - sin(yawRad) * localPoint.getY() + pose.getX();
+        double yGlobal = sin(yawRad) * localPoint.getX() + cos(yawRad) * localPoint.getY() + pose.getY();
+        return new CloudPoint( xGlobal, yGlobal);
+    }
     
+    /**
+     * Updates an existing landmark or creates a new one if it doesn't exist.
+     * Converts the given local coordinates to global coordinates using the current pose.
+     * 
+     * @param id The ID of the landmark.
+     * @param localCoordinates List of points in the local coordinate system.
+     * @param currentPose The robot's pose at the time of detection.
+     */
+    public void updateLandmark(LandMark currentLandMark, Pose currentPose) {
+        // Step 1: Convert coordinates
+        List<CloudPoint> globalCoordinates = convertToGlobalCoordinates(currentLandMark.getCloudPoints(), currentPose);
+    
+        // Step 2: Search Landmark
+        int indexLandmark = landmarks.indexOf(currentLandMark);
+       
+    
+        // Step 3: Update or Add Landmark
+        if (indexLandmark != -1) {
+            LandMark existingLandmark = landmarks.get(indexLandmark);
+            updateExistingLandmark(existingLandmark, globalCoordinates);
+        } else {
+            createNewLandmark(currentLandMark.getId(), "New Landmark", globalCoordinates);//NEED TO CHECK ABOUT THE DESCRIPTION!!!
+        }
+    }
+    
+    /**
+     * Converts a list of points from the local coordinate system to the global coordinate system.
+     * 
+     * @param localCoordinates List of points in the local coordinate system.
+     * @param currentPose The robot's pose at the time the points were detected.
+     * @return List of points in the global coordinate system.
+     */
+        private List<CloudPoint> convertToGlobalCoordinates(List<CloudPoint> localCoordinates, Pose currentPose) {
+        List<CloudPoint> globalCoordinates = new ArrayList<>();
+        for (CloudPoint point : localCoordinates) {
+            globalCoordinates.add(transformToGlobal(point, currentPose));
+        }
+        return globalCoordinates;
+    }
+    
+
+
+    /**
+     * Updates an existing landmark with new global coordinates by averaging them.
+     * 
+     * @param landmark The existing landmark to update.
+     * @param newCoordinates The new global coordinates to integrate.
+     */
+    private void updateExistingLandmark(LandMark landmark, List<CloudPoint> newCoordinates) {
+        List<CloudPoint> existingCoordinates = landmark.getCloudPoints();
+        for (int i = 0; i < existingCoordinates.size(); i++) {
+            existingCoordinates.get(i).update(newCoordinates.get(i)); 
+        }
+    }
+
+    /**
+     * Creates a new landmark with the given ID, description, and global coordinates.
+     * 
+     * @param id The ID of the new landmark.
+     * @param description The description of the landmark.
+     * @param globalCoordinates List of global coordinates for the landmark.
+     */
+    private void createNewLandmark(String id, String description, List<CloudPoint> globalCoordinates) {
+        LandMark newLandMark = new LandMark(id, description, globalCoordinates);
+        landmarks.add(newLandMark);
+    }
     
 }

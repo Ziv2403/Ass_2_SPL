@@ -34,9 +34,8 @@ public class GurionRockRunner {
      */
     public static void main(String[] args) {
         System.out.println("Hello World!");
-
         // TODO: Parse configuration file.
-        String configFilePath = args[0] + " " + args[1];
+        String configFilePath = args[0];
         Gson gson = new Gson();
         try (FileReader reader = new FileReader(configFilePath)) {
             Configuration config = gson.fromJson(reader, Configuration.class);
