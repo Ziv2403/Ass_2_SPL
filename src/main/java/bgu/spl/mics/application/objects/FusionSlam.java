@@ -106,6 +106,7 @@ public class FusionSlam {
         if (existingLandmark == null) {
             // Create a new landmark
             landmarks.add(new LandMark(tracked.getId(), tracked.getDescription(), globalCoordinates));
+
         } else {
             // Update the existing landmark
             updateExistingLandmark(existingLandmark, globalCoordinates);

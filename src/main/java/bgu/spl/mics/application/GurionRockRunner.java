@@ -55,6 +55,7 @@ public class GurionRockRunner {
             GPSIMU gpsimu = new GPSIMU(1, STATUS.UP, poses);
             LiDarDataBase liDarDataBase = new LiDarDataBase(lidarData);
             StatisticalFolder statisticalFolder = new StatisticalFolder();
+            FusionSlam fusionSlam = FusionSlam.getInstance();
 
             // ------------ Create, register and start services ------------
             List<MicroService> microServices = new ArrayList<>();
@@ -84,6 +85,9 @@ public class GurionRockRunner {
             microServices.add(poseService);
 
             // FusionSlam Service
+            FusionSlamService fusionSlamService = new FusionSlamService(fusionSlam, statisticalFolder);
+            messageBus.register(fusionSlamService);
+            microServices.add(fusionSlamService);
 
             // Start services except timeService
             for (MicroService m : microServices) {
