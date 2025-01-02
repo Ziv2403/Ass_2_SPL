@@ -21,6 +21,7 @@ public class FusionSlamService extends MicroService {
     private final FusionSlam fusionSlam;
     private List<LandMark> result;
     private int currentTick;
+
     /**
      * Constructor for FusionSlamService.
      *
@@ -40,17 +41,15 @@ public class FusionSlamService extends MicroService {
      */
     @Override
     protected void initialize() {
-        // Subscribe to TickBroadcast
         subscribeBroadcast(TickBroadcast.class, tick -> {
             currentTick = tick.getTick();
         });
 
-        // Subscribe to TrackedObjectsEvent
         subscribeEvent(TrackedObjectsEvent.class, event -> {
-
+            fusionSlam.addTrackedObjects(event.getTrackedObjects());
+            statisticalFolder.incrementLandmarks(event.getTrackedObjects().size());
         });
 
-        // Subscribe to PoseEvent
         subscribeEvent(PoseEvent.class, event -> {
             fusionSlam.addPose(event.getPose());
         });
@@ -60,6 +59,7 @@ public class FusionSlamService extends MicroService {
             terminate();
         });
 
+        // CHECK AGAIN
         // Subscribe to TerminatedBroadcast
         subscribeBroadcast(TerminatedBroadcast.class, terminate -> {
             terminate();
