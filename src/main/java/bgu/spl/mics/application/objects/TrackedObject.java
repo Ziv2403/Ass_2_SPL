@@ -1,5 +1,8 @@
 package bgu.spl.mics.application.objects;
 
+import java.util.ArrayList;
+import java.util.List;
+
 // import java.util.ArrayList;
 // import java.util.List;
 
@@ -23,8 +26,18 @@ public class TrackedObject {
     }
 
     // --------------------- methods --------------------
+    //getter
     public String getId() {return Id;}
     public int getTime() {return time;}
     public String getDescription() {return description;}
     public CloudPoint[] getCoordinates() {return coordinates;}
+    
+//Added methods
+    public List<CloudPoint> convertToList(CloudPoint[] arrayPoints){
+        List<CloudPoint> list = new ArrayList<>();
+        for(CloudPoint point : arrayPoints){
+            list.add(point);
+        }
+        return list;
+    }
 }

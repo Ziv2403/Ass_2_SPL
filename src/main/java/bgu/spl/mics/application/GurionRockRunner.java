@@ -101,7 +101,7 @@ public class GurionRockRunner {
 
     // Initializing Camera Objects
     public void initCameraData(String filepath) {
-
+        
     }
 
     // Initializing LiDar Objects
