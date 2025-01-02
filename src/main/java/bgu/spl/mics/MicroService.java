@@ -29,7 +29,7 @@ public abstract class MicroService implements Runnable {
     private boolean terminated = false;
     private final String name;
     private final Map<Class<? extends Message>, Callback<? extends Message>> callbacks = new  ConcurrentHashMap<>();
-    private StatisticalFolder statisticalFolder = null;
+    protected StatisticalFolder statisticalFolder = null;
 
 
     /**

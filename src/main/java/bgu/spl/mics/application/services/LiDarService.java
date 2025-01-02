@@ -24,7 +24,6 @@ public class LiDarService extends MicroService {
 
     private final LiDarWorkerTracker liDarWorkerTracker;
     private final LiDarDataBase liDarDataBase;
-    private final StatisticalFolder statisticalFolder;
     private int currentTick;
     private final Map<DetectObjectsEvent, Integer> pendingEvents = new HashMap<>();
 
@@ -38,7 +37,6 @@ public class LiDarService extends MicroService {
         // TODO Implement this
         this.liDarWorkerTracker = LiDarWorkerTracker;
         this.liDarDataBase = liDarDataBase;
-        this.statisticalFolder = statisticalFolder;
         this.currentTick = 0;
     }
 
@@ -101,7 +99,7 @@ public class LiDarService extends MicroService {
         // Send all ready objects in one TrackedObjectsEvent
         if (!readyTrackedObjects.isEmpty()) {
             sendEvent(new TrackedObjectsEvent(readyTrackedObjects));
-            updateStatistics(readyTrackedObjects.size());
+            statisticalFolder.incrementTrackedObjects(readyTrackedObjects.size());
         }
     }
 
@@ -116,17 +114,7 @@ public class LiDarService extends MicroService {
 
         if (!trackedObjects.isEmpty()) {
             sendEvent(new TrackedObjectsEvent(trackedObjects));
-            updateStatistics(trackedObjects.size());
-        }
-    }
-
-
-    /**
-     * Updates the statistical folder when new objects are tracked.
-     */
-    private void updateStatistics(int numTrackedObjects) {
-        for (int i = 0 ; i < numTrackedObjects ; i++) {
-            statisticalFolder.incrementTrackedObjects();
+            statisticalFolder.incrementTrackedObjects(trackedObjects.size());
         }
     }
 

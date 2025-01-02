@@ -91,6 +91,7 @@ public class CameraService extends MicroService {
             Map.Entry<StampedDetectedObjects, Integer> entry = iterator.next();
             if (currentTick >= entry.getValue()) {
                 sendEvent(new DetectObjectsEvent(entry.getKey(), camera.getId()));
+                statisticalFolder.incrementDetectedObjects(entry.getKey().getDetectedObjectsList().size());
                 iterator.remove();
             }
         }
