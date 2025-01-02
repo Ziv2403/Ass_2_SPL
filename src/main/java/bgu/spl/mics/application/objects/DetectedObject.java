@@ -7,17 +7,17 @@ package bgu.spl.mics.application.objects;
 public class DetectedObject {
 
 // --------------------- fields -------------------------
-    private final String Id;
+    private final String id;
     private final String description;
 
 // --------------------- constructor --------------------
     public DetectedObject(String id, String description){
-        this.Id = id;
+        this.id = id;
         this.description = description;
     }
 
 // --------------------- methods ------------------------
-    public String getId() {return Id;}
+    public String getId() {return id;}
     public String getDescription() {return description;}
 
 }
