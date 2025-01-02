@@ -49,14 +49,16 @@ public class TimeService extends MicroService {
                 sendBroadcast(new TickBroadcast(currentTick));
 
                 //Update StatisticalFolder
-                StatisticalFolder.getInstance().incrementSystemRuntime();
+                statisticalFolder.incrementSystemRuntime();
 
                 //Wait until the next tick
-                Thread.sleep(tickTime);
+                long tickTimeInSeconds = (long)tickTime*1000;
+                Thread.sleep(tickTimeInSeconds);
                 currentTick++;
             }
             //When timeOut --> send TerminatedBroadcast
             sendBroadcast(new TerminatedBroadcast(getName()));
+
         } catch (InterruptedException e) {
             System.err.println("TimeService interrupted: " + e.getMessage());
         }
