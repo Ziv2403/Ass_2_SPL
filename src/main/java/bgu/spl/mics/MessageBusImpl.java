@@ -39,6 +39,7 @@ public class MessageBusImpl implements MessageBus {
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
 		// Register a MicroService as a subscriber to an Event type
         // Using Linked to facilitate Round-Robin distribution
+//		System.out.println("Subscribing " + m.getName() + " to Event: " + type.getName());
 		eventSubscribers.computeIfAbsent(type, k -> new ConcurrentLinkedQueue<>()).add(m);
 
 		// Ensure the MicroService has a queue in the `queues` map
@@ -53,6 +54,7 @@ public class MessageBusImpl implements MessageBus {
 	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
         // Register a MicroService as a subscriber to a Broadcast type
         // Using CopyOnWriteArrayList to handle concurrent reads safely
+//		System.out.println("Subscribing " + m.getName() + " to Broadcast: " + type.getName());
 		broadcastSubscribers.computeIfAbsent(type, k -> new CopyOnWriteArrayList<>()).add(m);
 
 		// Why CopyOnWriteArrayList: Ideal for scenarios with frequent reads and infrequent writes
@@ -98,6 +100,7 @@ public class MessageBusImpl implements MessageBus {
 
 		//Select the next MicroService to handle the event
 		MicroService m = subscribers.poll();
+		if (m == null) { return null; }
 		subscribers.offer(m);
 
 		//Create a new Future object
@@ -141,6 +144,9 @@ public class MessageBusImpl implements MessageBus {
 		return queue.take(); // Waits until a message is available
 	}
 
-	
+	public void printSubscribers() {
+		System.out.println("Event Subscribers: " + eventSubscribers);
+		System.out.println("Broadcast Subscribers: " + broadcastSubscribers);
+	}
 
 }

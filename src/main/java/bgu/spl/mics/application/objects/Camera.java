@@ -17,6 +17,14 @@ public class Camera {
    private final String camera_key;
 
    // --------------------- constructor --------------------
+   public Camera(){
+       this.id = 0;
+       this.frequency = 0;
+       this.status = STATUS.UP;
+       this.detectedObjectsList = new ArrayList<>();
+       this.camera_key = "";
+   }
+
     public Camera(int id, int frequency, STATUS status, String key ){
         this.id = id;
         this.frequency = frequency;

@@ -17,11 +17,16 @@ public class LiDarWorkerTracker {
     private  List<TrackedObject> lastTrackedObjects;
 
     // --------------------- constructor --------------------
-    public LiDarWorkerTracker(int id, int frequency, STATUS status ){
+    public LiDarWorkerTracker() {
+        this.id = 0;
+        this.frequency = 0;
+        this.status = STATUS.UP;
+        this.lastTrackedObjects = new ArrayList<>();
+    }
+
+    public LiDarWorkerTracker(int id, int frequency){
         this.id = id;
         this.frequency = frequency;
-        this.status = status;
-        this.lastTrackedObjects = new ArrayList<>();
     }
 
     // --------------------- methods --------------------
@@ -45,10 +50,7 @@ public class LiDarWorkerTracker {
     // Process DetectObjectsEvent and return a list of the corresponding TrackedObjects
     public List<TrackedObject> processDetectObjectsEvent(DetectObjectsEvent event, LiDarDataBase liDarDataBase) {
         int detectionTime = event.getDetectedObjects().getTime();
-        int scheduledTime = detectionTime + frequency;
-
         StampedDetectedObjects detectedObjects = event.getDetectedObjects();
-
         // Check if the worker is active and if the event is ready to process
         if (status == STATUS.UP) {
             List<TrackedObject> output = new ArrayList<>();
@@ -64,7 +66,7 @@ public class LiDarWorkerTracker {
             }
             return output;
         }
-        return null; // No object was tracked
+        return new ArrayList<>(); // No object was tracked
     }
 
     

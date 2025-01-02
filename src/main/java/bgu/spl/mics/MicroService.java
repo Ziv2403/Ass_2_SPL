@@ -29,7 +29,7 @@ public abstract class MicroService implements Runnable {
     private boolean terminated = false;
     private final String name;
     private final Map<Class<? extends Message>, Callback<? extends Message>> callbacks = new  ConcurrentHashMap<>();
-    protected StatisticalFolder statisticalFolder = null;
+    protected StatisticalFolder statisticalFolder;
 
 
     /**
@@ -161,22 +161,21 @@ public abstract class MicroService implements Runnable {
      */
     @Override
     public final void run() {
-        MessageBusImpl.getInstance().register(this);
+//      MessageBusImpl.getInstance().register(this); DUPLICATE IN MAIN
         initialize();
-        while (!terminated) {
-            try {
+        try {
+            while (!terminated) {
                 Message message = MessageBusImpl.getInstance().awaitMessage(this); //If there is no message in the queue, it waits until there is a message.
                 Callback<Message> callBack = (Callback<Message>) callbacks.get(message.getClass());//Receiving the message
                 if (callBack != null) {//Checks if there is a suitable callback in the callbacks map.
                     callBack.call(message); //Message processing
                 }
-            } catch (InterruptedException e) {
-                terminate();
             }
+        } catch (InterruptedException e) {
+            terminate();
         }
         //Resource cleaning:
         MessageBusImpl.getInstance().unregister(this);
-
     }
 
 }

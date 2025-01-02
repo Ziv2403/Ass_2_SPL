@@ -45,8 +45,11 @@ public class TimeService extends MicroService {
     protected void initialize() {
         try {
             while (currentTick < duration) {
+                System.out.println("Current tick: " + currentTick);
                 //Send TickBroadcast to all microService
                 sendBroadcast(new TickBroadcast(currentTick));
+
+
 
                 //Update StatisticalFolder
                 statisticalFolder.incrementSystemRuntime();
@@ -54,10 +57,15 @@ public class TimeService extends MicroService {
                 //Wait until the next tick
                 long tickTimeInSeconds = (long)tickTime*1000;
                 Thread.sleep(tickTimeInSeconds);
+
                 currentTick++;
+
             }
             //When timeOut --> send TerminatedBroadcast
             sendBroadcast(new TerminatedBroadcast(getName()));
+
+            Thread.sleep(1000);
+            terminate();
 
         } catch (InterruptedException e) {
             System.err.println("TimeService interrupted: " + e.getMessage());

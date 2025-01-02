@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Configuration {
     private CamerasConfiguration Cameras;
-    private LidarWorkersConfiguration LidarWorkers;
+    private LidarWorkersConfiguration LiDarWorkers;
     private String poseJsonFile;
     private int TickTime;
     private int Duration;
@@ -16,8 +16,8 @@ public class Configuration {
     public CamerasConfiguration getCameras() { return Cameras; }
     public void setCameras(CamerasConfiguration cameras) { Cameras = cameras; }
 
-    public LidarWorkersConfiguration getLidarWorkers() { return LidarWorkers; }
-    public void setLidarWorkers(LidarWorkersConfiguration lidarWorkers) { LidarWorkers = lidarWorkers; }
+    public LidarWorkersConfiguration getLidarWorkers() { return LiDarWorkers; }
+    public void setLidarWorkers(LidarWorkersConfiguration lidarWorkers) { LiDarWorkers = lidarWorkers; }
 
     public String getPoseJsonFile() { return poseJsonFile; }
     public void setPoseJsonFile(String poseJsonFile) { this.poseJsonFile = poseJsonFile; }

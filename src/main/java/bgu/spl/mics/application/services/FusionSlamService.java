@@ -40,27 +40,29 @@ public class FusionSlamService extends MicroService {
      */
     @Override
     protected void initialize() {
-             subscribeBroadcast(TickBroadcast.class, tick -> {
-                 currentTick = tick.getTick();
-             });
+        // Subscribe to TickBroadcast
+        subscribeBroadcast(TickBroadcast.class, tick -> {
+            currentTick = tick.getTick();
+        });
 
-             subscribeEvent(TrackedObjectsEvent.class, event -> {
-
-
-             });
-
-             subscribeEvent(PoseEvent.class, event -> {
-                 fusionSlam.addPose(event.getPose());
-             });
-
-        // Subscribe to CrashedBroadcast
-        subscribeBroadcast(CrashedBroadcast.class, broadcast -> {
+        // Subscribe to TrackedObjectsEvent
+        subscribeEvent(TrackedObjectsEvent.class, event -> {
 
         });
 
-        // CHECK AGAIN
+        // Subscribe to PoseEvent
+        subscribeEvent(PoseEvent.class, event -> {
+            fusionSlam.addPose(event.getPose());
+        });
+
+        // Subscribe to CrashedBroadcast
+        subscribeBroadcast(CrashedBroadcast.class, broadcast -> {
+            terminate();
+        });
+
         // Subscribe to TerminatedBroadcast
         subscribeBroadcast(TerminatedBroadcast.class, terminate -> {
+            terminate();
         });
 
     }

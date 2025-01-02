@@ -58,8 +58,14 @@ public class CameraService extends MicroService {
                 for (StampedDetectedObjects event : cameraData) {
                     if (event.getTime() == currentTick) {
                         int scheduledTime = event.getTime() + camera.getFrequency();
-                        pendingEvents.putIfAbsent(event, scheduledTime); // Store the event for later processing
-                        break; // CHECK AGAIN IF NEEDED FOR OPTIMIZATION PURPOSES
+                        if (scheduledTime == currentTick) {
+                            sendEvent(new DetectObjectsEvent(event, camera.getId()));
+                            statisticalFolder.incrementDetectedObjects(event.getDetectedObjectsList().size());
+                            break;
+                        } else {
+                            pendingEvents.putIfAbsent(event, scheduledTime); // Store the event for later processing
+                            break; // CHECK AGAIN IF NEEDED FOR OPTIMIZATION PURPOSES
+                        }
                     }
                 }
             }
@@ -67,7 +73,7 @@ public class CameraService extends MicroService {
 
         // Subscribe to CrashedBroadcast
         subscribeBroadcast(CrashedBroadcast.class, broadcast -> {
-
+            terminate();
         });
 
         // CHECK AGAIN
