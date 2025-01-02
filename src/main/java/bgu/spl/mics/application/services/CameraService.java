@@ -4,8 +4,7 @@ import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.objects.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 //
 /**
@@ -22,6 +21,8 @@ import java.util.List;
 public class CameraService extends MicroService {
     private final Camera camera;
     private final List<StampedDetectedObjects> cameraData;
+    private final Map<StampedDetectedObjects, Integer> pendingEvents = new HashMap<>();
+
 
     /**
      * Constructor for CameraService.
@@ -50,13 +51,15 @@ public class CameraService extends MicroService {
         // TODO Implement this
         // Subscribe to TickBroadcast
         subscribeBroadcast(TickBroadcast.class, tick -> {
+            int currentTick = tick.getTick();
+            processPendingEvents(currentTick);
+
             if (cameraData != null) {
-                // Check for objects to detect at the current tick
                 for (StampedDetectedObjects event : cameraData) {
-                    if (event.getTime() == tick.getTick()) {
-                        // Publish DetectObjectsEvent for the detected objects
-                        sendEvent(new DetectObjectsEvent(event, camera.getId()));
-                        //System.out.println(getName() + " sent DetectObjectsEvent for time " + event.getTime());
+                    if (event.getTime() == currentTick) {
+                        int scheduledTime = event.getTime() + camera.getFrequency();
+                        pendingEvents.putIfAbsent(event, scheduledTime); // Store the event for later processing
+                        break; // CHECK AGAIN IF NEEDED FOR OPTIMIZATION PURPOSES
                     }
                 }
             }
@@ -74,6 +77,23 @@ public class CameraService extends MicroService {
             terminate();
         });
 
+    }
+
+    /**
+     * Processes events that are ready for sending at the current tick.
+     *
+     * @param currentTick The current tick of the simulation.
+     */
+    private void processPendingEvents(int currentTick) {
+        Iterator<Map.Entry<StampedDetectedObjects, Integer>> iterator = pendingEvents.entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry<StampedDetectedObjects, Integer> entry = iterator.next();
+            if (currentTick >= entry.getValue()) {
+                sendEvent(new DetectObjectsEvent(entry.getKey(), camera.getId()));
+                iterator.remove();
+            }
+        }
     }
 }
 
