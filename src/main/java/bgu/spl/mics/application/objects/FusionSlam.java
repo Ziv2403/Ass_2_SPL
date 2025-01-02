@@ -69,7 +69,7 @@ public class FusionSlam {
      * @param pose The robot's pose at the time the point was detected.
      * @return The point in the global coordinate system.
      */
-    public CloudPoint transformToGlobal(CloudPoint localPoint, Pose pose) {
+    public CloudPoint convertPoint(CloudPoint localPoint, Pose pose) {
         double yawRad = toRadians(pose.getYaw());
         double xGlobal = cos(yawRad) * localPoint.getX() - sin(yawRad) * localPoint.getY() + pose.getX();
         double yGlobal = sin(yawRad) * localPoint.getX() + cos(yawRad) * localPoint.getY() + pose.getY();
@@ -80,11 +80,10 @@ public class FusionSlam {
      * Updates an existing landmark or creates a new one if it doesn't exist.
      * Converts the given local coordinates to global coordinates using the current pose.
      *
-     * @param id The ID of the landmark.
-     * @param localCoordinates List of points in the local coordinate system.
+     * @param currentLandMark Landmark to be updated.
      * @param currentPose The robot's pose at the time of detection.
      */
-    public void updateLandmark(LandMark currentLandMark, Pose currentPose) {
+    public void handleLandmark(LandMark currentLandMark, Pose currentPose) {
         // Step 1: Convert coordinates
         List<CloudPoint> globalCoordinates = convertToGlobalCoordinates(currentLandMark.getCloudPoints(), currentPose);
 
@@ -111,7 +110,7 @@ public class FusionSlam {
     private List<CloudPoint> convertToGlobalCoordinates(List<CloudPoint> localCoordinates, Pose currentPose) {
         List<CloudPoint> globalCoordinates = new ArrayList<>();
         for (CloudPoint point : localCoordinates) {
-            globalCoordinates.add(transformToGlobal(point, currentPose));
+            globalCoordinates.add(convertPoint(point, currentPose));
         }
         return globalCoordinates;
     }

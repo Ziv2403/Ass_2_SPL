@@ -71,7 +71,11 @@ public class GurionRockRunner {
             }
 
             // LiDar Services
-
+            for (LiDarWorkerTracker liDar : config.getLidarWorkers().getLidarConfigurations()) {
+                LiDarService liDarService = new LiDarService(liDar, liDarDataBase, statisticalFolder);
+                messageBus.register(liDarService);
+                microServices.add(liDarService);
+            }
 
             // Pose Services
             PoseService poseService = new PoseService(gpsimu, statisticalFolder);

@@ -1,11 +1,10 @@
 package bgu.spl.mics.application.services;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.messages.PoseEvent;
-import bgu.spl.mics.application.messages.TickBroadcast;
-import bgu.spl.mics.application.messages.TrackedObjectsEvent;
+import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.objects.FusionSlam;
 import bgu.spl.mics.application.objects.LandMark;
 import bgu.spl.mics.application.objects.StatisticalFolder;
@@ -19,21 +18,19 @@ import bgu.spl.mics.application.objects.StatisticalFolder;
  */
 public class FusionSlamService extends MicroService {
 
-    private FusionSlam fusionSlam;
-    private final StatisticalFolder stats;
-    private ArrayList<LandMark> result;
-    private int currentTick = 0;
+    private final FusionSlam fusionSlam;
+    private List<LandMark> result;
+    private int currentTick;
     /**
      * Constructor for FusionSlamService.
      *
      * @param fusionSlam The FusionSLAM object responsible for managing the global map.
      */
-    public FusionSlamService(FusionSlam fusionSlam, StatisticalFolder stats) {
-        super("FusionSlam");
+    public FusionSlamService(FusionSlam fusionSlam, StatisticalFolder statisticalFolder) {
+        super("FusionSlam", statisticalFolder);
         this.fusionSlam = fusionSlam;
-        this.stats = stats;
-        this.result = new ArrayList<LandMark>();
-
+        this.result = new ArrayList<>();
+        this.currentTick = 0;
     }
 
     /**
@@ -43,19 +40,28 @@ public class FusionSlamService extends MicroService {
      */
     @Override
     protected void initialize() {
-        //     subscribeBroadcast(TickBroadcast.class, tick -> {
-        //         currentTick = tick.getTick();
-        //     });
+             subscribeBroadcast(TickBroadcast.class, tick -> {
+                 currentTick = tick.getTick();
+             });
 
-        //     subscribeEvent(TrackedObjectsEvent.class, event -> {
-        //         fusionSlam.add
+             subscribeEvent(TrackedObjectsEvent.class, event -> {
 
-        //     });
 
-        //     subscribeEvent(PoseEvent.class, event -> {
-        //         fusionSlam.addPose(event.getPose());
-        //     });
+             });
 
-        //     subscribeBroadcast(, null);
+             subscribeEvent(PoseEvent.class, event -> {
+                 fusionSlam.addPose(event.getPose());
+             });
+
+        // Subscribe to CrashedBroadcast
+        subscribeBroadcast(CrashedBroadcast.class, broadcast -> {
+
+        });
+
+        // CHECK AGAIN
+        // Subscribe to TerminatedBroadcast
+        subscribeBroadcast(TerminatedBroadcast.class, terminate -> {
+        });
+
     }
 }
