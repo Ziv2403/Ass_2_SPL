@@ -1,9 +1,7 @@
 package bgu.spl.mics.application.objects;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 //import java.util.function.Function;
 
 import static java.lang.Math.*;
@@ -16,7 +14,7 @@ import static java.lang.Math.*;
 public class FusionSlam {
 
 // --------------------- fields -------------------------
-    private final Map<String, LandMark> landmarks;
+    private final List<LandMark> landmarks;
     private final List<Pose> poses;
 
 
@@ -31,7 +29,7 @@ public class FusionSlam {
      * Private constructor to enforce Singleton pattern.
      */
     private FusionSlam(){ 
-            this.landmarks = new HashMap<>();
+            this.landmarks =new ArrayList<>();
             this.poses = new ArrayList<>();
     }
 
@@ -46,7 +44,7 @@ public class FusionSlam {
 
 // --------------------- methods --------------------
 //Getters
-    public Map<String, LandMark> getLandMarkList() { return landmarks;}
+    public List<LandMark> getLandMarkList() { return landmarks;}
     public List<Pose> getPoseList() {return poses;}
 
 //Adders
@@ -59,7 +57,7 @@ public class FusionSlam {
      * 
      * @param pose The pose to add.
      */
-    public void addPose( Pose pose){
+    public void addPose(Pose pose){
         this.poses.add(pose);
     }
 
@@ -86,18 +84,20 @@ public class FusionSlam {
      * @param localCoordinates List of points in the local coordinate system.
      * @param currentPose The robot's pose at the time of detection.
      */
-    public void updateLandmark(String id, List<CloudPoint> localCoordinates, Pose currentPose) {
+    public void updateLandmark(LandMark currentLandMark, Pose currentPose) {
         // Step 1: Convert coordinates
-        List<CloudPoint> globalCoordinates = convertToGlobalCoordinates(localCoordinates, currentPose);
+        List<CloudPoint> globalCoordinates = convertToGlobalCoordinates(currentLandMark.getCloudPoints(), currentPose);
     
         // Step 2: Search Landmark
-        LandMark existingLandmark = findLandmarkById(id);
+        int indexLandmark = landmarks.indexOf(currentLandMark);
+       
     
         // Step 3: Update or Add Landmark
-        if (existingLandmark != null) {
+        if (indexLandmark != -1) {
+            LandMark existingLandmark = landmarks.get(indexLandmark);
             updateExistingLandmark(existingLandmark, globalCoordinates);
         } else {
-            createNewLandmark(id, "New Landmark", globalCoordinates);//NEED TO CHECK ABOUT THE DESCRIPTION!!!
+            createNewLandmark(currentLandMark.getId(), "New Landmark", globalCoordinates);//NEED TO CHECK ABOUT THE DESCRIPTION!!!
         }
     }
     
@@ -107,7 +107,8 @@ public class FusionSlam {
      * @param localCoordinates List of points in the local coordinate system.
      * @param currentPose The robot's pose at the time the points were detected.
      * @return List of points in the global coordinate system.
-     */    private List<CloudPoint> convertToGlobalCoordinates(List<CloudPoint> localCoordinates, Pose currentPose) {
+     */
+        private List<CloudPoint> convertToGlobalCoordinates(List<CloudPoint> localCoordinates, Pose currentPose) {
         List<CloudPoint> globalCoordinates = new ArrayList<>();
         for (CloudPoint point : localCoordinates) {
             globalCoordinates.add(transformToGlobal(point, currentPose));
@@ -115,15 +116,7 @@ public class FusionSlam {
         return globalCoordinates;
     }
     
-    /**
-     * Searches for a landmark by its ID.
-     * 
-     * @param id The ID of the landmark.
-     * @return The landmark if found, null otherwise.
-     */    
-    private LandMark findLandmarkById(String id) {
-        return landmarks.get(id); 
-    }
+
 
     /**
      * Updates an existing landmark with new global coordinates by averaging them.
@@ -147,7 +140,7 @@ public class FusionSlam {
      */
     private void createNewLandmark(String id, String description, List<CloudPoint> globalCoordinates) {
         LandMark newLandMark = new LandMark(id, description, globalCoordinates);
-        landmarks.put(newLandMark.getId(),newLandMark);
+        landmarks.add(newLandMark);
     }
     
 }
