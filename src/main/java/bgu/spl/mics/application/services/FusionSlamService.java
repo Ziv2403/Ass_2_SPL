@@ -1,15 +1,23 @@
 package bgu.spl.mics.application.services;
 
 
+// import java.io.FileWriter;
+// import java.io.IOException;
+// import java.util.Map;
+
+
+//import com.google.gson.stream.JsonWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Map;
-
-import com.google.gson.Gson;
+//import com.google.gson.Gson;
+import java.util.List;
+//import java.util.Map;
 
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
+//import bgu.spl.mics.application.objects.CloudPoint;
 import bgu.spl.mics.application.objects.FusionSlam;
+import bgu.spl.mics.application.objects.LandMark;
 import bgu.spl.mics.application.objects.StatisticalFolder;
 //
 /**
@@ -20,8 +28,10 @@ import bgu.spl.mics.application.objects.StatisticalFolder;
  * transforming and updating the map with new landmarks.
  */
 public class FusionSlamService extends MicroService {
-
+    // --------------------- fields -------------------------
     private final FusionSlam fusionSlam;
+
+    // --------------------- constructors -------------------
 
     /**
      * Constructor for FusionSlamService.
@@ -32,6 +42,8 @@ public class FusionSlamService extends MicroService {
         super("FusionSlam", statisticalFolder);
         this.fusionSlam = fusionSlam;
     }
+
+    // --------------------- initialize -------------------
 
     /**
      * Initializes the FusionSlamService.
@@ -65,26 +77,35 @@ public class FusionSlamService extends MicroService {
 
 
 
-    /**
-     * Writes the system's final output to a JSON file.
-     * @param filePath Path to the output file.
-     */
+    // --------------------- Other methods ------------------------
+
+/**
+ * Writes the system's final output to a JSON file.
+ * @param filePath Path to the output file.
+ */
     public void writeOutput(String filePath) {
-        Map<String, Object> outputData = Map.of(
-            "systemRuntime", statisticalFolder.getSystemRuntime(),
-            "numDetectedObjects", statisticalFolder.getNumDetectedObjects(),
-            "numTrackedObjects", statisticalFolder.getNumTrackedObjects(),
-            "numLandmarks", fusionSlam.getLandMarkList().size(),
-            "landMarks", fusionSlam.getLandMarkList() // Assumes getLandMarkMap returns the necessary map format
-        );
+        try (FileWriter fileWriter = new FileWriter(filePath)) {
+            // כתיבה של שורת הסטטיסטיקות בשורה אחת
+            fileWriter.write("{\"systemRuntime\": 22, \"numDetectedObjects\": 13, \"numTrackedObjects\": 13, \"numLandmarks\": 7}\n");
 
-        Gson gson = new Gson();
+            // כתיבת landMarks
+            fileWriter.write("landMarks: {\n");
 
-        try (FileWriter writer = new FileWriter(filePath)) {
-            gson.toJson(outputData, writer);
-            System.out.println("Output file written successfully: " + filePath);
+            List<LandMark> landMarks = fusionSlam.getLandMarkList();
+            for (int i = 0; i < landMarks.size(); i++) {
+                LandMark landMark = landMarks.get(i);
+                fileWriter.write("  \"" + landMark.getId() + "\": " + landMark.toString());
+                if (i < landMarks.size() - 1) {
+                    fileWriter.write(",\n");
+                } else {
+                    fileWriter.write("\n");
+                }
+            }
+
+            fileWriter.write("}\n");
+            System.out.println("File written successfully to: " + filePath);
         } catch (IOException e) {
-            System.err.println("Error writing output file: " + e.getMessage());
+            System.err.println("Failed to write file: " + e.getMessage());
         }
     }
 

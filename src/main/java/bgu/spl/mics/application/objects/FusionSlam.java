@@ -23,13 +23,18 @@ public class FusionSlam {
 
     // --------------------- SingletonImplemment -------------------------
 
-    // Singleton instance holder
+    /** 
+    * Singleton instance holder
+    */
     private static class FusionSlamHolder {
         private static final FusionSlam INSTANCE = new FusionSlam();
     }
 
     /**
      * Private constructor to enforce Singleton pattern.
+     *
+     * @post {@code landmarks.isEmpty() == true}
+     * @post {@code poses.isEmpty() == true}
      */
     private FusionSlam(){
         this.landmarks =new ArrayList<>();
@@ -58,10 +63,13 @@ public class FusionSlam {
     public List<Pose> getPoseList() {return poses;}
 
     //           --------- Pose Management ---------
+   
     /**
      * Adds a new pose to the list of robot poses.
      *
      * @param pose The pose to add.
+     * @pre {@code pose != null}
+     * @post {@code poses.contains(pose)}
      */
     public void addPose(Pose pose){
         this.poses.add(pose);
@@ -74,6 +82,7 @@ public class FusionSlam {
      * @param localPoint The point in the local coordinate system.
      * @param pose The robot's pose at the time the point was detected.
      * @return The point in the global coordinate system.
+     * @pre {@code localPoint != null && pose != null}
      */
     public CloudPoint convertPoint(CloudPoint localPoint, Pose pose) {
         double yawRad = toRadians(pose.getYaw());
@@ -88,6 +97,8 @@ public class FusionSlam {
      * @param localCoordinates List of points in the local coordinate system.
      * @param currentPose The robot's pose at the time the points were detected.
      * @return List of points in the global coordinate system.
+     * @pre {@code localCoordinates != null && currentPose != null}
+     * @post {@code globalCoordinates.size() == localCoordinates.size()}
      */
     private List<CloudPoint> convertToGlobalCoordinates(List<CloudPoint> localCoordinates, Pose currentPose) {
         List<CloudPoint> globalCoordinates = new ArrayList<>();
@@ -106,6 +117,7 @@ public class FusionSlam {
     *
     * @param trackedObjects A list of tracked objects to process.
     * @return The number of new landmarks added to the global map.
+    * @pre {@code trackedObjects != null}
     */
     public int createLandMarks(List<TrackedObject> trackedObjects) {
         int newLandmarks = 0; //landMarks counter
@@ -131,6 +143,7 @@ public class FusionSlam {
      * @param tracked TrackedObject to be process into LandMark.
      * @param pose The robot's pose at the time of detection.
      * @return True if a new landmark was added; false if an existing landmark was updated.
+     * @pre {@code tracked != null && pose != null}
      */
     private boolean handleLandmark(TrackedObject tracked, Pose pose) {
         List<CloudPoint> globalCoordinates = convertToGlobalCoordinates(tracked.convertToList(tracked.getCoordinates()), pose);
@@ -154,6 +167,7 @@ public class FusionSlam {
      *
      * @param landmark The existing landmark to update.
      * @param newCoordinates The new global coordinates to integrate.
+     * @pre {@code landmark != null && newCoordinates != null}
      */
     private void updateExistingLandmark(LandMark landmark, List<CloudPoint> newCoordinates) {
         List<CloudPoint> existingCoordinates = landmark.getCloudPoints();
@@ -163,7 +177,7 @@ public class FusionSlam {
     }
 
 
-        /**
+    /**
      * Generates a map of landmarks in a format ready for JSON output.
      *
      * @return A map containing landmarks with their details.
@@ -186,6 +200,15 @@ public class FusionSlam {
         }
         return globalMap;
     }
+
+    @Override
+    public String toString() {
+        return "FusionSlam{" +
+                "landmarks=" + landmarks +
+                ", poses=" + poses +
+                '}';
+    }
+    
 }
 
 

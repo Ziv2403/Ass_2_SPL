@@ -19,15 +19,18 @@ import java.util.*;
  * o Subscribe to TickBroadcast, TerminatedBroadcast, CrashedBroadcast.
  */
 public class CameraService extends MicroService {
+    // --------------------- fields -------------------------
     private final Camera camera;
     private final List<StampedDetectedObjects> cameraData;
     private final Map<StampedDetectedObjects, Integer> pendingEvents = new HashMap<>();
 
+// --------------------- constructors -------------------
 
     /**
-     * Constructor for CameraService.
+     * Constructor for CameraService with an empty data list.
      *
      * @param camera The Camera object that this service will use to detect objects.
+     * @param statisticalFolder The StatisticalFolder for tracking system statistics.
      */
     public CameraService(Camera camera, StatisticalFolder statisticalFolder) {
         super(camera.getCameraKey(), statisticalFolder);
@@ -35,11 +38,21 @@ public class CameraService extends MicroService {
         this.cameraData = new ArrayList<>();
     }
 
+
+    /**
+     * Constructor for CameraService with preloaded data.
+     *
+     * @param camera The Camera object that this service will use to detect objects.
+     * @param cameraData A list of StampedDetectedObjects representing preloaded camera data.
+     * @param statisticalFolder The StatisticalFolder for tracking system statistics.
+     */
     public CameraService(Camera camera, List<StampedDetectedObjects> cameraData, StatisticalFolder statisticalFolder) {
         super(camera.getCameraKey(), statisticalFolder);
         this.camera = camera;
         this.cameraData = cameraData;
     }
+
+    // --------------------- initialize ------------------------
 
     /**
      * Initializes the CameraService.
@@ -48,7 +61,6 @@ public class CameraService extends MicroService {
      */
     @Override
     protected void initialize() {
-        // TODO Implement this
         // Subscribe to TickBroadcast
         subscribeBroadcast(TickBroadcast.class, tick -> {
             int currentTick = tick.getTick();
@@ -79,11 +91,12 @@ public class CameraService extends MicroService {
         // CHECK AGAIN
         // Subscribe to TerminatedBroadcast
         subscribeBroadcast(TerminatedBroadcast.class, terminate -> {
-            System.out.println(getName() + " received TerminatedBroadcast. Terminating...");
             terminate();
         });
 
     }
+
+    // --------------------- Other methods ------------------------
 
     /**
      * Processes events that are ready for sending at the current tick.

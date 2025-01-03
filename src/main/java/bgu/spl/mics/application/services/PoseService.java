@@ -15,8 +15,11 @@ import bgu.spl.mics.MicroService;
  * Subscribes to TickBroadcast, CrashedBroadcast, TerminatedBroadcast.
  */
 public class PoseService extends MicroService {
-
+    // --------------------- fields -------------------------
     private final GPSIMU gpsimu;
+
+    // --------------------- constructors -------------------
+
     /**
      * Constructor for PoseService.
      *
@@ -27,11 +30,18 @@ public class PoseService extends MicroService {
         this.gpsimu = gpsimu;
     }
 
+    /**
+     * Constructor for PoseService.
+     *
+     * @param gpsimu The GPSIMU object that provides the robot's pose data.
+     * @param statisticalFolder The StatisticalFolder for tracking system statistics.
+     */
     public PoseService(GPSIMU gpsimu, StatisticalFolder statisticalFolder) {
         super("PoseService", statisticalFolder);
         this.gpsimu = gpsimu;
     }
 
+    // --------------------- initialize ------------------------
 
     /**
      * Initializes the PoseService.
@@ -39,7 +49,6 @@ public class PoseService extends MicroService {
      */
     @Override
     protected void initialize() {
-        // TODO Implement this
         // Subscribe to TickBroadcast
         subscribeBroadcast(TickBroadcast.class, tick -> {
             gpsimu.setCurrentTick(tick.getTick());

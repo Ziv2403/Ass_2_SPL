@@ -11,9 +11,14 @@ import java.util.concurrent.TimeUnit;
  * No public constructor is allowed except for the empty constructor.
  */
 public class Future<T> {
+
+	// --------------------- fields -------------------------
+
 	private T result;
 	private boolean isDone;	// MAYBE USE 'VOLATILE' HERE SO ALL THREADS CAN SEE THE STATE IN REAL TIME
-	
+
+    // --------------------- constructor --------------------
+
 	/**
 	 * This should be the the only public constructor in this class.
 	 */
@@ -21,7 +26,9 @@ public class Future<T> {
 		this.result = null;
 		this.isDone = false;
 	}
-	
+
+    // --------------------- methods ------------------------
+
 	/**
      * retrieves the result the Future object holds if it has been resolved.
      * This is a blocking method! It waits for the computation in case it has
@@ -42,7 +49,8 @@ public class Future<T> {
 	}
 	
 	/**
-     * Resolves the result of this Future object.
+    * Resolves the result of this Future object.
+	* 
     * @param result The result to set for this Future.
  	* @pre The Future must not have been previously resolved. The input result must not be null.
 	* @post The result is set, and all waiting threads are notified. The isDone flag is set to true.
@@ -55,29 +63,28 @@ public class Future<T> {
 		}
 	}
 	
-	/**
-     * @return true if this object has been resolved, false otherwise
+    /**
+     * Checks whether the Future object has been resolved.
+     *
+     * @return true if this object has been resolved, false otherwise.
      */
 	public synchronized boolean isDone() {
 		return isDone;
 	}
-	
-	/**
-     * retrieves the result the Future object holds if it has been resolved,
-     * This method is non-blocking, it has a limited amount of time determined
-     * by {@code timeout}
-     * <p>
-     * @param timout 	the maximal amount of time units to wait for the result.
-     * @param unit		the {@link TimeUnit} time units to wait.
-	 * @pre The timeout must be greater than zero, and the unit must not be null.
-     * @return return the result of type T if it is available, if not, 
-     * 	       wait for {@code timeout} TimeUnits {@code unit}. If time has
-     *         elapsed, return null.
+
+    /**
+     * Retrieves the result the Future object holds if it has been resolved.
+     * This method is non-blocking and has a limited amount of wait time determined
+     * by {@code timeout}.
+     *
+     * @param timeout the maximal amount of time units to wait for the result.
+     * @param unit    the {@link TimeUnit} specifying the time unit for the timeout.
+     * @pre The timeout must be greater than zero, and the unit must not be null.
+     * @return the result of type T if it is available; otherwise, waits for {@code timeout} TimeUnits.
+     *         Returns null if the time elapsed before the result became available.
      */
 	public synchronized T get(long timeout, TimeUnit unit) {
-		// if (timeout <= 0 || unit == null) {
-		// 	return null;  
-		// } //NEED TO CHECK IF IT IS OUR RESPONSIBILITY TO VERIFY THE ACCUACY OF THE INPUT
+
 		if (isDone) {
 			return result;
 		}

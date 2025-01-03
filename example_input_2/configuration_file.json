@@ -25,6 +25,6 @@
     "lidars_data_path":"./lidar_data.json"
   },
   "poseJsonFile": "./pose_data.json",
-  "TickTime": 2,
+  "TickTime": 1,
   "Duration": 30
 }

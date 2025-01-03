@@ -20,22 +20,28 @@ import bgu.spl.mics.application.objects.StatisticalFolder;
  * o Note: If this service reaches `duration` ticks the system should terminate.
  */
 public class TimeService extends MicroService {
+// --------------------- fields -------------------------
     private final int tickTime;
     private final int duration;
     private int currentTick;
 
+// --------------------- constructors -------------------
+
     /**
      * Constructor for TimeService.
      *
-     * @param TickTime  The duration of each tick in milliseconds.
-     * @param Duration  The total number of ticks before the service terminates.
+     * @param TickTime The duration of each tick in seconds.
+     * @param Duration The total number of ticks before the service terminates.
+     * @param statisticalFolder The StatisticalFolder for tracking system statistics.
      */
     public TimeService(int TickTime, int Duration, StatisticalFolder statisticalFolder) {
         super("TimeService", statisticalFolder);
         this.tickTime = TickTime;
         this.duration = Duration;
-        this.currentTick = 0; //might be 1 -> saw in the forum
+        this.currentTick = 0; 
     }
+
+    // --------------------- initialize ------------------------
 
     /**
      * Initializes the TimeService.
