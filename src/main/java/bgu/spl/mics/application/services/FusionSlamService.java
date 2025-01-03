@@ -48,8 +48,9 @@ public class FusionSlamService extends MicroService {
         subscribeEvent(TrackedObjectsEvent.class, event -> {
             int numOfLandMarks = fusionSlam.getLandMarkList().size();
             fusionSlam.addTrackedObjects(event.getTrackedObjects());
-            int newNum = fusionSlam.getLandMarkList().size() - numOfLandMarks;
-            statisticalFolder.incrementLandmarks(newNum);
+
+            int addedLandmarks = fusionSlam.getLandMarkList().size() - numOfLandMarks;
+            statisticalFolder.incrementLandmarks(addedLandmarks);
         });
 
         subscribeEvent(PoseEvent.class, event -> {

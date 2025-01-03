@@ -7,8 +7,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import bgu.spl.mics.application.messages.*;
-import bgu.spl.mics.application.objects.*;
-import bgu.spl.mics.MicroService;
+// import bgu.spl.mics.application.objects.*;
+// import bgu.spl.mics.MicroService;
 
 //
 /**
@@ -37,7 +37,6 @@ public class LiDarService extends MicroService {
      */
     public LiDarService(LiDarWorkerTracker LiDarWorkerTracker, LiDarDataBase liDarDataBase, StatisticalFolder statisticalFolder) {
         super("liDar" + LiDarWorkerTracker.getId(), statisticalFolder);
-        // TODO Implement this
         this.liDarWorkerTracker = LiDarWorkerTracker;
         this.liDarDataBase = liDarDataBase;
         this.currentTick = 0;
@@ -164,9 +163,9 @@ private void processPendingAndReadyEvents(int currentTick) {
         }
     }
 
-    private void updateStatistics(int num) {
-        for (int i = 0; i < num; i++) {
-            statisticalFolder.incrementTrackedObjects();
-        }
-    }
+    // private void updateStatistics(int num) {
+    //     for (int i = 0; i < num; i++) {
+    //         statisticalFolder.incrementTrackedObjects();
+    //     }
+    // }
 }

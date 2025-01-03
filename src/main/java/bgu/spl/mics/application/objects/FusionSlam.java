@@ -2,6 +2,8 @@ package bgu.spl.mics.application.objects;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 //import java.util.function.Function;
 
 import static java.lang.Math.*;
@@ -76,27 +78,40 @@ public class FusionSlam {
         return new CloudPoint( xGlobal, yGlobal);
     }
 
-
-
-    public void addTrackedObjects(List<TrackedObject> trackedObjects) {
+    /**
+    * Processes a list of tracked objects and integrates them into the global map.
+    * For each tracked object, it finds the corresponding robot pose at the time the object was tracked,
+    * transforms the object's coordinates into the global coordinate system, and either updates
+    * an existing landmark or creates a new one.
+    *
+    * @param trackedObjects A list of tracked objects to process.
+    * @return The number of new landmarks added to the global map.
+    *
+    */
+    public int addTrackedObjects(List<TrackedObject> trackedObjects) {
+        int addedLandmarks = 0;
         for (TrackedObject tracked : trackedObjects) {
             Pose matchingPose = poses.stream()
                     .filter(p -> p.getTime() == tracked.getTime())
                     .findFirst()
                     .orElse(null);
             if (matchingPose != null) {
-                handleLandmark(tracked, matchingPose);
+                boolean isNewLandmark = handleLandmark(tracked, matchingPose);
+                if (isNewLandmark) {
+                    addedLandmarks++;
+                }
             }
         }
+        return addedLandmarks;
     }
     /**
      * Updates an existing landmark or creates a new one if it doesn't exist.
      * Converts the given local coordinates to global coordinates using the current pose.
      *
-     * @param currentLandMark Landmark to be updated.
-     * @param currentPose The robot's pose at the time of detection.
+     * @param tracked TrackedObject to be process into LandMark.
+     * @param pose The robot's pose at the time of detection.
      */
-    private void handleLandmark(TrackedObject tracked, Pose pose) {
+    private boolean handleLandmark(TrackedObject tracked, Pose pose) {
         List<CloudPoint> globalCoordinates = convertToGlobalCoordinates(tracked.convertToList(tracked.getCoordinates()), pose);
         LandMark existingLandmark = landmarks.stream()
                 .filter(l -> l.getId().equals(tracked.getId()))
@@ -104,12 +119,11 @@ public class FusionSlam {
                 .orElse(null);
 
         if (existingLandmark == null) {
-            // Create a new landmark
             landmarks.add(new LandMark(tracked.getId(), tracked.getDescription(), globalCoordinates));
-
+            return true; // New landmark added
         } else {
-            // Update the existing landmark
             updateExistingLandmark(existingLandmark, globalCoordinates);
+            return false; // Landmark already exists
         }
     }
 
@@ -144,53 +158,34 @@ public class FusionSlam {
         }
     }
 
+
+        /**
+     * Generates a map of landmarks in a format ready for JSON output.
+     *
+     * @return A map containing landmarks with their details.
+     */
+    public Map<String, Object> generateGlobalMap() {
+        Map<String, Object> globalMap = new HashMap<>();
+        for (LandMark landmark : landmarks) {
+            Map<String, Object> landmarkDetails = new HashMap<>();
+            landmarkDetails.put("id", landmark.getId());
+            landmarkDetails.put("description", landmark.getDescription());
+            List<Map<String, Double>> coordinates = new ArrayList<>();
+            for (CloudPoint point : landmark.getCloudPoints()) {
+                Map<String, Double> pointMap = new HashMap<>();
+                pointMap.put("x", point.getX());
+                pointMap.put("y", point.getY());
+                coordinates.add(pointMap);
+            }
+            landmarkDetails.put("coordinates", coordinates);
+            globalMap.put(landmark.getId(), landmarkDetails);
+        }
+        return globalMap;
+    }
 }
 
 
 
 
 
-/**
- * Creates a new landmark with the given ID, description, and global coordinates.
- *
- * @param id The ID of the new landmark.
- * @param description The description of the landmark.
- * @param globalCoordinates List of global coordinates for the landmark.
- */
-// private void createNewLandmark(TrackedObject tracked) {
-//     LandMark newLandMark = new LandMark(tracked.getId(), tracked.getDescription(), tracked.getCoordinates().co);
-//     landmarks.add(newLandMark);
-// }
 
-// public void addTrackedObject(List<TrackedObject> trackedObjects) {
-//     for(TrackedObject tracked : trackedObjects){
-//         createNewLandmark(tracked);
-//     }
-
-// }
-
-
-// private void handleLandmark(TrackedObject tracked, Pose currentPose) {
-
-//     // Step 1: Convert coordinates
-//     List<CloudPoint> globalCoordinates = convertToGlobalCoordinates(tracked.convertToList(tracked.getCoordinates()), currentPose);
-
-//     // Step 2: Search Landmark
-//     boolean isAlreadyExist = landmarks.contains(tracked);
-
-
-//     // Step 3: Update or Add Landmark
-//     if ( ) {
-//         LandMark existingLandmark = landmarks.get(indexLandmark);
-//         updateExistingLandmark(existingLandmark, globalCoordinates);
-//     } else {
-
-//         // LandMark newLandMark = new LandMark(null, null, globalCoordinates)
-//         // createNewLandmark(currentLandMark.getId(), "New Landmark", globalCoordinates);//NEED TO CHECK ABOUT THE DESCRIPTION!!!
-//     }
-// }
-
-
-
-
-//}
