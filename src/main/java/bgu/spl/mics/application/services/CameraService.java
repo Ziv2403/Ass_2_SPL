@@ -57,6 +57,10 @@ public class CameraService extends MicroService {
             if (cameraData != null) {
                 for (StampedDetectedObjects event : cameraData) {
                     if (event.getTime() == currentTick) {
+                        if (checkForError(event)) {
+                            sendBroadcast(new CrashedBroadcast(Thread.currentThread().getName()));
+                            break;
+                        }
                         int scheduledTime = event.getTime() + camera.getFrequency();
                         if (scheduledTime == currentTick) {
                             sendEvent(new DetectObjectsEvent(event, camera.getId()));
@@ -101,6 +105,16 @@ public class CameraService extends MicroService {
                 iterator.remove();
             }
         }
+    }
+
+    private boolean checkForError(StampedDetectedObjects event) {
+        List<DetectedObject> list = event.getDetectedObjectsList();
+        for (DetectedObject obj : list) {
+            if (obj.getId().equals("ERROR")) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 

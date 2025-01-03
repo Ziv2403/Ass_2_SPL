@@ -147,6 +147,8 @@ public abstract class MicroService implements Runnable {
         this.terminated = true;
     }
 
+    protected final boolean isTerminated() {return terminated;}
+
     /**
      * @return the name of the service - the service name is given to it in the
      *         construction time and is used mainly for debugging purposes.
@@ -171,7 +173,7 @@ public abstract class MicroService implements Runnable {
                     callBack.call(message); //Message processing
                 }
             }
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | NullPointerException e) {
             terminate();
         }
         //Resource cleaning:

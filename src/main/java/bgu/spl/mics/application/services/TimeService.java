@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.CrashedBroadcast;
 import bgu.spl.mics.application.messages.TerminatedBroadcast;
 import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.objects.StatisticalFolder;
@@ -44,7 +45,12 @@ public class TimeService extends MicroService {
     @Override
     protected void initialize() {
         try {
-            while (currentTick < duration) {
+            // Subscribe to CrashedBroadcast
+            subscribeBroadcast(CrashedBroadcast.class, broadcast -> {
+                terminate();
+            });
+
+            while (currentTick < duration & !isTerminated()) {
                 System.out.println("Current tick: " + currentTick);
                 //Send TickBroadcast to all microService
                 sendBroadcast(new TickBroadcast(currentTick));
