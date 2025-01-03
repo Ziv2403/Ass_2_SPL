@@ -1,12 +1,16 @@
 package bgu.spl.mics.application.services;
 
-import java.util.ArrayList;
-import java.util.List;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Map;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.objects.FusionSlam;
-import bgu.spl.mics.application.objects.LandMark;
 import bgu.spl.mics.application.objects.StatisticalFolder;
 //
 /**
@@ -19,8 +23,6 @@ import bgu.spl.mics.application.objects.StatisticalFolder;
 public class FusionSlamService extends MicroService {
 
     private final FusionSlam fusionSlam;
-    private List<LandMark> result;
-    private int currentTick;
 
     /**
      * Constructor for FusionSlamService.
@@ -30,8 +32,6 @@ public class FusionSlamService extends MicroService {
     public FusionSlamService(FusionSlam fusionSlam, StatisticalFolder statisticalFolder) {
         super("FusionSlam", statisticalFolder);
         this.fusionSlam = fusionSlam;
-        this.result = new ArrayList<>();
-        this.currentTick = 0;
     }
 
     /**
@@ -41,15 +41,8 @@ public class FusionSlamService extends MicroService {
      */
     @Override
     protected void initialize() {
-        subscribeBroadcast(TickBroadcast.class, tick -> {
-            currentTick = tick.getTick();
-        });
-
         subscribeEvent(TrackedObjectsEvent.class, event -> {
-            int numOfLandMarks = fusionSlam.getLandMarkList().size();
-            fusionSlam.addTrackedObjects(event.getTrackedObjects());
-
-            int addedLandmarks = fusionSlam.getLandMarkList().size() - numOfLandMarks;
+            int addedLandmarks = fusionSlam.createLandMarks(event.getTrackedObjects());
             statisticalFolder.incrementLandmarks(addedLandmarks);
         });
 
@@ -62,11 +55,37 @@ public class FusionSlamService extends MicroService {
             terminate();
         });
 
-        // CHECK AGAIN
         // Subscribe to TerminatedBroadcast
         subscribeBroadcast(TerminatedBroadcast.class, terminate -> {
+            System.out.println("FusionSlamService received TerminatedBroadcast. Writing output...");
+            writeOutput("output_file.json");
             terminate();
         });
 
     }
+
+
+
+    /**
+     * Writes the system's final output to a JSON file.
+     * @param filePath Path to the output file.
+     */
+    public void writeOutput(String filePath) {
+        Map<String, Object> outputData = Map.of(
+            "systemRuntime", statisticalFolder.getSystemRuntime(),
+            "numDetectedObjects", statisticalFolder.getNumDetectedObjects(),
+            "numTrackedObjects", statisticalFolder.getNumTrackedObjects(),
+            "numLandmarks", fusionSlam.getLandMarkList().size(),
+            "landMarks", fusionSlam.getLandMarkList() // Assumes getLandMarkMap returns the necessary map format
+        );
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        try (FileWriter writer = new FileWriter(filePath)) {
+            gson.toJson(outputData, writer);
+            System.out.println("Output file written successfully: " + filePath);
+        } catch (IOException e) {
+            System.err.println("Error writing output file: " + e.getMessage());
+        }
+    }
+
 }

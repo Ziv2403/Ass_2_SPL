@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -35,9 +36,21 @@ public class GurionRockRunner {
      * @param args Command-line arguments. The first argument is expected to be the path to the configuration file.
      */
     public static void main(String[] args) {
+        if (args.length == 0) {
+            System.err.println("Error: No configuration file path provided.");
+            System.exit(1);
+        }
+        
 
-//        String configFilePath = args[0] + " " + args[1];
         String configFilePath = args[0];
+        System.out.println("Configuration file path: " + configFilePath);
+
+        File configFile = new File(configFilePath);
+        if (!configFile.exists()) {
+            System.err.println("Error: Configuration file not found at " + configFile.getAbsolutePath());
+            System.exit(1);
+        }
+
         Gson gson = new Gson();
         try (FileReader reader = new FileReader(configFilePath)) {
             Configuration config = gson.fromJson(reader, Configuration.class);
