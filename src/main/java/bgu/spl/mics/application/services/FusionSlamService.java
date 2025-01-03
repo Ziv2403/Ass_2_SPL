@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.Map;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
@@ -58,7 +57,7 @@ public class FusionSlamService extends MicroService {
         // Subscribe to TerminatedBroadcast
         subscribeBroadcast(TerminatedBroadcast.class, terminate -> {
             System.out.println("FusionSlamService received TerminatedBroadcast. Writing output...");
-            writeOutput("output_file.json");
+            writeOutput("outputTEST.json");
             terminate();
         });
 
@@ -79,7 +78,8 @@ public class FusionSlamService extends MicroService {
             "landMarks", fusionSlam.getLandMarkList() // Assumes getLandMarkMap returns the necessary map format
         );
 
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new Gson();
+
         try (FileWriter writer = new FileWriter(filePath)) {
             gson.toJson(outputData, writer);
             System.out.println("Output file written successfully: " + filePath);

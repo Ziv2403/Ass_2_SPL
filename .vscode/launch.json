@@ -10,7 +10,7 @@
             "request": "launch",
             "mainClass": "bgu.spl.mics.application.GurionRockRunner",
             "projectName": "spl224ass2",
-            "args": "C:/Users/yzalz/Documents/GitHub/New folder/Ass_2_SPL/example input/configuration_file.json"
+            "args": "example_input_2/configuration_file.json"
         },
         {
             "type": "java",

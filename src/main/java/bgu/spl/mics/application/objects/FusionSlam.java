@@ -1,7 +1,9 @@
 package bgu.spl.mics.application.objects;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 //import java.util.function.Function;
 
@@ -161,29 +163,29 @@ public class FusionSlam {
     }
 
 
-    //     /**
-    //  * Generates a map of landmarks in a format ready for JSON output.
-    //  *
-    //  * @return A map containing landmarks with their details.
-    //  */
-    // public Map<String, Object> generateGlobalMap() {
-    //     Map<String, Object> globalMap = new HashMap<>();
-    //     for (LandMark landmark : landmarks) {
-    //         Map<String, Object> landmarkDetails = new HashMap<>();
-    //         landmarkDetails.put("id", landmark.getId());
-    //         landmarkDetails.put("description", landmark.getDescription());
-    //         List<Map<String, Double>> coordinates = new ArrayList<>();
-    //         for (CloudPoint point : landmark.getCloudPoints()) {
-    //             Map<String, Double> pointMap = new HashMap<>();
-    //             pointMap.put("x", point.getX());
-    //             pointMap.put("y", point.getY());
-    //             coordinates.add(pointMap);
-    //         }
-    //         landmarkDetails.put("coordinates", coordinates);
-    //         globalMap.put(landmark.getId(), landmarkDetails);
-    //     }
-    //     return globalMap;
-    // }
+        /**
+     * Generates a map of landmarks in a format ready for JSON output.
+     *
+     * @return A map containing landmarks with their details.
+     */
+    public Map<String, Object> generateGlobalMap() {
+        Map<String, Object> globalMap = new HashMap<>();
+        for (LandMark landmark : landmarks) {
+            Map<String, Object> landmarkDetails = new HashMap<>();
+            landmarkDetails.put("id", landmark.getId());
+            landmarkDetails.put("description", landmark.getDescription());
+            List<Map<String, Double>> coordinates = new ArrayList<>();
+            for (CloudPoint point : landmark.getCloudPoints()) {
+                Map<String, Double> pointMap = new HashMap<>();
+                pointMap.put("x", point.getX());
+                pointMap.put("y", point.getY());
+                coordinates.add(pointMap);
+            }
+            landmarkDetails.put("coordinates", coordinates);
+            globalMap.put(landmark.getId(), landmarkDetails);
+        }
+        return globalMap;
+    }
 }
 
 
