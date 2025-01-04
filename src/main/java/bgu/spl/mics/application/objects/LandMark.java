@@ -3,6 +3,9 @@ package bgu.spl.mics.application.objects;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 /**
  * Represents a landmark in the environment map.
  * Landmarks are identified and updated by the FusionSlam service.
@@ -76,26 +79,26 @@ public class LandMark {
      */
     public void addCloudPoint(CloudPoint cloudPoint) {cloudPoints.add(cloudPoint);}
 
+
     /**
-     * @return A string representation of the LandMark in JSON format.
+     * Converts the LandMark object to a JSON object.
+     * @return A JsonObject representation of the LandMark.
      */
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{\"id\": \"").append(Id).append("\", ");
-        sb.append("\"description\": \"").append(description).append("\", ");
-        sb.append("\"coordinates\": [");
+    public JsonObject toJsonTree() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("id",Id);
+        jsonObject.addProperty("description",description);
 
-        for (int i = 0; i < cloudPoints.size(); i++) {
-            CloudPoint point = cloudPoints.get(i);
-            sb.append(point.toString());
-            if (i < cloudPoints.size() - 1) {
-                sb.append(", ");
-            }
+        JsonArray coordinatesArray = new JsonArray();
+        for (CloudPoint point : cloudPoints) {
+            JsonObject pointJson = new JsonObject();
+            pointJson.addProperty("x", point.getX());
+            pointJson.addProperty("y", point.getY());
+            coordinatesArray.add(pointJson);
         }
+        jsonObject.add("coordinates",coordinatesArray);
 
-        sb.append("]}");
-        return sb.toString();
+        return jsonObject;
     }
 
 }

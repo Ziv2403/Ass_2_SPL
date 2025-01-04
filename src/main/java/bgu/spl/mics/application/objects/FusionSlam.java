@@ -208,6 +208,39 @@ public class FusionSlam {
                 ", poses=" + poses +
                 '}';
     }
+
+
+
+    // /**
+    //  * Generates a map containing simulation output data, including runtime statistics, 
+    //  * detected and tracked object counts, and landmark details.
+    //  *
+    //  * @param systemRuntime The total runtime of the system in ticks.
+    //  * @param numDetectedObjects The total number of detected objects.
+    //  * @param numTrackedObjects The total number of tracked objects.
+    //  * @return A map representing the output data with statistics and landmarks.
+    //  */
+    // public List<String> generateOutput() {
+    //     // Map<String, Object> output = new HashMap<>();
+
+    //     // output.put("systemRuntime", systemRuntime);
+    //     // output.put("numDetectedObjects", numDetectedObjects);
+    //     // output.put("numTrackedObjects", numTrackedObjects);
+    //     // output.put("numLandmarks", landmarks.size());
+
+    //     List<String> landmarksStringList = new ArrayList<>();
+    //     for (LandMark landmark : landmarks) {
+    //         System.out.println("landMarks incloud:" + landmark.toString()); //DEBUGGGGGGGG
+    //         // String landmarkDetails = landmark.toString();
+    //         landmarksStringList.add(landmark.toString());
+    //     //     landmarkDetails.put("description", landmark.getDescription());
+    //     //     landmarkDetails.put("coordinates", landmark.getCloudPoints());
+    //     //     landmarksMap.put(landmark.getId(), landmarkDetails);
+    //     }
+    //     // output.put("landMarks", landmarksMap);
+
+    //     return landmarksStringList;
+    // }
     
 }
 

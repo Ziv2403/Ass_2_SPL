@@ -128,14 +128,14 @@ public class StatisticalFolder {
 
 
      /**
-     * @return A string representation of the StatisticalFolder object.
+     * @return A string representation of the StatisticalFolder object in JSON output format
      */
     @Override
     public synchronized String toString() {
-        return "StatisticalFolder{ systemRuntime=" + systemRuntime +
-                ", numDetectedObjects=" + numDetectedObjects +
-                ", numTrackedObjects=" + numTrackedObjects +
-                ", numLandmarks=" + numLandmarks + '}';
+        return "{" + '"'+"systemRuntime"+'"'+":" + systemRuntime +
+                ","  + " numDetectedObjects:" + numDetectedObjects +
+                "," + '"'+ " numTrackedObjects"+'"'+":" + numTrackedObjects +
+                "," + '"'+ "numLandmarks"+'"'+":" + numLandmarks + ',';
     }
 
 

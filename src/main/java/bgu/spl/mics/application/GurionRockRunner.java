@@ -132,7 +132,7 @@ public class GurionRockRunner {
                 }
             }
 
-            writeStatsToFile(statisticalFolder, "outputTEST.json");
+            // writeStatsToFile(statisticalFolder, "outputTEST.json");
 
         } catch (IOException | IllegalArgumentException e ) {
             System.err.println("Error: " + e.getMessage());
@@ -165,15 +165,15 @@ public class GurionRockRunner {
         return new java.io.File(new java.io.File(configFilePath).getParent(), relativePath).getAbsolutePath();
     }
 
-    private static void writeStatsToFile(StatisticalFolder stats, String fileName) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        try (FileWriter writer = new FileWriter(fileName)) {
-            gson.toJson(stats, writer);
-            System.out.println("Stats have been written to " + fileName);
-        } catch (IOException e) {
-            System.err.println("Failed to write stats: " + e.getMessage());
-        }
-    }
+    // private static void writeStatsToFile(StatisticalFolder stats, String fileName) {
+    //     Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    //     try (FileWriter writer = new FileWriter(fileName)) {
+    //         gson.toJson(stats, writer);
+    //         System.out.println("Stats have been written to " + fileName);
+    //     } catch (IOException e) {
+    //         System.err.println("Failed to write stats: " + e.getMessage());
+    //     }
+    // }
 
 
 

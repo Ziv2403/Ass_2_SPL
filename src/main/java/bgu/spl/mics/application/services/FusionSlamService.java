@@ -1,21 +1,17 @@
 package bgu.spl.mics.application.services;
 
 
-// import java.io.FileWriter;
-// import java.io.IOException;
-// import java.util.Map;
+// import com.google.gson.Gson;
+// import com.google.gson.GsonBuilder;
+// import com.google.gson.JsonElement;
+// import com.google.gson.JsonObject;
 
-
-//import com.google.gson.stream.JsonWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-//import com.google.gson.Gson;
 import java.util.List;
-//import java.util.Map;
 
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
-//import bgu.spl.mics.application.objects.CloudPoint;
 import bgu.spl.mics.application.objects.FusionSlam;
 import bgu.spl.mics.application.objects.LandMark;
 import bgu.spl.mics.application.objects.StatisticalFolder;
@@ -69,44 +65,41 @@ public class FusionSlamService extends MicroService {
         // Subscribe to TerminatedBroadcast
         subscribeBroadcast(TerminatedBroadcast.class, terminate -> {
             System.out.println("FusionSlamService received TerminatedBroadcast. Writing output...");
-            writeOutput("outputTEST.json");
+            writeOutputFile("output_TEST.json");
             terminate();
         });
-
     }
 
 
 
     // --------------------- Other methods ------------------------
+    /**
+     * Creates and writes the simulation's output to a JSON file.
+     *
+     * @param fileName The name of the output file to write.
+     */
+    private void writeOutputFile(String fileName) {
+        try (FileWriter writer = new FileWriter(fileName)) {
+            writer.write("{\"systemRuntime\":" + statisticalFolder.getSystemRuntime() + ", ");
+            writer.write("\"numDetectedObjects\":" + statisticalFolder.getNumDetectedObjects() + ", ");
+            writer.write("\"numTrackedObjects\":" + statisticalFolder.getNumTrackedObjects() + ", ");
+            writer.write("\"numLandmarks\":" + statisticalFolder.getNumLandmarks() + ",\n");
+            writer.write("\"landMarks\":{\n");
 
-/**
- * Writes the system's final output to a JSON file.
- * @param filePath Path to the output file.
- */
-    public void writeOutput(String filePath) {
-        try (FileWriter fileWriter = new FileWriter(filePath)) {
-            // כתיבה של שורת הסטטיסטיקות בשורה אחת
-            fileWriter.write("{\"systemRuntime\": 22, \"numDetectedObjects\": 13, \"numTrackedObjects\": 13, \"numLandmarks\": 7}\n");
-
-            // כתיבת landMarks
-            fileWriter.write("landMarks: {\n");
-
-            List<LandMark> landMarks = fusionSlam.getLandMarkList();
-            for (int i = 0; i < landMarks.size(); i++) {
-                LandMark landMark = landMarks.get(i);
-                fileWriter.write("  \"" + landMark.getId() + "\": " + landMark.toString());
-                if (i < landMarks.size() - 1) {
-                    fileWriter.write(",\n");
-                } else {
-                    fileWriter.write("\n");
+            List<LandMark> landmarks = fusionSlam.getLandMarkList();
+            for (int i = 0; i < landmarks.size(); i++) {
+                String landmarkLine = "    " + landmarks.get(i).toString();
+                writer.write(landmarkLine);
+                if (i < landmarks.size() - 1) {
+                    writer.write(",\n"); 
                 }
             }
-
-            fileWriter.write("}\n");
-            System.out.println("File written successfully to: " + filePath);
+            writer.write("\n    }\n}");
+            System.out.println("Output written to " + fileName);
         } catch (IOException e) {
-            System.err.println("Failed to write file: " + e.getMessage());
+            System.err.println("Error writing output file: " + e.getMessage());
         }
     }
-
 }
+
+
