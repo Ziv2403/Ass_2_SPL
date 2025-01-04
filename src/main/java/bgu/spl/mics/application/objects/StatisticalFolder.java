@@ -1,6 +1,9 @@
 package bgu.spl.mics.application.objects;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Holds statistical information about the system's operation.
@@ -18,6 +21,14 @@ public class StatisticalFolder {
     private final AtomicInteger numDetectedObjects = new AtomicInteger(0);
     private final AtomicInteger numTrackedObjects = new AtomicInteger(0);
     private final AtomicInteger numLandmarks = new AtomicInteger(0);
+
+    //The use of the ConcurrentHashMap data structure for camera and LIDAR frames ensures efficient and safe writing and reading from multiple threads.
+    private final ConcurrentHashMap<String, StampedDetectedObjects> lastCameraFrames = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, StampedCloudPoints> lastLiDarFrames = new ConcurrentHashMap<>();
+    private final StringBuilder poseOutput = new StringBuilder();
+    //When there is a main thread that performs writing, and another thread that reads the data occasionally.
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(); 
+
 
     // --------------------- SingletonImplemment -------------------------
 
@@ -126,6 +137,78 @@ public class StatisticalFolder {
     }
 
 
+/**
+     * Adds a frame for a specific camera.
+     *
+     * @param cameraKey The key of the camera.
+     * @param frame The detected objects frame to add.
+     * @pre {@code cameraKey != null && frame != null}
+     * @post The frame is added to the lastCameraFrames map.
+     */
+    public void addCameraFrame(String cameraKey, StampedDetectedObjects frame) {
+        lastCameraFrames.put(cameraKey, frame);
+    }
+
+
+    /**
+     * Retrieves the last frames of all cameras.
+     *
+     * @return A map containing the last frames of all cameras.
+     */
+    public Map<String, StampedDetectedObjects> getLastCameraFrames() {
+        return lastCameraFrames;
+    }
+
+    /**
+     * Retrieves the last frames of all LiDARs.
+     *
+     * @return A map containing the last frames of all LiDARs.
+     */
+    public Map<String, StampedCloudPoints> getLastLiDarFrames() {
+        return lastLiDarFrames;
+    }
+
+    
+    /**
+     * Adds a frame for a specific LiDAR.
+     *
+     * @param liDarKey The key of the LiDAR.
+     * @param frame The cloud points frame to add.
+     * @pre {@code liDarKey != null && frame != null}
+     * @post The frame is added to the lastLiDarFrames map.
+     */
+    public void addLiDarFrame(String liDarKey, StampedCloudPoints frame) {
+        lastLiDarFrames.put(liDarKey, frame);
+    }
+
+
+    /**
+     * Adds a Pose to the output string.
+     *
+     * @param pose The Pose to add.
+     */
+    public void addPose(Pose pose) {
+        lock.writeLock().lock(); //  Write Block
+        try {
+            poseOutput.append(pose.toString()).append("\n");
+        } finally {
+            lock.writeLock().unlock(); // Write Release
+        }
+    }
+
+    /**
+     * Retrieves the Pose output as a single string.
+     *
+     * @return A string containing all the Poses.
+     */
+    public String getPoseOutput() {
+        lock.readLock().lock(); // Read Block
+        try {
+            return poseOutput.toString();
+        } finally {
+            lock.readLock().unlock(); // Read Release
+        }
+    }
 
      /**
      * @return A string representation of the StatisticalFolder object in JSON output format
