@@ -122,7 +122,7 @@ public class FusionSlam {
     public int createLandMarks(List<TrackedObject> trackedObjects) {
         int newLandmarks = 0; //landMarks counter
         for (TrackedObject tracked : trackedObjects) {
-            Pose matchingPose = poses.stream() /////////////////////poses already exists in this time??
+            Pose matchingPose = poses.stream() 
                     .filter(p -> p.getTime() == tracked.getTime())
                     .findFirst()
                     .orElse(null);
@@ -171,7 +171,10 @@ public class FusionSlam {
      */
     private void updateExistingLandmark(LandMark landmark, List<CloudPoint> newCoordinates) {
         List<CloudPoint> existingCoordinates = landmark.getCloudPoints();
-        for (int i = 0; i < existingCoordinates.size(); i++) {
+
+        int minSize = Math.min(existingCoordinates.size(), newCoordinates.size());
+
+        for (int i = 0; i <  minSize; i++) {
             existingCoordinates.get(i).update(newCoordinates.get(i));
         }
     }

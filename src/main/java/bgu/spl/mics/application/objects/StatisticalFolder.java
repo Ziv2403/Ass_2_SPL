@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.objects;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,6 +28,7 @@ public class StatisticalFolder {
     //The use of the ConcurrentHashMap data structure for camera and LIDAR frames ensures efficient and safe writing and reading from multiple threads.
     private final ConcurrentHashMap<String, StampedDetectedObjects> lastCameraFrames = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, TrackedObject> lastLiDarFrames = new ConcurrentHashMap<>();
+    private final Map<String, LandMark> landMarks = new HashMap<>();
     private final List<Pose> poseOutput = new ArrayList<>();
     //When there is a main thread that performs writing, and another thread that reads the data occasionally.
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(); 
@@ -211,6 +213,53 @@ public class StatisticalFolder {
             lock.readLock().unlock(); // Read Release
         }
     }
+
+    /**
+    * Retrieves all the LandMarks stored in the system.
+    * 
+    * @return A map of LandMarks where the key is the ID of the LandMark, 
+    *         and the value is the LandMark object.
+    * @post {@code result != null}
+    */
+    public Map<String, LandMark> getLandMarks() {
+        return landMarks;
+    }
+
+    /**
+    * Adds a new LandMark to the system.
+    * 
+    * @param id The unique identifier of the LandMark.
+    * @param landMark The LandMark object to be added.
+    * @pre {@code id != null && !id.isEmpty()}
+    * @pre {@code landMark != null}
+    * @post {@code landMarks.containsKey(id) && landMarks.get(id).equals(landMark)}
+    */
+    public void addLandMark(String id, LandMark landMark) {
+        landMarks.put(id, landMark);
+    }
+    /**
+    * Adds a new LandMark to the system or updates an existing one.
+    *
+    * @param id The unique identifier of the LandMark.
+    * @param newLandMark The LandMark object to be added or updated.
+    * @pre {@code id != null && !id.isEmpty()}
+    * @pre {@code newLandMark != null}
+    * @post {@code landMarks.containsKey(id)}
+    */
+    public void addOrUpdateLandMark(String id, LandMark newLandMark) {
+        landMarks.compute(id, (key, existingLandMark) -> {
+            if (existingLandMark == null) {
+                return newLandMark; // Add new LandMark
+            } else {
+                // Update existing LandMark by merging cloud points
+                List<CloudPoint> updatedPoints = new ArrayList<>(existingLandMark.getCloudPoints());
+                updatedPoints.addAll(newLandMark.getCloudPoints());
+                existingLandMark.setCloudPoints(updatedPoints);
+                return existingLandMark;
+            }
+        });
+    }
+
 
      /**
      * @return A string representation of the StatisticalFolder object in JSON output format

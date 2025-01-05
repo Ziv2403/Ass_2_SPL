@@ -101,4 +101,19 @@ public class LandMark {
         return jsonObject;
     }
 
+
+/**
+ * Updates the list of cloud points for this LandMark.
+ *
+ * @param updatedPoints The new list of cloud points to set.
+ * @pre {@code updatedPoints != null}
+ * @post {@code this.cloudPoints.equals(updatedPoints)}
+ */
+public void setCloudPoints(List<CloudPoint> updatedPoints) {
+    if (updatedPoints == null) {
+        throw new IllegalArgumentException("Updated points cannot be null");
+    }
+    this.cloudPoints = updatedPoints;
+}
+
 }

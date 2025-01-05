@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
+import bgu.spl.mics.application.objects.LandMark;
 import bgu.spl.mics.application.objects.Pose;
 import bgu.spl.mics.application.objects.StampedDetectedObjects;
 import bgu.spl.mics.application.objects.StatisticalFolder;
@@ -66,15 +67,23 @@ public class ErrorLogger {
         statistics.addProperty("numDetectedObjects", stats.getNumDetectedObjects());
         statistics.addProperty("numTrackedObjects", stats.getNumTrackedObjects());
         statistics.addProperty("numLandmarks", stats.getNumLandmarks());
-        writer.write("  \"statistics\": " + gson.toJson(statistics) + "\n");
 
-        // Close the JSON object
+        // Add LandMarks to statistics
+        JsonObject landMarks = new JsonObject();
+        stats.getLandMarks().forEach((id, landMark) -> {
+            landMarks.add(id, gson.toJsonTree(landMark));
+        });
+        statistics.add("landMarks", landMarks);
+
+        writer.write("   \"statistics\": " + gson.toJson(statistics) );
+
         writer.write("}\n");
-
         System.out.println("Formatted error report written to " + fileName);
+
     } catch (IOException e) {
         System.err.println("Error writing formatted error report: " + e.getMessage());
     }
-    }
-
+        }
 }
+
+
