@@ -66,6 +66,7 @@ public class StampedCloudPoints {
     }
 
 
+
     /**
      * @return A string representation of the StampedCloudPoints object.
      */
@@ -78,5 +79,18 @@ public class StampedCloudPoints {
           .append(", cloudPoints=").append(cloudPoints)
           .append('}');
         return sb.toString();
+    }
+
+
+    /**
+    * Checks if the cloud points contain an error.
+    *
+    * @return true is their is a ERROR
+    */
+    public boolean isContainError() {
+        if(id.equals("ERROR")){
+            return true;
+        }
+        return false;
     }
 }

@@ -129,6 +129,16 @@ public class LiDarWorkerTracker {
         return new ArrayList<>(); // No object was tracked
     }
 
+    /**
+    * Generates a unique key for the LiDAR based on its ID.
+    *
+    * @return A string representing the unique key for the LiDAR, formatted as "LiDar<ID>".
+    * @post {@code result != null && result.startsWith("LiDarWorkerTracker")}
+    */
+    public String getLiDarKey(){
+        return "LiDarWorkerTracker" + getId();
+    }
+
     
     /**
      * @return A string representation of the LiDarWorkerTracker.

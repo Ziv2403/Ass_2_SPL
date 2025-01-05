@@ -1,9 +1,11 @@
-{"error": "Camera Disconnected",
-  "faultySensor": "camera1",
-  "lastCamerasFrame": {
-  "camera1": {"time":12,"detectedObjects":[{"id":"Wall_3","description":"Wall"}]}
-},
-"lastLiDarWorkerTrackersFrame": {},
-"poses": "",
-"statistics": {"systemRuntime":16,"numDetectedObjects":9,"numTrackedObjects":9,"numLandmarks":7}
+{"error":"Camera Disconnected",
+  "faultySensor":"camera1",
+  "lastCamerasFrame":{
+    "camera1":{"time":12,"detectedObjects":[{"id":"Wall_3","description":"Wall"}]}
+  },
+  "lastLiDarWorkerTrackersFrame":{
+    "LiDarWorkerTracker1": {"Id":"Wall_3","time":12,"description":"Wall","coordinates":[{"x":3.0451,"y":-0.38171},{"x":3.0637,"y":-0.17392}]}
+  },
+   "poses": "",
+   "statistics": {"systemRuntime":16,"numDetectedObjects":9,"numTrackedObjects":9,"numLandmarks":7}
 }

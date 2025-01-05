@@ -1,5 +1,6 @@
 package bgu.spl.mics.application.services;
 import bgu.spl.mics.application.objects.*;
+import bgu.spl.mics.application.utils.ErrorLogger;
 import bgu.spl.mics.MicroService;
 
 import java.util.*;
@@ -50,19 +51,33 @@ public class LiDarService extends MicroService {
      */
     @Override
     protected void initialize() {
+        int errorTime = validateLiDarDatabaseForErrors();
+        System.out.println("LidarService: initialize() - > errorTime = " + errorTime); //Debug
+
         // Subscribe to TickBroadcast
         subscribeBroadcast(TickBroadcast.class, tick -> {
             currentTick = tick.getTick();
 
-            processPendingAndReadyEvents(currentTick);
+            if (errorTime != -1 && errorTime == currentTick) {
+                handleLiDarError(currentTick); 
+                sendBroadcast(new CrashedBroadcast(String.valueOf(liDarWorkerTracker.getId()), "Detected error in LiDAR"));
+                System.out.println("LidarService: initialize() - > Error detected in LiDAR at time " + currentTick + ". Report generated.");
+                terminate();
+            }
+            
+            if(!pendingEvents.isEmpty()){
+                processPendingAndReadyEvents(currentTick);
+            }
+
+
         });
 
         // Subscribe to DetectObjectsEvent
         subscribeEvent(DetectObjectsEvent.class, event -> {
-            System.out.println("Received DetectedObjectsEvent from camera" + event.getCameraId());
+            System.out.println("Received DetectedObjectsEvent from camera" + event.getCameraId()); //debug
             int detectionTime = event.getDetectedObjects().getTime();
             int scheduledTime = detectionTime + liDarWorkerTracker.getFrequency();
-            System.out.println("detectionTime is: " + detectionTime + " and scheduledTime is: " + scheduledTime);
+            System.out.println("detectionTime is: " + detectionTime + " and scheduledTime is: " + scheduledTime); //debug
 
             if (scheduledTime <= currentTick) {
                 processEvent(event); // Process immediately
@@ -91,20 +106,21 @@ public class LiDarService extends MicroService {
      * @param currentTick The current tick of the simulation.
      */
     private void processPendingAndReadyEvents(int currentTick) {
-        System.out.println(getName() + ": Processing pending events for tick: " + currentTick);
+        //System.out.println(getName() + ": Processing pending events for tick: " + currentTick); //DEBUG
         List<TrackedObject> readyTrackedObjects = new ArrayList<>();
-
         Iterator<Map.Entry<DetectObjectsEvent, Integer>> iterator = pendingEvents.entrySet().iterator();
+
         while (iterator.hasNext()) {
             Map.Entry<DetectObjectsEvent, Integer> entry = iterator.next();
             DetectObjectsEvent event = entry.getKey();
             int scheduledTime = entry.getValue();
 
-            System.out.println(getName() + ": Checking event scheduled for tick " + scheduledTime);
+            // System.out.println(getName() + ": Checking event scheduled for tick " + scheduledTime);//DEBUG
             if (currentTick >= scheduledTime) {
                 List<TrackedObject> trackedObjects = liDarWorkerTracker.processDetectObjectsEvent(event, liDarDataBase);
+
                 if (trackedObjects == null || trackedObjects.isEmpty()) {
-                    System.err.println(getName() + ": No tracked objects for event: " + event);
+                    System.err.println(getName() + ": No tracked objects for event: " + event);//DEBUG
                 } else {
                     readyTrackedObjects.addAll(trackedObjects);
                     System.out.println(getName() + ": Added " + trackedObjects.size() + " tracked objects.");
@@ -115,8 +131,11 @@ public class LiDarService extends MicroService {
 
         if (!readyTrackedObjects.isEmpty()) {
             System.out.println(getName() + ": Sending TrackedObjectsEvent for " + readyTrackedObjects.size() + " objects.");
-            sendEvent(new TrackedObjectsEvent(readyTrackedObjects));
+            TrackedObjectsEvent newEvent = new TrackedObjectsEvent(readyTrackedObjects);
+            sendEvent(newEvent);
             statisticalFolder.incrementTrackedObjects(readyTrackedObjects.size());
+            statisticalFolder.addLiDarFrame(liDarWorkerTracker.getLiDarKey(), newEvent.getTrackedObjects().getLast());//NOT SURE ABOUT THE PARAMETERS CORRECNESS
+
         } else {
             System.out.println(getName() + ": No tracked objects to send for current tick.");
         }
@@ -130,9 +149,40 @@ public class LiDarService extends MicroService {
     private void processEvent(DetectObjectsEvent event) {
         List<TrackedObject> trackedObjects = liDarWorkerTracker.processDetectObjectsEvent(event, liDarDataBase);
         if (trackedObjects!= null && !trackedObjects.isEmpty()) {
-            sendEvent(new TrackedObjectsEvent(trackedObjects));
+            TrackedObjectsEvent newEvent = new TrackedObjectsEvent(trackedObjects);
+            sendEvent(newEvent);
             statisticalFolder.incrementTrackedObjects(trackedObjects.size());
+            statisticalFolder.addLiDarFrame(liDarWorkerTracker.getLiDarKey(), newEvent.getTrackedObjects().getLast());//NOT SURE ABOUT THE PARAMETERS CORRECNESS
+
         }
+    }
+
+    /**
+    * Handles an error detected in a LiDAR event.
+    *
+    * @param event The LiDAR event containing the error.
+    * @param currentTick The current tick of the simulation.
+    */
+    private void handleLiDarError( int currentTick) {
+        liDarWorkerTracker.setStatus(STATUS.ERROR);
+
+        ErrorLogger.writeFormattedErrorReport( "lidar_error_report.json","Error detected in LiDAR data", liDarWorkerTracker.getLiDarKey(),statisticalFolder);
+    }
+
+    /**
+    * Validates the LiDAR database for any errors (e.g., ID with "ERROR").
+    * If an error is found, returns the timestamp of the erroneous data.
+    * Otherwise, returns -1.
+    *
+    * @return The timestamp of the erroneous data, or -1 if no errors are found.
+    */
+    private int validateLiDarDatabaseForErrors() {
+        for (StampedCloudPoints cloudPoints : liDarDataBase.getCloudPoints()) {
+            if (cloudPoints.isContainError()) { 
+                return cloudPoints.getTime(); 
+            }
+        }
+        return -1;
     }
 
 }

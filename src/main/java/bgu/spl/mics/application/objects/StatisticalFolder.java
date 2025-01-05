@@ -24,7 +24,7 @@ public class StatisticalFolder {
 
     //The use of the ConcurrentHashMap data structure for camera and LIDAR frames ensures efficient and safe writing and reading from multiple threads.
     private final ConcurrentHashMap<String, StampedDetectedObjects> lastCameraFrames = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, StampedCloudPoints> lastLiDarFrames = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, TrackedObject> lastLiDarFrames = new ConcurrentHashMap<>();
     private final StringBuilder poseOutput = new StringBuilder();
     //When there is a main thread that performs writing, and another thread that reads the data occasionally.
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(); 
@@ -164,7 +164,7 @@ public class StatisticalFolder {
      *
      * @return A map containing the last frames of all LiDARs.
      */
-    public Map<String, StampedCloudPoints> getLastLiDarFrames() {
+    public Map<String, TrackedObject> getLastLiDarFrames() {
         return lastLiDarFrames;
     }
 
@@ -177,7 +177,7 @@ public class StatisticalFolder {
      * @pre {@code liDarKey != null && frame != null}
      * @post The frame is added to the lastLiDarFrames map.
      */
-    public void addLiDarFrame(String liDarKey, StampedCloudPoints frame) {
+    public void addLiDarFrame(String liDarKey, TrackedObject frame) {
         lastLiDarFrames.put(liDarKey, frame);
     }
 

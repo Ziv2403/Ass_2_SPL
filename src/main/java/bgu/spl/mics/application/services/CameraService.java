@@ -65,23 +65,23 @@ public class CameraService extends MicroService {
     protected void initialize() {
         subscribeBroadcast(TickBroadcast.class, tick -> {
             int currentTick = tick.getTick();
-            System.out.println("Initialize -> camera_currentTick = " + currentTick); //DEBUG
+            // System.out.println("Initialize -> camera_currentTick = " + currentTick); //DEBUG
 
             // Process pending events
             if (!pendingEvents.isEmpty()) {
-                System.out.println("Initialize -> Process pending events");//DEBUG
+                // System.out.println("Initialize -> Process pending events");//DEBUG
                 processPendingEvents(currentTick);
             }
 
             // Process camera data
             if (cameraData != null) {
-                System.out.println(" Initialize -> Process camera data");//DEBUG
+                // System.out.println(" Initialize -> Process camera data");//DEBUG
                 processCameraData(currentTick);
             }
 
             // Update status if no more events to process
             if (cameraData.isEmpty() && pendingEvents.isEmpty()) {
-                System.out.println("Initialize ->" + camera.getCameraKey() + "status DOWN");//DEBUG
+                // System.out.println("Initialize ->" + camera.getCameraKey() + "status DOWN");//DEBUG
                 camera.setStatus(STATUS.DOWN);
                 terminate();
             }
@@ -121,13 +121,13 @@ public class CameraService extends MicroService {
 
                 if (event.isContainError() == null) {
                     sendEvent(new DetectObjectsEvent(entry.getKey(), camera.getId()));
-                    System.out.println("ProcessPendingEvent -> send DetectedObjectEvent for: " + entry.getKey() + "cameraID:" + camera.getId()); //Debug
+                    // System.out.println("ProcessPendingEvent -> send DetectedObjectEvent for: " + entry.getKey() + "cameraID:" + camera.getId()); //Debug
                     statisticalFolder.addCameraFrame(camera.getCameraKey(), event);
-                    System.out.println("ProcessPendingEvent -> lastFrame of" + camera.getCameraKey() + "is: " + event.toString() ); //Debug
+                    // System.out.println("ProcessPendingEvent -> lastFrame of" + camera.getCameraKey() + "is: " + event.toString() ); //Debug
                     statisticalFolder.incrementDetectedObjects(entry.getKey().getDetectedObjectsList().size());
                     iterator.remove();
                 } else {
-                    System.out.println("ProcessPendingEvent -> Found Error in Stamped" + event.toString() + "detectedError is: " + event.isContainError().toString());
+                    // System.out.println("ProcessPendingEvent -> Found Error in Stamped" + event.toString() + "detectedError is: " + event.isContainError().toString());//Debug
                     handleError(event, currentTick); // Handle error when time matches
                     iterator.remove();
                     return; // Stop further processing for this tick
@@ -154,7 +154,7 @@ public class CameraService extends MicroService {
 
                 //not sure if need: check if need to insert into pendingEvents
                 if (event.getDetectedObjectsList().isEmpty()) {
-                    System.out.println("processCameraData -> No detected objects for event at time: " + event.getTime()); //DEBUG
+                    // System.out.println("processCameraData -> No detected objects for event at time: " + event.getTime()); //DEBUG
                     iterator.remove(); 
                     continue;
                 }
@@ -163,17 +163,17 @@ public class CameraService extends MicroService {
                 
                 //When the currentTick is the desired processing time --> process immediately
                 if (currentTick == event.getTime() + camera.getFrequency() && event.isContainError() == null) {
-                    System.out.println("processCameraData -> immediately processing:" + event.toString()); //DEBUG
+                    // System.out.println("processCameraData -> immediately processing:" + event.toString()); //DEBUG
                     sendEvent(new DetectObjectsEvent(event, camera.getId()));
 
                     statisticalFolder.incrementDetectedObjects(event.getDetectedObjectsList().size());
-                    System.out.println("processCameraData -> lastFrame of" + camera.getCameraKey() + "is: " + event.toString() ); //Debug
+                    // System.out.println("processCameraData -> lastFrame of" + camera.getCameraKey() + "is: " + event.toString() ); //Debug
                     statisticalFolder.addCameraFrame(camera.getCameraKey(), event);
                 
                 //Otherwise, sent for later processing
                 } else {
                     int scheduledTime = event.getTime() + camera.getFrequency();
-                    System.out.println("processCameraData -> Insert into waitingList: " + event.toString() + ", currentTime:" + currentTick + "processTime will be: " + scheduledTime); //Debug
+                    // System.out.println("processCameraData -> Insert into waitingList: " + event.toString() + ", currentTime:" + currentTick + "processTime will be: " + scheduledTime); //Debug
                     pendingEvents.put(event, scheduledTime);
                 }
                 iterator.remove();
@@ -194,9 +194,9 @@ public class CameraService extends MicroService {
         camera.setStatus(STATUS.ERROR);
 
         DetectedObject detectedError = event.isContainError();
-        System.out.println("handlerError -> detectedError:" + detectedError.toString()); //debug
+        // System.out.println("handlerError -> detectedError:" + detectedError.toString()); //debug
 
-        System.out.println("handlerError -> write report! at time:" + currentTick); //debug
+        // System.out.println("handlerError -> write report! at time:" + currentTick); //debug
         ErrorLogger.writeFormattedErrorReport("error_output.json", detectedError.getDescription(), camera.getCameraKey(), statisticalFolder);
 
         // Send CrashedBroadcast
