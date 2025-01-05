@@ -1,5 +1,7 @@
 package bgu.spl.mics.application.objects;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -25,7 +27,7 @@ public class StatisticalFolder {
     //The use of the ConcurrentHashMap data structure for camera and LIDAR frames ensures efficient and safe writing and reading from multiple threads.
     private final ConcurrentHashMap<String, StampedDetectedObjects> lastCameraFrames = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, TrackedObject> lastLiDarFrames = new ConcurrentHashMap<>();
-    private final StringBuilder poseOutput = new StringBuilder();
+    private final List<Pose> poseOutput = new ArrayList<>();
     //When there is a main thread that performs writing, and another thread that reads the data occasionally.
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(); 
 
@@ -190,7 +192,7 @@ public class StatisticalFolder {
     public void addPose(Pose pose) {
         lock.writeLock().lock(); //  Write Block
         try {
-            poseOutput.append(pose.toString()).append("\n");
+            poseOutput.add(pose);
         } finally {
             lock.writeLock().unlock(); // Write Release
         }
@@ -201,10 +203,10 @@ public class StatisticalFolder {
      *
      * @return A string containing all the Poses.
      */
-    public String getPoseOutput() {
+    public List<Pose> getPoseOutput() {
         lock.readLock().lock(); // Read Block
         try {
-            return poseOutput.toString();
+            return poseOutput;
         } finally {
             lock.readLock().unlock(); // Read Release
         }

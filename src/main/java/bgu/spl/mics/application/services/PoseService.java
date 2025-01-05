@@ -56,6 +56,7 @@ public class PoseService extends MicroService {
             if (pose != null) {
                 // Send PoseEvent
                 sendEvent(new PoseEvent(pose));
+                statisticalFolder.addPose(pose);
             }
         });
 

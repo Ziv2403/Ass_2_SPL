@@ -62,12 +62,10 @@ public class Pose {
      */
     @Override
     public String toString() {
-        return "Pose{" +
-                "x=" + x +
-                ", y=" + y +
-                ", yaw=" + yaw +
-                ", time=" + time +
-                '}';
+        return "{" + "time" + time + "," +
+                '"' +"x" + '"' +":" + x + "," +
+                '"' +"y" + '"' + ":"+ y + "," +
+                '"' +"yaw" +'"' + ":" + yaw + "}";
     }
 }
 

@@ -4,12 +4,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
+import bgu.spl.mics.application.objects.Pose;
 import bgu.spl.mics.application.objects.StampedDetectedObjects;
 import bgu.spl.mics.application.objects.StatisticalFolder;
 import bgu.spl.mics.application.objects.TrackedObject;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 public class ErrorLogger {
@@ -45,7 +47,18 @@ public class ErrorLogger {
         writer.write("\n  },\n");
 
         // Add poses
-        writer.write("   \"poses\": " + gson.toJson(stats.getPoseOutput()) + ",\n");
+        writer.write("  \"poses\": [");
+        List<Pose> poses = stats.getPoseOutput();
+        for (int i = 0; i < poses.size(); i++) {
+            Pose pose = poses.get(i);
+            writer.write("{\"time\":" + pose.getTime() + ",\"x\":" + pose.getX() + 
+                 ",\"y\":" + pose.getY() + ",\"yaw\":" + pose.getYaw() + "}");
+                if (i < poses.size() - 1) { // Add comma if not the last element
+                    writer.write(",");
+                }
+        }
+        writer.write("],\n");
+
 
         // Add statistics
         JsonObject statistics = new JsonObject();
@@ -53,7 +66,7 @@ public class ErrorLogger {
         statistics.addProperty("numDetectedObjects", stats.getNumDetectedObjects());
         statistics.addProperty("numTrackedObjects", stats.getNumTrackedObjects());
         statistics.addProperty("numLandmarks", stats.getNumLandmarks());
-        writer.write("   \"statistics\": " + gson.toJson(statistics) + "\n");
+        writer.write("  \"statistics\": " + gson.toJson(statistics) + "\n");
 
         // Close the JSON object
         writer.write("}\n");
