@@ -79,7 +79,23 @@ public class StampedDetectedObjects {
         this.detectedObjects.add(detectedObject);
     }
 
+    /**
+     * Checks if the list of detected objects contains an object with an ID of "ERROR".
+     *
+     * @return The first DetectedObject with an ID of "ERROR", or {@code null} if no such object exists.
+     * @pre {@code detectedObjects != null} - The list of detected objects must be initialized.
+     * @post If a DetectedObject with an ID of "ERROR" exists, it will be returned. Otherwise, {@code null} is returned.
+     */
+    public DetectedObject isContainError(){
+        for(DetectedObject detectedObject: detectedObjects){
+            if(detectedObject.getId().equals("ERROR")){
+                return detectedObject;
+            }
+        }
+        return null;
+    }
 
+    
     /**
      * @return A string representation of the StampedDetectedObjects object.
      */
