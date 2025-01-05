@@ -6,11 +6,12 @@ import bgu.spl.mics.application.objects.*;
 import bgu.spl.mics.application.services.*;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+//import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
+//import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -35,9 +36,21 @@ public class GurionRockRunner {
      * @param args Command-line arguments. The first argument is expected to be the path to the configuration file.
      */
     public static void main(String[] args) {
+        if (args.length == 0) {
+            System.err.println("Error: No configuration file path provided.");
+            System.exit(1);
+        }
+        
 
-//        String configFilePath = args[0] + " " + args[1];
         String configFilePath = args[0];
+        System.out.println("Configuration file path: " + configFilePath);
+
+        File configFile = new File(configFilePath);
+        if (!configFile.exists()) {
+            System.err.println("Error: Configuration file not found at " + configFile.getAbsolutePath());
+            System.exit(1);
+        }
+
         Gson gson = new Gson();
         try (FileReader reader = new FileReader(configFilePath)) {
             Configuration config = gson.fromJson(reader, Configuration.class);
@@ -119,7 +132,7 @@ public class GurionRockRunner {
                 }
             }
 
-            writeStatsToFile(statisticalFolder, "outputTEST.json");
+            // writeStatsToFile(statisticalFolder, "outputTEST.json");
 
         } catch (IOException | IllegalArgumentException e ) {
             System.err.println("Error: " + e.getMessage());
@@ -152,15 +165,15 @@ public class GurionRockRunner {
         return new java.io.File(new java.io.File(configFilePath).getParent(), relativePath).getAbsolutePath();
     }
 
-    private static void writeStatsToFile(StatisticalFolder stats, String fileName) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        try (FileWriter writer = new FileWriter(fileName)) {
-            gson.toJson(stats, writer);
-            System.out.println("Stats have been written to " + fileName);
-        } catch (IOException e) {
-            System.err.println("Failed to write stats: " + e.getMessage());
-        }
-    }
+    // private static void writeStatsToFile(StatisticalFolder stats, String fileName) {
+    //     Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    //     try (FileWriter writer = new FileWriter(fileName)) {
+    //         gson.toJson(stats, writer);
+    //         System.out.println("Stats have been written to " + fileName);
+    //     } catch (IOException e) {
+    //         System.err.println("Failed to write stats: " + e.getMessage());
+    //     }
+    // }
 
 
 

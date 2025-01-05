@@ -25,23 +25,35 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>
  */
 public abstract class MicroService implements Runnable {
+    // --------------------- fields -------------------------
 
     private boolean terminated = false;
     private final String name;
     private final Map<Class<? extends Message>, Callback<? extends Message>> callbacks = new  ConcurrentHashMap<>();
     protected StatisticalFolder statisticalFolder;
 
+    // --------------------- constructor --------------------
 
     /**
-     * @param name the micro-service name (used mainly for debugging purposes -
-     *             does not have to be unique)
+     * Constructor for the MicroService.
+     *
+     * @param name the name of the MicroService (used mainly for debugging purposes).
      */
     public MicroService(String name) {this.name = name;}
 
+
+    /**
+     * Constructor for the MicroService with statistical folder.
+     *
+     * @param name             the name of the MicroService (used mainly for debugging purposes).
+     * @param statisticalFolder the statistical folder for system statistics.
+     */
     public MicroService(String name, StatisticalFolder statisticalFolder) {
         this.name = name;
         this.statisticalFolder = statisticalFolder;
     }
+
+        // --------------------- methods ------------------------
 
     /**
      * Subscribes to events of type {@code type} with the callback
