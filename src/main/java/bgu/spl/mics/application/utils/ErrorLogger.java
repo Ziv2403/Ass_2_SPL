@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
-import bgu.spl.mics.application.objects.LandMark;
 import bgu.spl.mics.application.objects.Pose;
 import bgu.spl.mics.application.objects.StampedDetectedObjects;
 import bgu.spl.mics.application.objects.StatisticalFolder;
@@ -32,9 +31,11 @@ public class ErrorLogger {
                 Map<String, StampedDetectedObjects> lastCamerasFrame = stats.getLastCameraFrames();
                 int cameraCount = lastCamerasFrame.size();
                 for (Map.Entry<String, StampedDetectedObjects> entry : lastCamerasFrame.entrySet()) {
-            writer.write("    \"" + entry.getKey() + "\":" + gson.toJson(entry.getValue()));
-            if (--cameraCount > 0) writer.write(",\n"); // Add comma if not the last element
-        }
+                    writer.write("    \"" + entry.getKey() + "\":" + gson.toJson(entry.getValue()));
+                    if (--cameraCount > 0){
+                         writer.write(",\n"); // Add comma if not the last element
+                    }
+                }
                 writer.write("\n  },\n");
 
                 // Add LiDAR frames
@@ -42,22 +43,23 @@ public class ErrorLogger {
                 Map<String, TrackedObject> lastLiDarFrame = stats.getLastLiDarFrames();
                 int liDarCount = lastLiDarFrame.size();
                 for (Map.Entry<String, TrackedObject> entry : lastLiDarFrame.entrySet()) {
-            writer.write("    \"" + entry.getKey() + "\": " + gson.toJson(entry.getValue()));
-            if (--liDarCount > 0) writer.write(",\n"); // Add comma if not the last element
-        }
+                    writer.write("    \"" + entry.getKey() + "\": " + gson.toJson(entry.getValue()));
+                    if (--liDarCount > 0) {
+                        writer.write(",\n"); // Add comma if not the last element
+                    }
+                }
                 writer.write("\n  },\n");
 
                 // Add poses
                 writer.write("  \"poses\": [");
                 List<Pose> poses = stats.getPoseOutput();
                 for (int i = 0; i < poses.size(); i++) {
-            Pose pose = poses.get(i);
-            writer.write("{\"time\":" + pose.getTime() + ",\"x\":" + pose.getX() + 
-                 ",\"y\":" + pose.getY() + ",\"yaw\":" + pose.getYaw() + "}");
-                if (i < poses.size() - 1) { // Add comma if not the last element
-                    writer.write(",");
+                    Pose pose = poses.get(i);
+                    writer.write("{\"time\":" + pose.getTime() + ",\"x\":" + pose.getX() + ",\"y\":" + pose.getY() + ",\"yaw\":" + pose.getYaw() + "}");
+                    if (i < poses.size() - 1) { // Add comma if not the last element
+                        writer.write(",");
+                    }
                 }
-        }
                 writer.write("],\n");
 
 

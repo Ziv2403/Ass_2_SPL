@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 /**
  * Holds statistical information about the system's operation.
@@ -225,18 +226,19 @@ public class StatisticalFolder {
         return landMarks;
     }
 
-    /**
-    * Adds a new LandMark to the system.
-    * 
-    * @param id The unique identifier of the LandMark.
-    * @param landMark The LandMark object to be added.
-    * @pre {@code id != null && !id.isEmpty()}
-    * @pre {@code landMark != null}
-    * @post {@code landMarks.containsKey(id) && landMarks.get(id).equals(landMark)}
-    */
-    public void addLandMark(String id, LandMark landMark) {
-        landMarks.put(id, landMark);
-    }
+    // /**
+    // * Adds a new LandMark to the system.
+    // * 
+    // * @param id The unique identifier of the LandMark.
+    // * @param landMark The LandMark object to be added.
+    // * @pre {@code id != null && !id.isEmpty()}
+    // * @pre {@code landMark != null}
+    // * @post {@code landMarks.containsKey(id) && landMarks.get(id).equals(landMark)}
+    // */
+    // public void addLandMark(String id, LandMark landMark) {
+    //     landMarks.put(id, landMark);
+    // }
+
     /**
     * Adds a new LandMark to the system or updates an existing one.
     *
@@ -247,17 +249,45 @@ public class StatisticalFolder {
     * @post {@code landMarks.containsKey(id)}
     */
     public void addOrUpdateLandMark(String id, LandMark newLandMark) {
+        if (id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("LandMark ID cannot be null or empty.");
+        }
+        if (newLandMark == null) {
+            throw new IllegalArgumentException("LandMark cannot be null.");
+        }
+
         landMarks.compute(id, (key, existingLandMark) -> {
             if (existingLandMark == null) {
-                return newLandMark; // Add new LandMark
+                // No existing landmark with this ID, add the new one
+                return newLandMark;
             } else {
-                // Update existing LandMark by merging cloud points
-                List<CloudPoint> updatedPoints = new ArrayList<>(existingLandMark.getCloudPoints());
-                updatedPoints.addAll(newLandMark.getCloudPoints());
-                existingLandMark.setCloudPoints(updatedPoints);
+                // Update existing landmark by merging unique cloud points
+                List<CloudPoint> existingPoints = existingLandMark.getCloudPoints();
+                List<CloudPoint> newPoints = newLandMark.getCloudPoints();
+
+                // Add only new points that don't already exist in the list
+                List<CloudPoint> uniqueNewPoints = newPoints.stream()
+                        .filter(point -> !existingPoints.contains(point))
+                        .collect(Collectors.toList());
+
+                existingPoints.addAll(uniqueNewPoints);
+                existingLandMark.setCloudPoints(existingPoints);
                 return existingLandMark;
             }
-        });
+         });
+
+
+        // landMarks.compute(id, (key, existingLandMark) -> {
+        //     if (existingLandMark == null) {
+        //         return newLandMark; // Add new LandMark
+        //     } else {
+        //         // Update existing LandMark by merging cloud points
+        //         List<CloudPoint> updatedPoints = new ArrayList<>(existingLandMark.getCloudPoints());
+        //         updatedPoints.addAll(newLandMark.getCloudPoints());
+        //         existingLandMark.setCloudPoints(updatedPoints);
+        //         return existingLandMark;
+        //     }
+        // });
     }
 
 

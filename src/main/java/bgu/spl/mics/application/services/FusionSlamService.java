@@ -8,15 +8,19 @@ package bgu.spl.mics.application.services;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 //import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 //import com.google.gson.JsonObject;
+import com.google.gson.JsonObject;
 
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
+import bgu.spl.mics.application.objects.CloudPoint;
 //import bgu.spl.mics.application.objects.CloudPoint;
 import bgu.spl.mics.application.objects.FusionSlam;
 import bgu.spl.mics.application.objects.LandMark;
@@ -168,62 +172,88 @@ public class FusionSlamService extends MicroService {
     // }
 // }
 
-    // /**
-    //  * Creates and writes the simulation's output to a JSON file.
-    //  *
-    //  * @param fileName The name of the output file to write.
-    //  */
-    // private void writeOutputFile(String fileName) {
-    //     try (FileWriter writer = new FileWriter(fileName)) {
-    //         writer.write("{\"systemRuntime\":" + statisticalFolder.getSystemRuntime() + ", ");
-    //         writer.write("\"numDetectedObjects\":" + statisticalFolder.getNumDetectedObjects() + ", ");
-    //         writer.write("\"numTrackedObjects\":" + statisticalFolder.getNumTrackedObjects() + ", ");
-    //         writer.write("\"numLandmarks\":" + statisticalFolder.getNumLandmarks() + ",\n");
-    //         writer.write("\"landMarks\":{\n");
+public static void writeSimulationOutput(String fileName, StatisticalFolder stats) {
+    try (FileWriter writer = new FileWriter(fileName)) {
+        writer.write("{");
 
-    //         List<LandMark> landmarks = fusionSlam.getLandMarkList();
-    //         for (int i = 0; i < landmarks.size(); i++) {
-    //             String landmarkLine = "    " + landmarks.get(i).toString();
-    //             writer.write(landmarkLine);
-    //             if (i < landmarks.size() - 1) {
-    //                 writer.write(",\n"); 
-    //             }
+        // כתיבת הסטטיסטיקות בשורה אחת
+        writer.write("\"systemRuntime\":" + stats.getSystemRuntime() + ",");
+        writer.write("\"numDetectedObjects\":" + stats.getNumDetectedObjects() + ",");
+        writer.write("\"numTrackedObjects\":" + stats.getNumTrackedObjects() + ",");
+        writer.write("\"numLandmarks\":" + stats.getNumLandmarks() + ",\n");
+
+        // כתיבת הלנדמארקס
+        writer.write("\"landMarks\":{");
+        writer.write("\n");
+
+        Map<String, LandMark> landMarks = stats.getLandMarks();
+        int landMarkCount = landMarks.size();
+
+        for (Map.Entry<String, LandMark> entry : landMarks.entrySet()) {
+            String id = entry.getKey();
+            LandMark landMark = entry.getValue();
+
+            writer.write("    \"" + id + "\":{");
+            writer.write("\"id\":\"" + landMark.getId() + "\",");
+            writer.write("\"description\":\"" + landMark.getDescription() + "\",");
+            writer.write("\"coordinates\":[");
+
+            List<CloudPoint> cloudPoints = landMark.getCloudPoints();
+            for (int i = 0; i < cloudPoints.size(); i++) {
+                CloudPoint point = cloudPoints.get(i);
+                writer.write("{\"x\":" + point.getX() + ",\"y\":" + point.getY() + "}");
+                if (i < cloudPoints.size() - 1) {
+                    writer.write(",");
+                }
+            }
+            writer.write("]}, \n");
+
+            if (--landMarkCount > 0) {
+                writer.write(",");
+            }
+
+        }
+        writer.write("    }\n");
+        writer.write("}");
+    } catch (IOException e) {
+        System.err.println("Error writing compact simulation output: " + e.getMessage());
+    }
+}
+
+
+
+
+    
+    // public static void writeSimulationOutput(String fileName, StatisticalFolder stats) {
+    //     Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
+    
+    //     try (FileWriter writer = new FileWriter(fileName)) {
+    //         writer.write("{");
+    
+    //         writer.write("  \"systemRuntime\": " + stats.getSystemRuntime() + ",");
+    //         writer.write("  \"numDetectedObjects\": " + stats.getNumDetectedObjects() + ",");
+    //         writer.write("  \"numTrackedObjects\": " + stats.getNumTrackedObjects() + ",");
+    //         writer.write("  \"numLandmarks\": " + stats.getNumLandmarks() + ",\n");
+    
+    //         writer.write("  \"landMarks\":{\n");
+
+    //         Map<String, LandMark> landMarks = stats.getLandMarks();
+    //         int landMarkCount = landMarks.size();
+
+    //         for (Map.Entry<String, LandMark> entry : landMarks.entrySet()) {
+    //             writer.write("    \"" + entry.getKey() + "\": " + gson.toJson(entry.getValue()));
+    //             if (--landMarkCount > 0) writer.write(","); 
+    //             writer.write("\n"); // Newline between entries
     //         }
-    //         writer.write("\n    }\n}");
-    //         System.out.println("Output written to " + fileName);
+    //         writer.write("}\n");
+    
+    //         writer.write("}\n");
+    //         System.out.println("Simulation output written to " + fileName);
+    
     //     } catch (IOException e) {
-    //         System.err.println("Error writing output file: " + e.getMessage());
+    //         System.err.println("Error writing simulation output: " + e.getMessage());
     //     }
     // }
-
-    
-    public static void writeSimulationOutput(String fileName, StatisticalFolder stats) {
-        Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
-    
-        try (FileWriter writer = new FileWriter(fileName)) {
-            writer.write("{\n");
-    
-            writer.write("  \"systemRuntime\": " + stats.getSystemRuntime() + ",\n");
-            writer.write("  \"numDetectedObjects\": " + stats.getNumDetectedObjects() + ",\n");
-            writer.write("  \"numTrackedObjects\": " + stats.getNumTrackedObjects() + ",\n");
-            writer.write("  \"numLandmarks\": " + stats.getNumLandmarks() + ",\n");
-    
-            writer.write("  \"landMarks\": {\n");
-            Map<String, LandMark> landMarks = stats.getLandMarks();
-            int landMarkCount = landMarks.size();
-            for (Map.Entry<String, LandMark> entry : landMarks.entrySet()) {
-                writer.write("    \"" + entry.getKey() + "\": " + gson.toJson(entry.getValue()));
-                if (--landMarkCount > 0) writer.write(",\n"); // הוספת פסיק אם זה לא האלמנט האחרון
-            }
-            writer.write("\n  }\n");
-    
-            writer.write("}\n");
-            System.out.println("Simulation output written to " + fileName);
-    
-        } catch (IOException e) {
-            System.err.println("Error writing simulation output: " + e.getMessage());
-        }
-    }
     
 
 
