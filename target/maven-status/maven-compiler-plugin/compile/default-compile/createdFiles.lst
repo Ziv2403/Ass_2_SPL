@@ -2,7 +2,6 @@ bgu\spl\mics\application\messages\TickBroadcast.class
 bgu\spl\mics\application\messages\TerminatedBroadcast.class
 bgu\spl\mics\application\objects\Pose.class
 bgu\spl\mics\example\services\ExampleBroadcastListenerService.class
-bgu\spl\mics\application\objects\StatisticalFolder$1.class
 bgu\spl\mics\application\objects\FusionSlam$FusionSlamHolder.class
 bgu\spl\mics\application\objects\StatisticalFolder.class
 bgu\spl\mics\Event.class
@@ -10,9 +9,11 @@ bgu\spl\mics\application\messages\TrackedObjectsEvent.class
 bgu\spl\mics\example\messages\ExampleBroadcast.class
 bgu\spl\mics\application\objects\FusionSlam.class
 bgu\spl\mics\application\services\TimeService.class
+bgu\spl\mics\application\utils\ErrorLogger.class
 bgu\spl\mics\application\services\CameraService.class
 bgu\spl\mics\application\objects\STATUS.class
 bgu\spl\mics\application\messages\DetectObjectsEvent.class
+bgu\spl\mics\application\GurionRockRunner$3.class
 bgu\spl\mics\example\services\ExampleMessageSenderService.class
 bgu\spl\mics\MessageBusImpl.class
 bgu\spl\mics\application\objects\TrackedObject.class
@@ -33,7 +34,9 @@ bgu\spl\mics\Future.class
 bgu\spl\mics\example\messages\ExampleEvent.class
 bgu\spl\mics\application\objects\LiDarDataBase.class
 bgu\spl\mics\application\services\FusionSlamService.class
+bgu\spl\mics\application\objects\FusionSlam$1.class
 bgu\spl\mics\application\GurionRockRunner.class
+bgu\spl\mics\application\GurionRockRunner$2.class
 bgu\spl\mics\application\objects\CloudPoint.class
 bgu\spl\mics\example\ServiceCreator.class
 bgu\spl\mics\application\objects\StampedCloudPoints.class
@@ -45,5 +48,5 @@ bgu\spl\mics\application\objects\Camera.class
 bgu\spl\mics\application\services\LiDarService.class
 bgu\spl\mics\Broadcast.class
 bgu\spl\mics\application\objects\LandMark.class
-bgu\spl\mics\application\objects\StatisticalFolder$StatisticalFolderHolder.class
+bgu\spl\mics\application\GurionRockRunner$1.class
 bgu\spl\mics\example\services\ExampleEventHandlerService.class
