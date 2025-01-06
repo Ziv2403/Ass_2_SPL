@@ -6,47 +6,29 @@
   <component name="ChangeListManager">
     <list default="true" id="53b10173-8894-4155-a24e-f3f22038a002" name="Changes" comment="das">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/output_TEST.json" beforeDir="false" afterPath="$PROJECT_DIR$/output_TEST.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/MessageBusImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/MessageBusImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/MicroService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/MicroService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/GurionRockRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/GurionRockRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/objects/FusionSlam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/objects/FusionSlam.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/objects/LandMark.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/objects/LandMark.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/services/CameraService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/services/CameraService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/services/FusionSlamService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/services/FusionSlamService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/services/LiDarService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/services/LiDarService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/services/PoseService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/services/PoseService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/services/TimeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/services/TimeService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/Future.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/Future.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/MessageBusImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/MessageBusImpl.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/MicroService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/MicroService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/Configuration$CamerasConfiguration.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/Configuration$CamerasConfiguration.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/Configuration$LidarWorkersConfiguration.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/Configuration$LidarWorkersConfiguration.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/Configuration.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/Configuration.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/GurionRockRunner$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/GurionRockRunner$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/GurionRockRunner$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/GurionRockRunner$2.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/GurionRockRunner$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/GurionRockRunner$3.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/GurionRockRunner.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/GurionRockRunner.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/messages/CrashedBroadcast.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/messages/CrashedBroadcast.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/messages/DetectObjectsEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/messages/DetectObjectsEvent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/Camera.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/Camera.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/CloudPoint.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/CloudPoint.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/DetectedObject.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/DetectedObject.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/FusionSlam$FusionSlamHolder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/FusionSlam$FusionSlamHolder.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/FusionSlam.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/FusionSlam.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/GPSIMU.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/GPSIMU.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/LandMark.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/LandMark.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/LiDarDataBase$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/LiDarDataBase$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/LiDarDataBase$LiDarDataBaseHolder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/LiDarDataBase$LiDarDataBaseHolder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/LiDarDataBase.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/LiDarDataBase.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/LiDarWorkerTracker.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/LiDarWorkerTracker.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/Pose.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/Pose.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/StampedCloudPoints.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/StampedCloudPoints.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/StampedDetectedObjects.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/StampedDetectedObjects.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/StatisticalFolder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/StatisticalFolder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/TrackedObject.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/objects/TrackedObject.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/services/CameraService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/services/CameraService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/services/FusionSlamService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/services/FusionSlamService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/services/LiDarService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/services/LiDarService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/services/PoseService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/services/PoseService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/services/TimeService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/services/TimeService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/utils/ErrorLogger.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/bgu/spl/mics/application/utils/ErrorLogger.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,7 +65,7 @@
     "Application.GurionRockRunner2.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "copy",
+    "git-widget-placeholder": "Maybe-FINAL",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "project.structure.last.edited": "Project",
@@ -166,11 +148,6 @@
           <properties class="java.nio.file.InvalidPathException" package="java.nio.file" />
           <option name="timeStamp" value="12" />
         </breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/bgu/spl/mics/application/GurionRockRunner.java</url>
-          <line>186</line>
-          <option name="timeStamp" value="30" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
@@ -178,6 +155,7 @@
         <watch expression="((com.google.gson.internal.LinkedTreeMap.Node)((com.google.gson.internal.LinkedTreeMap)cameraData).entrySet().toArray()[0]).getValue()" custom="com.google.gson.internal.LinkedTreeMap.Node,com.google.gson.internal.LinkedTreeMap" />
         <watch expression="stats.numDetectedObjects" />
         <watch expression="config.Cameras.CamerasConfigurations" />
+        <watch expression="((CameraService)((Object[])((ArrayList)microServices).elementData)[0]).pendingEvents" custom="java.lang.Object[],bgu.spl.mics.application.services.CameraService,java.util.ArrayList" />
       </configuration>
     </watches-manager>
   </component>

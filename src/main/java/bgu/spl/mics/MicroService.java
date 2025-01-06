@@ -1,7 +1,9 @@
 package bgu.spl.mics;
 
 //import java.util.HashMap;
+import bgu.spl.mics.application.messages.CrashedBroadcast;
 import bgu.spl.mics.application.objects.StatisticalFolder;
+import bgu.spl.mics.application.services.TimeService;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,7 +31,7 @@ public abstract class MicroService implements Runnable {
 
     private volatile boolean terminated = false;
     private final String name;
-    private final Map<Class<? extends Message>, Callback<? extends Message>> callbacks = new  ConcurrentHashMap<>();
+    protected final Map<Class<? extends Message>, Callback<? extends Message>> callbacks = new  ConcurrentHashMap<>();
     protected StatisticalFolder statisticalFolder;
 
     // --------------------- constructor --------------------
@@ -157,6 +159,7 @@ public abstract class MicroService implements Runnable {
      */
     protected final void terminate() {
         this.terminated = true;
+        Thread.currentThread().interrupt();
     }
 
     protected boolean isTerminated() {return terminated;}
@@ -175,21 +178,30 @@ public abstract class MicroService implements Runnable {
      */
     @Override
     public final void run() {
-//      MessageBusImpl.getInstance().register(this); DUPLICATE IN MAIN
+        if (this instanceof TimeService) {
+            MessageBusImpl.getInstance().setTimeServiceThread(Thread.currentThread());
+        }
         initialize();
         try {
             while (!terminated) {
                 Message message = MessageBusImpl.getInstance().awaitMessage(this); //If there is no message in the queue, it waits until there is a message.
+
+                if (isTerminated() && !(message instanceof CrashedBroadcast)) {
+                    continue;
+                }
+
                 Callback<Message> callBack = (Callback<Message>) callbacks.get(message.getClass());//Receiving the message
                 if (callBack != null) {//Checks if there is a suitable callback in the callbacks map.
                     callBack.call(message); //Message processing
                 }
             }
         } catch (InterruptedException | NullPointerException e) {
+            System.err.println(getName() + " was interrupted: " + e.getMessage());
             terminate();
         } finally {
             //Resource cleaning:
             MessageBusImpl.getInstance().unregister(this);
+            System.out.println(getName() + " has been unregistered.");
         }
     }
 

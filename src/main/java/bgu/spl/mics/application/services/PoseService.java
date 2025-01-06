@@ -51,6 +51,9 @@ public class PoseService extends MicroService {
     protected void initialize() {
         // Subscribe to TickBroadcast
         subscribeBroadcast(TickBroadcast.class, tick -> {
+            if (gpsimu.getStatus() == STATUS.DOWN) {
+                return;
+            }
             gpsimu.setCurrentTick(tick.getTick());
             Pose pose = gpsimu.getPoseAtTick(); // Get pose from GPSIMU
             if (pose != null) {
@@ -62,6 +65,7 @@ public class PoseService extends MicroService {
 
         // Subscribe to CrashedBroadcast
         subscribeBroadcast(CrashedBroadcast.class, broadcast -> {
+            gpsimu.setStatus(STATUS.DOWN);
             terminate();
             System.out.println(getName() + " received CrashedBroadcast and is terminating.");
 

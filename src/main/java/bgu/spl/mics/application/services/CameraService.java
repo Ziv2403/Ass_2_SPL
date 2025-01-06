@@ -22,7 +22,7 @@ public class CameraService extends MicroService {
     private final Camera camera;
     private final List<StampedDetectedObjects> cameraData;
     private final Map<StampedDetectedObjects, Integer> pendingEvents = new HashMap<>();
-
+    private List<TickBroadcast> processedTicks = new ArrayList<>();
 
     /**
      * Constructor for CameraService.
@@ -48,9 +48,10 @@ public class CameraService extends MicroService {
      */
     @Override
     protected void initialize() {
-        // TODO Implement this
         // Subscribe to TickBroadcast
         subscribeBroadcast(TickBroadcast.class, tick -> {
+            System.out.println(getName() + " processing TickBroadcast for tick: " + tick.getTick());
+            processedTicks.add(tick);
             int currentTick = tick.getTick();
             processPendingEvents(currentTick);
 
@@ -60,16 +61,18 @@ public class CameraService extends MicroService {
                         String description = checkForError(event);
                         if (!description.isEmpty()) {
                             sendBroadcast(new CrashedBroadcast(Thread.currentThread().getName(), description));
-                            break;
+                            camera.setStatus(STATUS.ERROR);
+                            terminate();
+                            sendBroadcast(new TerminatedBroadcast(getName()));
+                            return;
                         }
+
                         int scheduledTime = event.getTime() + camera.getFrequency();
                         if (scheduledTime == currentTick) {
                             sendEvent(new DetectObjectsEvent(event, camera.getId()));
                             statisticalFolder.incrementDetectedObjects(event.getDetectedObjectsList().size());
-                            break;
                         } else {
                             pendingEvents.putIfAbsent(event, scheduledTime); // Store the event for later processing
-                            break; // CHECK AGAIN IF NEEDED FOR OPTIMIZATION PURPOSES
                         }
                     }
                 }
@@ -78,6 +81,7 @@ public class CameraService extends MicroService {
 
         // Subscribe to CrashedBroadcast
         subscribeBroadcast(CrashedBroadcast.class, broadcast -> {
+            if (camera.getStatus() != STATUS.ERROR) { camera.setStatus(STATUS.DOWN); }
             terminate();
             System.out.println(getName() + " received CrashedBroadcast and is terminating.");
 
@@ -86,8 +90,9 @@ public class CameraService extends MicroService {
         // CHECK AGAIN
         // Subscribe to TerminatedBroadcast
         subscribeBroadcast(TerminatedBroadcast.class, terminate -> {
-            System.out.println(getName() + " received TerminatedBroadcast. Terminating...");
+            camera.setStatus(STATUS.DOWN);
             terminate();
+            System.out.println(getName() + " received TerminatedBroadcast. Terminating...");
         });
 
     }

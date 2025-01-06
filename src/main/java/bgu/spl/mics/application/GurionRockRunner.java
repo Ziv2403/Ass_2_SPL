@@ -117,23 +117,23 @@ public class GurionRockRunner {
                 Thread thread = new Thread(m, m.getName());
                 threads.add(thread);
                 thread.start();
-                System.out.println("Starting service: " + thread.getName());
+//                System.out.println("Starting service: " + thread.getName());
             }
 
             // Start timeService (Clock starts ticking)
             microServices.add(timeService);
             Thread timeServiceThread = new Thread(timeService, timeService.getName());
             threads.add(timeServiceThread);
-            System.out.println("Starting service: " + timeServiceThread.getName());
+//            System.out.println("Starting service: " + timeServiceThread.getName());
             timeServiceThread.start();
 
 //            messageBus.printSubscribers();
-            try {
-                Thread.sleep(4000);
-                messageBus.printSubscribers();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+//            try {
+//                Thread.sleep(4000);
+//                messageBus.printSubscribers();
+//            } catch (Exception e) {
+//                throw new RuntimeException(e);
+//            }
 
 
             // -----------------------------------------------------------
@@ -147,8 +147,6 @@ public class GurionRockRunner {
                 }
             }
 
-            // writeStatsToFile(statisticalFolder, "outputTEST.json");
-
         } catch (IOException | IllegalArgumentException e ) {
             System.err.println("Error: " + e.getMessage());
         }
@@ -157,15 +155,6 @@ public class GurionRockRunner {
 
     }
 
-    // Initializing Camera Objects
-    public void initCameraData(String filepath) {
-
-    }
-
-    // Initializing LiDar Objects
-    public void initLiDarData(String filepath) {
-
-    }
 
     private static <T> T loadJsonData(String filePath, Type type) {
         Gson gson = new Gson();
@@ -180,15 +169,6 @@ public class GurionRockRunner {
         return new java.io.File(new java.io.File(configFilePath).getParent(), relativePath).getAbsolutePath();
     }
 
-    // private static void writeStatsToFile(StatisticalFolder stats, String fileName) {
-    //     Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    //     try (FileWriter writer = new FileWriter(fileName)) {
-    //         gson.toJson(stats, writer);
-    //         System.out.println("Stats have been written to " + fileName);
-    //     } catch (IOException e) {
-    //         System.err.println("Failed to write stats: " + e.getMessage());
-    //     }
-    // }
 
     private static int findHighestTime(List<Pose> poses, Map<String, List<StampedDetectedObjects>> cameraData, List<StampedCloudPoints> lidarData) {
         int maxTime = 0;

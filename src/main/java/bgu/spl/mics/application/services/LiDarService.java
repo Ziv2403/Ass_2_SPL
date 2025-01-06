@@ -52,7 +52,7 @@ public class LiDarService extends MicroService {
     @Override
     protected void initialize() {
         int errorTime = validateLiDarDatabaseForErrors();
-        System.out.println("LidarService: initialize() - > errorTime = " + errorTime); //Debug
+//        System.out.println("LidarService: initialize() - > errorTime = " + errorTime); //Debug
 
         // Subscribe to TickBroadcast
         subscribeBroadcast(TickBroadcast.class, tick -> {
@@ -61,7 +61,7 @@ public class LiDarService extends MicroService {
             if (errorTime != -1 && errorTime == currentTick) {
                 handleLiDarError(currentTick); 
                 sendBroadcast(new CrashedBroadcast(String.valueOf(liDarWorkerTracker.getId()), "Detected error in LiDAR"));
-                System.out.println("LidarService: initialize() - > Error detected in LiDAR at time " + currentTick + ". Report generated.");
+//                System.out.println("LidarService: initialize() - > Error detected in LiDAR at time " + currentTick + ". Report generated.");
                 terminate();
             }
             
@@ -89,13 +89,14 @@ public class LiDarService extends MicroService {
 
         // Subscribe to CrashedBroadcast
         subscribeBroadcast(CrashedBroadcast.class, broadcast -> {
+            liDarWorkerTracker.setStatus(STATUS.DOWN);
             terminate();
             System.out.println(getName() + " received CrashedBroadcast and is terminating.");
-
         });
 
         // Subscribe to TerminatedBroadcast
         subscribeBroadcast(TerminatedBroadcast.class, broadcast -> {
+            liDarWorkerTracker.setStatus(STATUS.DOWN);
             terminate();
         });
 

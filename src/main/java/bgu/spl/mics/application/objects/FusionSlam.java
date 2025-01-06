@@ -170,13 +170,13 @@ public class FusionSlam {
      * @pre {@code landmark != null && newCoordinates != null}
      */
     private void updateExistingLandmark(LandMark landmark, List<CloudPoint> newCoordinates) {
-        System.out.println("[FusionSlam - updateExistingLandmark] Updating LandMark: " + landmark.getId()); //DEBUG
-        System.out.println("[FusionSlam - updateExistingLandmark] Existing points: " + landmark.getCloudPoints());//DEBUG
-        System.out.println("[FusionSlam - updateExistingLandmark] New points: " + newCoordinates);//DEBUG
+//        System.out.println("[FusionSlam - updateExistingLandmark] Updating LandMark: " + landmark.getId()); //DEBUG
+//        System.out.println("[FusionSlam - updateExistingLandmark] Existing points: " + landmark.getCloudPoints());//DEBUG
+//        System.out.println("[FusionSlam - updateExistingLandmark] New points: " + newCoordinates);//DEBUG
     
         landmark.updateCloudPoints(newCoordinates);
 
-        System.out.println("[FusionSlam - updateExistingLandmark] Updated points: " + landmark.getCloudPoints());//DEBUG
+//        System.out.println("[FusionSlam - updateExistingLandmark] Updated points: " + landmark.getCloudPoints());//DEBUG
         // List<CloudPoint> existingCoordinates = landmark.getCloudPoints();
 
         // // Loop over the existing and new points to calculate an average

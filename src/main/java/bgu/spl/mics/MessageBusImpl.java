@@ -1,4 +1,7 @@
 package bgu.spl.mics;
+import bgu.spl.mics.application.messages.CrashedBroadcast;
+import bgu.spl.mics.application.services.TimeService;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -22,6 +25,7 @@ public class MessageBusImpl implements MessageBus {
 	private final Map<Class<? extends Event>, Queue<MicroService>> eventSubscribers = new ConcurrentHashMap<>();// Mapping each Event type to a queue of its subscribers (supports Round-Robin)
 	private final Map<Class<? extends Broadcast>, List<MicroService>> broadcastSubscribers = new ConcurrentHashMap<>(); // Mapping each Broadcast type to a list of its subscribers
 	private final Map<Event<?>, Future<?>> eventFutures = new ConcurrentHashMap<>();
+	private Thread timeServiceThread;
 
     // --------------------- SingletonImplemment -------------------------
 
@@ -117,6 +121,7 @@ public class MessageBusImpl implements MessageBus {
 	public void sendBroadcast(Broadcast b) {
 		List<MicroService> subscribers = broadcastSubscribers.get(b.getClass());// Take the list of the type of broadcast we want to send.
 		if (subscribers == null) {
+			System.err.println("No subscribers for broadcast: " + b.getClass().getSimpleName());
 			return;
 		}
 
@@ -125,8 +130,14 @@ public class MessageBusImpl implements MessageBus {
 			BlockingQueue<Message> queue = queues.get(m);
 			if (queue != null) {
 				queue.offer(b);
+				System.out.println(Thread.currentThread().getName() + " Broadcasting " + b.getClass().getSimpleName() + " to " + m.getName());
 			}
+		}
 
+		// Interrupt TimeService thread if the broadcast is a CrashedBroadcast
+		if (b instanceof CrashedBroadcast && timeServiceThread != null && timeServiceThread.isAlive()) {
+			timeServiceThread.interrupt();
+			System.out.println("Interrupting TimeService thread: " + timeServiceThread.getName());
 		}
 	}
 
@@ -178,6 +189,7 @@ public class MessageBusImpl implements MessageBus {
 	public void register(MicroService m) {
 		// Add new entries only if they don't exist
 		queues.putIfAbsent(m, new LinkedBlockingDeque<>());
+
 	}
 
 
@@ -198,6 +210,11 @@ public class MessageBusImpl implements MessageBus {
 
     	// Remove the MicroService from all Broadcast subscriber lists
     	broadcastSubscribers.values().forEach(list -> list.remove(m));
+
+		if (m instanceof TimeService) {
+			timeServiceThread = null;
+			System.out.println(m.getName() + " unregistered and TimeService thread reference cleared.");
+		}
 	}
 
 
@@ -217,7 +234,12 @@ public class MessageBusImpl implements MessageBus {
 		if (queue == null) {
 			throw new IllegalStateException("MicroService not registered");
 		}
-		return queue.take(); // Waits until a message is available
+		try {
+			return queue.take(); // Waits until a message is available
+		} catch (InterruptedException e) {
+			System.out.println(m.getName() + " was interrupted while waiting for a message.");
+			throw e; // Re-throw to allow the service to terminate
+		}
 	}
 
 
@@ -228,5 +250,11 @@ public class MessageBusImpl implements MessageBus {
 		System.out.println("Event Subscribers: " + eventSubscribers);
 		System.out.println("Broadcast Subscribers: " + broadcastSubscribers);
 	}
+
+	public void setTimeServiceThread(Thread thread) {
+		this.timeServiceThread = thread;
+		System.out.println("TimeService thread set to: " + thread.getName());
+	}
+
 
 }

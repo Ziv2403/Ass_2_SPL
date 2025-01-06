@@ -81,7 +81,7 @@ public class LandMark {
      */
     public void addCloudPoint(CloudPoint cloudPoint) {
         cloudPoints.add(cloudPoint);
-        System.out.println("[LandMark - addCloudPoint] Adding CloudPoint: " + cloudPoint); //DEBUG
+//        System.out.println("[LandMark - addCloudPoint] Adding CloudPoint: " + cloudPoint); //DEBUG
 
     }
 
@@ -133,11 +133,11 @@ public class LandMark {
 
     public void updateCloudPoints(List<CloudPoint> newPoints) {
     if (newPoints == null || newPoints.isEmpty()) {
-        System.out.println("[LandMark - updateCloudPoints] No new points to update.");
+//        System.out.println("[LandMark - updateCloudPoints] No new points to update.");
         return;
     }
 
-    System.out.println("[LandMark - updateCloudPoints] Updating CloudPoints for LandMark ID: " + Id);
+//    System.out.println("[LandMark - updateCloudPoints] Updating CloudPoints for LandMark ID: " + Id);
 
     Set<String> existingPointsSet = new HashSet<>();
     for (CloudPoint point : cloudPoints) {
@@ -149,9 +149,9 @@ public class LandMark {
         if (!existingPointsSet.contains(pointKey)) {
             cloudPoints.add(newPoint);
             existingPointsSet.add(pointKey);
-            System.out.println("[LandMark - updateCloudPoints] Added new CloudPoint: " + newPoint);
+//            System.out.println("[LandMark - updateCloudPoints] Added new CloudPoint: " + newPoint);
         } else {
-            System.out.println("[LandMark - updateCloudPoints] Duplicate point skipped: " + newPoint);
+//            System.out.println("[LandMark - updateCloudPoints] Duplicate point skipped: " + newPoint);
         }
     }
 

@@ -1,5 +1,8 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.Callback;
+import bgu.spl.mics.Message;
+import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.CrashedBroadcast;
 import bgu.spl.mics.application.messages.TerminatedBroadcast;
@@ -125,13 +128,14 @@ public class TimeService extends MicroService {
 
         // Subscribe to CrashedBroadcast
         subscribeBroadcast(CrashedBroadcast.class, broadcast -> {
-            System.out.println(getName() + " received CrashedBroadcast.");
+            System.out.println(getName() + " received CrashedBroadcast and is terminating.");
             terminate();
         });
 
         try {
             // Main loop: Broadcast ticks while not terminated and within duration
             while (currentTick < duration && !isTerminated()) {
+                System.out.println();
                 System.out.println("TimeService broadcasting Tick: " + currentTick);
 
                 // Broadcast the current tick
@@ -145,7 +149,7 @@ public class TimeService extends MicroService {
                     Thread.sleep(tickTime * 1000L);
                 } catch (InterruptedException e) {
                     System.err.println("TimeService sleep interrupted: " + e.getMessage());
-                    Thread.currentThread().interrupt(); // Restore interrupted status
+                    drainPendingMessages();
                     break; // Exit the loop on interruption
                 }
 
@@ -166,4 +170,18 @@ public class TimeService extends MicroService {
         }
     }
 
+    // Helper method to drain remaining messages
+    private void drainPendingMessages() {
+        try {
+            while (!isTerminated()) {
+                Message message = MessageBusImpl.getInstance().awaitMessage(this);
+                Callback<Message> callback = (Callback<Message>) callbacks.get(message.getClass());
+                if (callback != null) {
+                    callback.call(message);
+                }
+            }
+        } catch (InterruptedException e) {
+            System.out.println(getName() + " interrupted while processing remaining messages.");
+        }
+    }
 }
