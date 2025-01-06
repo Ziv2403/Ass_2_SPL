@@ -47,18 +47,29 @@ public class CloudPoint {
      * @post {@code this.x == (oldX + newPoint.getX()) / 2}
      * @post {@code this.y == (oldY + newPoint.getY()) / 2}
      */
-    public void update(CloudPoint newPoint) {
-        this.x = (this.x + newPoint.getX()) / 2;
-        this.y = (this.y + newPoint.getY()) / 2;
+    public void setCloudPoint(CloudPoint newPoint) {
+        this.x = newPoint.getX();
+        this.y = newPoint.getY();
     }
 
+    public void setX(double x) {
+        this.x = x;
+    }
 
+    public void setY(double y) {
+        this.y = y;
+    }
     /**
      * @return A string representation of the CloudPoint in JSON format.
      */
     @Override
     public String toString() {
         return "{" + '"'+ "x" +'"'+":" + x + ","+'"'+"y"+'"'+":" + y + "}";
+    }
+
+    public void updatePoint(CloudPoint cloudPoint) {
+        this.x = (this.x + cloudPoint.getX())/2.0;
+        this.y = ( this.y + cloudPoint.getY())/2.0;
     }
 
 

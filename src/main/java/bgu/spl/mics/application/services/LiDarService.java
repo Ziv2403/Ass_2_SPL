@@ -120,17 +120,17 @@ public class LiDarService extends MicroService {
                 List<TrackedObject> trackedObjects = liDarWorkerTracker.processDetectObjectsEvent(event, liDarDataBase);
 
                 if (trackedObjects == null || trackedObjects.isEmpty()) {
-                    System.err.println(getName() + ": No tracked objects for event: " + event);//DEBUG
+                    //System.err.println(getName() + ": No tracked objects for event: " + event);//DEBUG
                 } else {
                     readyTrackedObjects.addAll(trackedObjects);
-                    System.out.println(getName() + ": Added " + trackedObjects.size() + " tracked objects.");
+                    //System.out.println(getName() + ": Added " + trackedObjects.size() + " tracked objects.");
                 }
                 iterator.remove(); // Remove processed event
             }
         }
 
         if (!readyTrackedObjects.isEmpty()) {
-            System.out.println(getName() + ": Sending TrackedObjectsEvent for " + readyTrackedObjects.size() + " objects.");
+            //System.out.println(getName() + ": Sending TrackedObjectsEvent for " + readyTrackedObjects.size() + " objects.");
             TrackedObjectsEvent newEvent = new TrackedObjectsEvent(readyTrackedObjects);
             sendEvent(newEvent);
             statisticalFolder.incrementTrackedObjects(readyTrackedObjects.size());

@@ -88,7 +88,7 @@ public class FusionSlam {
         double yawRad = toRadians(pose.getYaw());
         double xGlobal = cos(yawRad) * localPoint.getX() - sin(yawRad) * localPoint.getY() + pose.getX();
         double yGlobal = sin(yawRad) * localPoint.getX() + cos(yawRad) * localPoint.getY() + pose.getY();
-        return new CloudPoint( xGlobal, yGlobal);
+        return new CloudPoint(xGlobal, yGlobal);
     }
 
     /**
@@ -170,13 +170,32 @@ public class FusionSlam {
      * @pre {@code landmark != null && newCoordinates != null}
      */
     private void updateExistingLandmark(LandMark landmark, List<CloudPoint> newCoordinates) {
-        List<CloudPoint> existingCoordinates = landmark.getCloudPoints();
+        System.out.println("[FusionSlam - updateExistingLandmark] Updating LandMark: " + landmark.getId()); //DEBUG
+        System.out.println("[FusionSlam - updateExistingLandmark] Existing points: " + landmark.getCloudPoints());//DEBUG
+        System.out.println("[FusionSlam - updateExistingLandmark] New points: " + newCoordinates);//DEBUG
+    
+        landmark.updateCloudPoints(newCoordinates);
 
-        int minSize = Math.min(existingCoordinates.size(), newCoordinates.size());
+        System.out.println("[FusionSlam - updateExistingLandmark] Updated points: " + landmark.getCloudPoints());//DEBUG
+        // List<CloudPoint> existingCoordinates = landmark.getCloudPoints();
 
-        for (int i = 0; i <  minSize; i++) {
-            existingCoordinates.get(i).update(newCoordinates.get(i));
-        }
+        // // Loop over the existing and new points to calculate an average
+        // int minSize = Math.min(existingCoordinates.size(), newCoordinates.size());
+
+        // for (int i = 0; i <  minSize; i++) {
+        //     CloudPoint oldPoint = existingCoordinates.get(i);
+        //     CloudPoint newPoint = newCoordinates.get(i);
+
+        //     double avgX = (oldPoint.getX() + newPoint.getX()) / 2.0;
+        //     double avgY = (oldPoint.getY() + newPoint.getY()) / 2.0;
+        //     oldPoint.setCloudPoint(new CloudPoint(avgX, avgY));
+        // }
+
+        // for (int i = minSize; i < newCoordinates.size(); i++) {
+        //     existingCoordinates.add(newCoordinates.get(i));
+        // }
+
+        // landmark.setCloudPoints(existingCoordinates);
     }
 
 
