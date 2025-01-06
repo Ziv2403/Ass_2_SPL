@@ -90,6 +90,8 @@ public class LiDarService extends MicroService {
         // Subscribe to CrashedBroadcast
         subscribeBroadcast(CrashedBroadcast.class, broadcast -> {
             terminate();
+            System.out.println(getName() + " received CrashedBroadcast and is terminating.");
+
         });
 
         // Subscribe to TerminatedBroadcast
@@ -134,7 +136,7 @@ public class LiDarService extends MicroService {
             TrackedObjectsEvent newEvent = new TrackedObjectsEvent(readyTrackedObjects);
             sendEvent(newEvent);
             statisticalFolder.incrementTrackedObjects(readyTrackedObjects.size());
-            statisticalFolder.addLiDarFrame(liDarWorkerTracker.getLiDarKey(), newEvent.getTrackedObjects().getLast());//NOT SURE ABOUT THE PARAMETERS CORRECNESS
+            statisticalFolder.addLiDarFrame(liDarWorkerTracker.getLiDarKey(), newEvent.getTrackedObjects().get(newEvent.getTrackedObjects().size() - 1));//NOT SURE ABOUT THE PARAMETERS CORRECTNESS
 
         } else {
             System.out.println(getName() + ": No tracked objects to send for current tick.");
@@ -152,7 +154,7 @@ public class LiDarService extends MicroService {
             TrackedObjectsEvent newEvent = new TrackedObjectsEvent(trackedObjects);
             sendEvent(newEvent);
             statisticalFolder.incrementTrackedObjects(trackedObjects.size());
-            statisticalFolder.addLiDarFrame(liDarWorkerTracker.getLiDarKey(), newEvent.getTrackedObjects().getLast());//NOT SURE ABOUT THE PARAMETERS CORRECNESS
+            statisticalFolder.addLiDarFrame(liDarWorkerTracker.getLiDarKey(), newEvent.getTrackedObjects().get(newEvent.getTrackedObjects().size() - 1));//NOT SURE ABOUT THE PARAMETERS CORRECNESS
 
         }
     }
@@ -160,10 +162,9 @@ public class LiDarService extends MicroService {
     /**
     * Handles an error detected in a LiDAR event.
     *
-    * @param event The LiDAR event containing the error.
     * @param currentTick The current tick of the simulation.
     */
-    private void handleLiDarError( int currentTick) {
+    private void handleLiDarError(int currentTick) {
         liDarWorkerTracker.setStatus(STATUS.ERROR);
 
         ErrorLogger.writeFormattedErrorReport( "lidar_error_report.json","Error detected in LiDAR data", liDarWorkerTracker.getLiDarKey(),statisticalFolder);

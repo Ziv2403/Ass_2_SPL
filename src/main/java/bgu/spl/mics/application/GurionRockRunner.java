@@ -40,8 +40,8 @@ public class GurionRockRunner {
             System.err.println("Error: No configuration file path provided.");
             System.exit(1);
         }
-        
 
+//        String configFilePath = args[0] + " " + args[1];
         String configFilePath = args[0];
         System.out.println("Configuration file path: " + configFilePath);
 
@@ -65,17 +65,27 @@ public class GurionRockRunner {
             Map<String, List<StampedDetectedObjects>> cameraData = loadJsonData(cameraFilePath, new TypeToken<Map<String, List<StampedDetectedObjects>>>() {}.getType());
             List<StampedCloudPoints> lidarData = loadJsonData(lidarFilePath, new TypeToken<List<StampedCloudPoints>>() {}.getType());
 
+            // Find the highest time across all data sources
+            int highestTime = findHighestTime(poses, cameraData, lidarData);
+            System.out.println("Highest time from all data sources: " + highestTime);
+            // Calculate the smallest duration needed
+            int effectiveDuration = Math.min(highestTime, config.getDuration());
+            System.out.println("Effective simulation duration: " + effectiveDuration);
+
             GPSIMU gpsimu = new GPSIMU(1, STATUS.UP, poses);
             LiDarDataBase liDarDataBase = new LiDarDataBase(lidarData);
             StatisticalFolder statisticalFolder = new StatisticalFolder();
             FusionSlam fusionSlam = FusionSlam.getInstance();
+
+
 
             // ------------ Create, register and start services ------------
             List<MicroService> microServices = new ArrayList<>();
             List<Thread> threads = new ArrayList<>();
 
             // Time Service
-            TimeService timeService = new TimeService(config.getTickTime(), config.getDuration(), statisticalFolder);
+//            TimeService timeService = new TimeService(config.getTickTime(), config.getDuration(), statisticalFolder);
+            TimeService timeService = new TimeService(config.getTickTime(), effectiveDuration, statisticalFolder);
             messageBus.register(timeService);
 
             // Camera Services
@@ -118,8 +128,13 @@ public class GurionRockRunner {
             timeServiceThread.start();
 
 //            messageBus.printSubscribers();
-//            Thread.sleep(4000);
-//            messageBus.printSubscribers();
+            try {
+                Thread.sleep(4000);
+                messageBus.printSubscribers();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
 
             // -----------------------------------------------------------
 
@@ -137,9 +152,9 @@ public class GurionRockRunner {
         } catch (IOException | IllegalArgumentException e ) {
             System.err.println("Error: " + e.getMessage());
         }
-        // TODO: Initialize system components and services.
 
-        // TODO: Start the simulation.
+
+
     }
 
     // Initializing Camera Objects
@@ -175,6 +190,28 @@ public class GurionRockRunner {
     //     }
     // }
 
+    private static int findHighestTime(List<Pose> poses, Map<String, List<StampedDetectedObjects>> cameraData, List<StampedCloudPoints> lidarData) {
+        int maxTime = 0;
+
+        // Find max time from poses
+        for (Pose pose : poses) {
+            maxTime = Math.max(maxTime, pose.getTime());
+        }
+
+        // Find max time from camera data
+        for (List<StampedDetectedObjects> cameraEntries : cameraData.values()) {
+            for (StampedDetectedObjects detectedObjects : cameraEntries) {
+                maxTime = Math.max(maxTime, detectedObjects.getTime());
+            }
+        }
+
+        // Find max time from lidar data
+        for (StampedCloudPoints cloudPoints : lidarData) {
+            maxTime = Math.max(maxTime, cloudPoints.getTime());
+        }
+
+        return maxTime;
+    }
 
 
 

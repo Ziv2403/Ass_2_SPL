@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.CrashedBroadcast;
 import bgu.spl.mics.application.messages.TerminatedBroadcast;
 import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.objects.StatisticalFolder;
@@ -47,34 +48,122 @@ public class TimeService extends MicroService {
      * Initializes the TimeService.
      * Starts broadcasting TickBroadcast messages and terminates after the specified duration.
      */
+//    @Override
+//    protected void initialize() {
+//        try {
+//            // Subscribe to CrashedBroadcast
+//            subscribeBroadcast(CrashedBroadcast.class, broadcast -> {
+//                terminate();
+//                System.out.println(getName() + " received CrashedBroadcast and is terminating.");
+//            });
+//
+//            while (currentTick < duration && !isTerminated()) {
+//                System.out.println("Current tick: " + currentTick);
+//                //Send TickBroadcast to all microService
+//                sendBroadcast(new TickBroadcast(currentTick));
+//
+//                //Update StatisticalFolder
+//                statisticalFolder.incrementSystemRuntime();
+//
+//                //Wait until the next tick
+//                long tickTimeInSeconds = (long)tickTime*1000;
+//                Thread.sleep(tickTimeInSeconds);
+//
+//                currentTick++;
+//            }
+//            //When timeOut --> send TerminatedBroadcast
+//            sendBroadcast(new TerminatedBroadcast(getName()));
+//
+//            Thread.sleep(1000);
+//            terminate();
+//
+//        } catch (InterruptedException e) {
+//            System.err.println("TimeService interrupted: " + e.getMessage());
+//        }
+//    }
+//    @Override
+//    protected void initialize() {
+//        try {
+//            // Subscribe to CrashedBroadcast
+//            subscribeBroadcast(CrashedBroadcast.class, broadcast -> {
+//                System.out.println("TimeService received CrashedBroadcast.");
+//                terminate();
+//            });
+//
+//            while (currentTick < duration && !isTerminated()) {
+//                // Broadcast current tick
+//                sendBroadcast(new TickBroadcast(currentTick));
+//                System.out.println("Tick: " + currentTick);
+//
+//                // Simulate runtime
+//                statisticalFolder.incrementSystemRuntime();
+//
+//                // Sleep for tick duration
+//                try {
+//                    Thread.sleep(tickTime * 1000L);
+//                } catch (InterruptedException e) {
+//                    System.err.println("TimeService sleep interrupted: " + e.getMessage());
+//                    break; // Exit loop if interrupted
+//                }
+//
+//                currentTick++;
+//            }
+//
+//            // Notify termination
+//            sendBroadcast(new TerminatedBroadcast(getName()));
+//            System.out.println("TimeService terminated normally.");
+//
+//        } catch (Exception e) {
+//            System.err.println("Error in TimeService: " + e.getMessage());
+//        } finally {
+//            terminate();
+//        }
+//    }
     @Override
     protected void initialize() {
+        System.out.println("TimeService is initializing...");
+
+        // Subscribe to CrashedBroadcast
+        subscribeBroadcast(CrashedBroadcast.class, broadcast -> {
+            System.out.println(getName() + " received CrashedBroadcast.");
+            terminate();
+        });
+
         try {
-            while (currentTick < duration) {
-                System.out.println("Current tick: " + currentTick);
-                //Send TickBroadcast to all microService
+            // Main loop: Broadcast ticks while not terminated and within duration
+            while (currentTick < duration && !isTerminated()) {
+                System.out.println("TimeService broadcasting Tick: " + currentTick);
+
+                // Broadcast the current tick
                 sendBroadcast(new TickBroadcast(currentTick));
 
-
-
-                //Update StatisticalFolder
+                // Simulate runtime
                 statisticalFolder.incrementSystemRuntime();
 
-                //Wait until the next tick
-                long tickTimeInSeconds = (long)tickTime*1000;
-                Thread.sleep(tickTimeInSeconds);
+                // Sleep for the tick duration
+                try {
+                    Thread.sleep(tickTime * 1000L);
+                } catch (InterruptedException e) {
+                    System.err.println("TimeService sleep interrupted: " + e.getMessage());
+                    Thread.currentThread().interrupt(); // Restore interrupted status
+                    break; // Exit the loop on interruption
+                }
 
                 currentTick++;
-
             }
-            //When timeOut --> send TerminatedBroadcast
+
+            // If duration is completed or terminated, notify termination
+            System.out.println("TimeService broadcasting TerminatedBroadcast.");
             sendBroadcast(new TerminatedBroadcast(getName()));
 
-            Thread.sleep(1000);
+        } catch (Exception e) {
+            // Log unexpected errors
+            System.err.println("Error in TimeService: " + e.getMessage());
+        } finally {
+            // Ensure proper termination
+            System.out.println("TimeService is terminating.");
             terminate();
-
-        } catch (InterruptedException e) {
-            System.err.println("TimeService interrupted: " + e.getMessage());
         }
     }
+
 }

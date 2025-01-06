@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class MicroService implements Runnable {
     // --------------------- fields -------------------------
 
-    private boolean terminated = false;
+    private volatile boolean terminated = false;
     private final String name;
     private final Map<Class<? extends Message>, Callback<? extends Message>> callbacks = new  ConcurrentHashMap<>();
     protected StatisticalFolder statisticalFolder;
@@ -159,6 +159,8 @@ public abstract class MicroService implements Runnable {
         this.terminated = true;
     }
 
+    protected boolean isTerminated() {return terminated;}
+
     /**
      * @return the name of the service - the service name is given to it in the
      *         construction time and is used mainly for debugging purposes.
@@ -183,11 +185,12 @@ public abstract class MicroService implements Runnable {
                     callBack.call(message); //Message processing
                 }
             }
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | NullPointerException e) {
             terminate();
+        } finally {
+            //Resource cleaning:
+            MessageBusImpl.getInstance().unregister(this);
         }
-        //Resource cleaning:
-        MessageBusImpl.getInstance().unregister(this);
     }
 
 }

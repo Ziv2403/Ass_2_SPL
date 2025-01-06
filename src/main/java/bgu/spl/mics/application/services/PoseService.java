@@ -63,6 +63,8 @@ public class PoseService extends MicroService {
         // Subscribe to CrashedBroadcast
         subscribeBroadcast(CrashedBroadcast.class, broadcast -> {
             terminate();
+            System.out.println(getName() + " received CrashedBroadcast and is terminating.");
+
         });
 
         // Subscribe to CrashedBroadcast
