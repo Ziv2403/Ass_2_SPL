@@ -3,6 +3,7 @@ package bgu.spl.mics.application.services;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.objects.*;
+import bgu.spl.mics.application.utils.ErrorLogger;
 
 import java.util.*;
 
@@ -48,31 +49,21 @@ public class CameraService extends MicroService {
      */
     @Override
     protected void initialize() {
-        // TODO Implement this
         // Subscribe to TickBroadcast
         subscribeBroadcast(TickBroadcast.class, tick -> {
             int currentTick = tick.getTick();
-            processPendingEvents(currentTick);
+            if(!pendingEvents.isEmpty()){
+                processPendingEvents(currentTick);
+            }
 
             if (cameraData != null) {
-                for (StampedDetectedObjects event : cameraData) {
-                    if (event.getTime() == currentTick) {
-                        String description = checkForError(event);
-                        if (!description.isEmpty()) {
-                            sendBroadcast(new CrashedBroadcast(Thread.currentThread().getName(), description));
-                            break;
-                        }
-                        int scheduledTime = event.getTime() + camera.getFrequency();
-                        if (scheduledTime == currentTick) {
-                            sendEvent(new DetectObjectsEvent(event, camera.getId()));
-                            statisticalFolder.incrementDetectedObjects(event.getDetectedObjectsList().size());
-                            break;
-                        } else {
-                            pendingEvents.putIfAbsent(event, scheduledTime); // Store the event for later processing
-                            break; // CHECK AGAIN IF NEEDED FOR OPTIMIZATION PURPOSES
-                        }
-                    }
-                }
+                processCameraData(currentTick);
+            }
+
+            if(cameraData.isEmpty() && pendingEvents.isEmpty()){
+                camera.setStatus(STATUS.DOWN);
+                // System.out.println("Initialize ->" + camera.getCameraKey() + "status DOWN");//DEBUG
+                terminate();
             }
         });
 
@@ -92,32 +83,115 @@ public class CameraService extends MicroService {
 
     }
 
-    /**
+    // /**
+    //  * Processes events that are ready for sending at the current tick.
+    //  *
+    //  * @param currentTick The current tick of the simulation.
+    //  */
+    // private String checkForError(StampedDetectedObjects event) {
+    //     List<DetectedObject> list = event.getDetectedObjectsList();
+    //     for (DetectedObject obj : list) {
+    //         if (obj.getId().equals("ERROR")) {
+    //             return obj.getDescription();
+    //         }
+    //     }
+    //     return "";
+    // }
+
+        /**
      * Processes events that are ready for sending at the current tick.
      *
      * @param currentTick The current tick of the simulation.
+     * @pre {@code currentTick >= 0}
+     * @post {@code pendingEvents.size() <= pendingEvents.size()@pre}
      */
     private void processPendingEvents(int currentTick) {
         Iterator<Map.Entry<StampedDetectedObjects, Integer>> iterator = pendingEvents.entrySet().iterator();
 
         while (iterator.hasNext()) {
             Map.Entry<StampedDetectedObjects, Integer> entry = iterator.next();
-            if (currentTick >= entry.getValue()) {
-                sendEvent(new DetectObjectsEvent(entry.getKey(), camera.getId()));
-                statisticalFolder.incrementDetectedObjects(entry.getKey().getDetectedObjectsList().size());
+            if (currentTick >= entry.getValue()) { //what happend if else? need to wait and stop processing?
+                StampedDetectedObjects event = entry.getKey();
+
+                if (event.isContainError() == null) {
+                    sendEvent(new DetectObjectsEvent(entry.getKey(), camera.getId()));
+                    statisticalFolder.addCameraFrame(camera.getCameraKey(), event);
+                    statisticalFolder.incrementDetectedObjects(entry.getKey().getDetectedObjectsList().size());
+                    iterator.remove();
+                } else {
+                    //System.out.println("ProcessPendingEvent -> Found Error in Stamped" + event.toString() + "detectedError is: " + event.isContainError().toString());
+                    handleError(event, currentTick); // Handle error when time matches
+                    iterator.remove();
+                    return; // Stop further processing for this tick
+                }
+
+
+            }
+        }
+    }
+
+        /**
+     * Processes camera data for the current tick.
+     *
+     * @param currentTick The current tick of the simulation.
+     * @pre {@code currentTick >= 0}
+     * @post {@code cameraData.size() <= cameraData.size()@pre}
+     */
+    private void processCameraData(int currentTick) {
+        Iterator<StampedDetectedObjects> iterator = cameraData.iterator();
+        while (iterator.hasNext()) {
+            StampedDetectedObjects event = iterator.next();
+            if (event.getTime() == currentTick) {
+
+                //not sure if need: check if need to insert into pendingEvents
+                if (event.getDetectedObjectsList().isEmpty()) {
+                    // System.out.println("processCameraData -> No detected objects for event at time: " + event.getTime()); //DEBUG
+                    iterator.remove(); 
+                    continue;
+                }
+                
+                //When the currentTick is the desired processing time --> process immediately
+                if (currentTick == event.getTime() + camera.getFrequency() && event.isContainError() == null) {
+                    //System.out.println("processCameraData -> immediately processing:" + event.toString()); //DEBUG
+                    sendEvent(new DetectObjectsEvent(event, camera.getId()));
+
+                    statisticalFolder.incrementDetectedObjects(event.getDetectedObjectsList().size());
+                    //System.out.println("processCameraData -> lastFrame of" + camera.getCameraKey() + "is: " + event.toString() ); //Debug
+                    statisticalFolder.addCameraFrame(camera.getCameraKey(), event);
+                
+                //Otherwise, sent for later processing
+                } else {
+                    int scheduledTime = event.getTime() + camera.getFrequency();
+                    //System.out.println("processCameraData -> Insert into waitingList: " + event.toString() + ", currentTime:" + currentTick + "processTime will be: " + scheduledTime); //Debug
+                    pendingEvents.put(event, scheduledTime);
+                }
                 iterator.remove();
             }
         }
     }
 
-    private String checkForError(StampedDetectedObjects event) {
-        List<DetectedObject> list = event.getDetectedObjectsList();
-        for (DetectedObject obj : list) {
-            if (obj.getId().equals("ERROR")) {
-                return obj.getDescription();
-            }
-        }
-        return "";
+
+
+    /**
+     * Handles an event that contains an error.
+     *
+     * @param event The event containing the error.
+     * @pre {@code containsError(event)}
+     * @post {@code camera.getStatus() == STATUS.ERROR}
+     */
+    private void handleError(StampedDetectedObjects event, int currentTick) {
+        camera.setStatus(STATUS.ERROR);
+
+        DetectedObject detectedError = event.isContainError();
+        // System.out.println("handlerError -> detectedError:" + detectedError.toString()); //debug
+
+        // System.out.println("handlerError -> write report! at time:" + currentTick); //debug
+        ErrorLogger.writeFormattedErrorReport("error_output.json", detectedError.getDescription(), camera.getCameraKey(), statisticalFolder);
+
+        // Send CrashedBroadcast
+        sendBroadcast(new CrashedBroadcast(camera.getCameraKey(), "Detected error in event"));
+
+        terminate();
     }
 }
 

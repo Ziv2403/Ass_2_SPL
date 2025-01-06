@@ -52,7 +52,7 @@ public class LiDarService extends MicroService {
     @Override
     protected void initialize() {
         int errorTime = validateLiDarDatabaseForErrors();
-        System.out.println("LidarService: initialize() - > errorTime = " + errorTime); //Debug
+        //System.out.println("LidarService: initialize() - > errorTime = " + errorTime); //Debug
 
         // Subscribe to TickBroadcast
         subscribeBroadcast(TickBroadcast.class, tick -> {
@@ -61,7 +61,7 @@ public class LiDarService extends MicroService {
             if (errorTime != -1 && errorTime == currentTick) {
                 handleLiDarError(currentTick); 
                 sendBroadcast(new CrashedBroadcast(String.valueOf(liDarWorkerTracker.getId()), "Detected error in LiDAR"));
-                System.out.println("LidarService: initialize() - > Error detected in LiDAR at time " + currentTick + ". Report generated.");
+                //System.out.println("LidarService: initialize() - > Error detected in LiDAR at time " + currentTick + ". Report generated.");
                 terminate();
             }
             
@@ -74,16 +74,16 @@ public class LiDarService extends MicroService {
 
         // Subscribe to DetectObjectsEvent
         subscribeEvent(DetectObjectsEvent.class, event -> {
-            System.out.println("Received DetectedObjectsEvent from camera" + event.getCameraId()); //debug
+            //System.out.println("Received DetectedObjectsEvent from camera" + event.getCameraId()); //debug
             int detectionTime = event.getDetectedObjects().getTime();
             int scheduledTime = detectionTime + liDarWorkerTracker.getFrequency();
-            System.out.println("detectionTime is: " + detectionTime + " and scheduledTime is: " + scheduledTime); //debug
+            //System.out.println("detectionTime is: " + detectionTime + " and scheduledTime is: " + scheduledTime); //debug
 
             if (scheduledTime <= currentTick) {
                 processEvent(event); // Process immediately
             } else {
                 pendingEvents.put(event, scheduledTime); // Schedule for later
-                System.out.println(getName() + ": Added event to pendingEvents. Scheduled for tick: " + scheduledTime);
+                //System.out.println(getName() + ": Added event to pendingEvents. Scheduled for tick: " + scheduledTime);
             }
         });
 
@@ -121,11 +121,8 @@ public class LiDarService extends MicroService {
             if (currentTick >= scheduledTime) {
                 List<TrackedObject> trackedObjects = liDarWorkerTracker.processDetectObjectsEvent(event, liDarDataBase);
 
-                if (trackedObjects == null || trackedObjects.isEmpty()) {
-                    //System.err.println(getName() + ": No tracked objects for event: " + event);//DEBUG
-                } else {
+                if (!(trackedObjects == null) && !trackedObjects.isEmpty()) {
                     readyTrackedObjects.addAll(trackedObjects);
-                    //System.out.println(getName() + ": Added " + trackedObjects.size() + " tracked objects.");
                 }
                 iterator.remove(); // Remove processed event
             }
@@ -137,10 +134,7 @@ public class LiDarService extends MicroService {
             sendEvent(newEvent);
             statisticalFolder.incrementTrackedObjects(readyTrackedObjects.size());
             statisticalFolder.addLiDarFrame(liDarWorkerTracker.getLiDarKey(), newEvent.getTrackedObjects().get(newEvent.getTrackedObjects().size() - 1));//NOT SURE ABOUT THE PARAMETERS CORRECTNESS
-
-        } else {
-            System.out.println(getName() + ": No tracked objects to send for current tick.");
-        }
+        } 
     }   
 
     /**
