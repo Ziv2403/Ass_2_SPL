@@ -119,8 +119,6 @@ public class FusionSlamService extends MicroService {
             System.err.println("Error writing compact simulation output: " + e.getMessage());
         }
     }
-
-
 }
 
 

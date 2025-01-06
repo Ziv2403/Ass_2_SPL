@@ -1,11 +1,9 @@
 package bgu.spl.mics.application.objects;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+//import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-//import java.util.function.Function;
+//import java.util.Map;
 
 import static java.lang.Math.*;
 
@@ -170,58 +168,33 @@ public class FusionSlam {
      * @pre {@code landmark != null && newCoordinates != null}
      */
     private void updateExistingLandmark(LandMark landmark, List<CloudPoint> newCoordinates) {
-        System.out.println("[FusionSlam - updateExistingLandmark] Updating LandMark: " + landmark.getId()); //DEBUG
-        System.out.println("[FusionSlam - updateExistingLandmark] Existing points: " + landmark.getCloudPoints());//DEBUG
-        System.out.println("[FusionSlam - updateExistingLandmark] New points: " + newCoordinates);//DEBUG
-    
         landmark.updateCloudPoints(newCoordinates);
-
-        System.out.println("[FusionSlam - updateExistingLandmark] Updated points: " + landmark.getCloudPoints());//DEBUG
-        // List<CloudPoint> existingCoordinates = landmark.getCloudPoints();
-
-        // // Loop over the existing and new points to calculate an average
-        // int minSize = Math.min(existingCoordinates.size(), newCoordinates.size());
-
-        // for (int i = 0; i <  minSize; i++) {
-        //     CloudPoint oldPoint = existingCoordinates.get(i);
-        //     CloudPoint newPoint = newCoordinates.get(i);
-
-        //     double avgX = (oldPoint.getX() + newPoint.getX()) / 2.0;
-        //     double avgY = (oldPoint.getY() + newPoint.getY()) / 2.0;
-        //     oldPoint.setCloudPoint(new CloudPoint(avgX, avgY));
-        // }
-
-        // for (int i = minSize; i < newCoordinates.size(); i++) {
-        //     existingCoordinates.add(newCoordinates.get(i));
-        // }
-
-        // landmark.setCloudPoints(existingCoordinates);
     }
 
 
-    /**
-     * Generates a map of landmarks in a format ready for JSON output.
-     *
-     * @return A map containing landmarks with their details.
-     */
-    public Map<String, Object> generateGlobalMap() {
-        Map<String, Object> globalMap = new HashMap<>();
-        for (LandMark landmark : landmarks) {
-            Map<String, Object> landmarkDetails = new HashMap<>();
-            landmarkDetails.put("id", landmark.getId());
-            landmarkDetails.put("description", landmark.getDescription());
-            List<Map<String, Double>> coordinates = new ArrayList<>();
-            for (CloudPoint point : landmark.getCloudPoints()) {
-                Map<String, Double> pointMap = new HashMap<>();
-                pointMap.put("x", point.getX());
-                pointMap.put("y", point.getY());
-                coordinates.add(pointMap);
-            }
-            landmarkDetails.put("coordinates", coordinates);
-            globalMap.put(landmark.getId(), landmarkDetails);
-        }
-        return globalMap;
-    }
+    // /**
+    //  * Generates a map of landmarks in a format ready for JSON output.
+    //  *
+    //  * @return A map containing landmarks with their details.
+    //  */
+    // public Map<String, Object> generateGlobalMap() {
+    //     Map<String, Object> globalMap = new HashMap<>();
+    //     for (LandMark landmark : landmarks) {
+    //         Map<String, Object> landmarkDetails = new HashMap<>();
+    //         landmarkDetails.put("id", landmark.getId());
+    //         landmarkDetails.put("description", landmark.getDescription());
+    //         List<Map<String, Double>> coordinates = new ArrayList<>();
+    //         for (CloudPoint point : landmark.getCloudPoints()) {
+    //             Map<String, Double> pointMap = new HashMap<>();
+    //             pointMap.put("x", point.getX());
+    //             pointMap.put("y", point.getY());
+    //             coordinates.add(pointMap);
+    //         }
+    //         landmarkDetails.put("coordinates", coordinates);
+    //         globalMap.put(landmark.getId(), landmarkDetails);
+    //     }
+    //     return globalMap;
+    // }
 
     @Override
     public String toString() {
@@ -232,38 +205,6 @@ public class FusionSlam {
     }
 
 
-
-    // /**
-    //  * Generates a map containing simulation output data, including runtime statistics, 
-    //  * detected and tracked object counts, and landmark details.
-    //  *
-    //  * @param systemRuntime The total runtime of the system in ticks.
-    //  * @param numDetectedObjects The total number of detected objects.
-    //  * @param numTrackedObjects The total number of tracked objects.
-    //  * @return A map representing the output data with statistics and landmarks.
-    //  */
-    // public List<String> generateOutput() {
-    //     // Map<String, Object> output = new HashMap<>();
-
-    //     // output.put("systemRuntime", systemRuntime);
-    //     // output.put("numDetectedObjects", numDetectedObjects);
-    //     // output.put("numTrackedObjects", numTrackedObjects);
-    //     // output.put("numLandmarks", landmarks.size());
-
-    //     List<String> landmarksStringList = new ArrayList<>();
-    //     for (LandMark landmark : landmarks) {
-    //         System.out.println("landMarks incloud:" + landmark.toString()); //DEBUGGGGGGGG
-    //         // String landmarkDetails = landmark.toString();
-    //         landmarksStringList.add(landmark.toString());
-    //     //     landmarkDetails.put("description", landmark.getDescription());
-    //     //     landmarkDetails.put("coordinates", landmark.getCloudPoints());
-    //     //     landmarksMap.put(landmark.getId(), landmarkDetails);
-    //     }
-    //     // output.put("landMarks", landmarksMap);
-
-    //     return landmarksStringList;
-    // }
-    
 }
 
 
