@@ -74,16 +74,16 @@ public class LiDarService extends MicroService {
 
         // Subscribe to DetectObjectsEvent
         subscribeEvent(DetectObjectsEvent.class, event -> {
-            System.out.println("Received DetectedObjectsEvent from camera" + event.getCameraId()); //debug
+//            System.out.println("Received DetectedObjectsEvent from camera" + event.getCameraId()); //debug
             int detectionTime = event.getDetectedObjects().getTime();
             int scheduledTime = detectionTime + liDarWorkerTracker.getFrequency();
-            System.out.println("detectionTime is: " + detectionTime + " and scheduledTime is: " + scheduledTime); //debug
+//            System.out.println("detectionTime is: " + detectionTime + " and scheduledTime is: " + scheduledTime); //debug
 
             if (scheduledTime <= currentTick) {
                 processEvent(event); // Process immediately
             } else {
                 pendingEvents.put(event, scheduledTime); // Schedule for later
-                System.out.println(getName() + ": Added event to pendingEvents. Scheduled for tick: " + scheduledTime);
+//                System.out.println(getName() + ": Added event to pendingEvents. Scheduled for tick: " + scheduledTime);
             }
         });
 
@@ -91,7 +91,7 @@ public class LiDarService extends MicroService {
         subscribeBroadcast(CrashedBroadcast.class, broadcast -> {
             liDarWorkerTracker.setStatus(STATUS.DOWN);
             terminate();
-            System.out.println(getName() + " received CrashedBroadcast and is terminating.");
+            System.out.println(getName() + " received CrashedBroadcast from " + broadcast.getComponentType() + " and is terminating.");
         });
 
         // Subscribe to TerminatedBroadcast
@@ -140,7 +140,7 @@ public class LiDarService extends MicroService {
             statisticalFolder.addLiDarFrame(liDarWorkerTracker.getLiDarKey(), newEvent.getTrackedObjects().get(newEvent.getTrackedObjects().size() - 1));//NOT SURE ABOUT THE PARAMETERS CORRECTNESS
 
         } else {
-            System.out.println(getName() + ": No tracked objects to send for current tick.");
+//            System.out.println(getName() + ": No tracked objects to send for current tick.");
         }
     }   
 

@@ -128,7 +128,7 @@ public class TimeService extends MicroService {
 
         // Subscribe to CrashedBroadcast
         subscribeBroadcast(CrashedBroadcast.class, broadcast -> {
-            System.out.println(getName() + " received CrashedBroadcast and is terminating.");
+            System.out.println(getName() + " received CrashedBroadcast from " + broadcast.getComponentType() + " and is terminating.");
             terminate();
         });
 

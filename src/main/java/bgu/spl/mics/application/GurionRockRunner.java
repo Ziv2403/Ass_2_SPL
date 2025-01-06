@@ -43,7 +43,7 @@ public class GurionRockRunner {
 
 //        String configFilePath = args[0] + " " + args[1];
         String configFilePath = args[0];
-        System.out.println("Configuration file path: " + configFilePath);
+//        System.out.println("Configuration file path: " + configFilePath);
 
         File configFile = new File(configFilePath);
         if (!configFile.exists()) {
@@ -67,10 +67,8 @@ public class GurionRockRunner {
 
             // Find the highest time across all data sources
             int highestTime = findHighestTime(poses, cameraData, lidarData);
-            System.out.println("Highest time from all data sources: " + highestTime);
             // Calculate the smallest duration needed
             int effectiveDuration = Math.min(highestTime, config.getDuration());
-            System.out.println("Effective simulation duration: " + effectiveDuration);
 
             GPSIMU gpsimu = new GPSIMU(1, STATUS.UP, poses);
             LiDarDataBase liDarDataBase = new LiDarDataBase(lidarData);
@@ -78,13 +76,11 @@ public class GurionRockRunner {
             FusionSlam fusionSlam = FusionSlam.getInstance();
 
 
-
             // ------------ Create, register and start services ------------
             List<MicroService> microServices = new ArrayList<>();
             List<Thread> threads = new ArrayList<>();
 
             // Time Service
-//            TimeService timeService = new TimeService(config.getTickTime(), config.getDuration(), statisticalFolder);
             TimeService timeService = new TimeService(config.getTickTime(), effectiveDuration, statisticalFolder);
             messageBus.register(timeService);
 
@@ -117,24 +113,13 @@ public class GurionRockRunner {
                 Thread thread = new Thread(m, m.getName());
                 threads.add(thread);
                 thread.start();
-//                System.out.println("Starting service: " + thread.getName());
             }
 
             // Start timeService (Clock starts ticking)
             microServices.add(timeService);
             Thread timeServiceThread = new Thread(timeService, timeService.getName());
             threads.add(timeServiceThread);
-//            System.out.println("Starting service: " + timeServiceThread.getName());
             timeServiceThread.start();
-
-//            messageBus.printSubscribers();
-//            try {
-//                Thread.sleep(4000);
-//                messageBus.printSubscribers();
-//            } catch (Exception e) {
-//                throw new RuntimeException(e);
-//            }
-
 
             // -----------------------------------------------------------
 
@@ -150,9 +135,6 @@ public class GurionRockRunner {
         } catch (IOException | IllegalArgumentException e ) {
             System.err.println("Error: " + e.getMessage());
         }
-
-
-
     }
 
 

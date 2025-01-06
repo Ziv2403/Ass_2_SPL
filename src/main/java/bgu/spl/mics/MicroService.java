@@ -181,27 +181,29 @@ public abstract class MicroService implements Runnable {
         if (this instanceof TimeService) {
             MessageBusImpl.getInstance().setTimeServiceThread(Thread.currentThread());
         }
+
         initialize();
+
         try {
             while (!terminated) {
-                Message message = MessageBusImpl.getInstance().awaitMessage(this); //If there is no message in the queue, it waits until there is a message.
+                Message message = MessageBusImpl.getInstance().awaitMessage(this); //If there are no message in the queue, it waits until there is a message.
 
                 if (isTerminated() && !(message instanceof CrashedBroadcast)) {
                     continue;
                 }
 
                 Callback<Message> callBack = (Callback<Message>) callbacks.get(message.getClass());//Receiving the message
-                if (callBack != null) {//Checks if there is a suitable callback in the callbacks map.
+                if (callBack != null) { //Checks if there is a suitable callback in the callbacks map.
                     callBack.call(message); //Message processing
                 }
             }
         } catch (InterruptedException | NullPointerException e) {
-            System.err.println(getName() + " was interrupted: " + e.getMessage());
+//            System.err.println(getName() + " was interrupted: " + e.getMessage());
             terminate();
         } finally {
             //Resource cleaning:
             MessageBusImpl.getInstance().unregister(this);
-            System.out.println(getName() + " has been unregistered.");
+//            System.out.println(getName() + " has been unregistered.");
         }
     }
 
