@@ -1,5 +1,10 @@
 package bgu.spl.mics.application.objects;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -18,6 +23,7 @@ public class StatisticalFolder {
     private final AtomicInteger numDetectedObjects = new AtomicInteger(0);
     private final AtomicInteger numTrackedObjects = new AtomicInteger(0);
     private final AtomicInteger numLandmarks = new AtomicInteger(0);
+    private Map<String, LandMark> landMarks; // Map of LandMarks by their unique ID
 
 // --------------------- SingletonImplemment -------------------------
     // private static class StatisticalFolderHolder {
@@ -76,5 +82,43 @@ public class StatisticalFolder {
     public void incrementLandmarks(int size) {
         numLandmarks.addAndGet(size);
     }
+
+    /**
+    * Adds a new LandMark to the system or updates an existing one.
+    * Ensures no duplicate CloudPoints are added to the LandMark.
+    * 
+     * @param id The unique identifier of the LandMark.
+    * @param newLandMark The LandMark object to be added or updated.
+    * @pre {@code id != null && !id.isEmpty()}
+    * @pre {@code newLandMark != null}
+    * @post {@code landMarks.containsKey(id)}
+    */
+    public void addOrUpdateLandMark(String id, LandMark newLandMark) {
+        if (id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("LandMark ID cannot be null or empty.");
+        }
+        if (newLandMark == null) {
+            throw new IllegalArgumentException("LandMark cannot be null.");
+        }
+
+        landMarks.compute(id, (key, existingLandMark) -> {
+            if (existingLandMark == null) {
+                // No existing landmark with this ID, add new one
+                return newLandMark;
+            } else {
+                // Update existing landmark by merging cloud points without duplicates
+                Set<CloudPoint> existingPointsSet = new HashSet<>(existingLandMark.getCloudPoints());
+                for (CloudPoint newPoint : newLandMark.getCloudPoints()) {
+                    if (existingPointsSet.add(newPoint)) {
+                        existingPointsSet.add(newPoint);
+                    }
+                }
+
+                existingLandMark.setCloudPoints(existingPointsSet);
+                return existingLandMark;
+            }
+        });
+    }
+
 
 }

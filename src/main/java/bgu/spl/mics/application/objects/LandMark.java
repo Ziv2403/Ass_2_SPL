@@ -33,4 +33,18 @@ public class LandMark {
     public List<CloudPoint> getCloudPoints() {return  cloudPoints;}
     public void addCloudPoint(CloudPoint cloudPoint) {cloudPoints.add(cloudPoint);}
 
+    /**
+    * Updates the cloud points of the landmark.
+    *
+    * @param cloudPoints The new list of cloud points.
+    * @pre {@code cloudPoints != null}
+    * @post The landmark's cloud points are replaced with the new list.
+    */
+    public void setCloudPoints(List<CloudPoint> cloudPoints) {
+        if (cloudPoints != null) {
+            this.cloudPoints = new ArrayList<>(cloudPoints);
+        }
+    }
+
+
 }

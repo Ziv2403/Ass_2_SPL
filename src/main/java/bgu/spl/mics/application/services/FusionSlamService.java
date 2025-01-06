@@ -7,7 +7,9 @@ import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.objects.FusionSlam;
 import bgu.spl.mics.application.objects.LandMark;
+import bgu.spl.mics.application.objects.Pose;
 import bgu.spl.mics.application.objects.StatisticalFolder;
+import bgu.spl.mics.application.objects.TrackedObject;
 //
 /**
  * FusionSlamService integrates data from multiple sensors to build and update
@@ -29,7 +31,7 @@ public class FusionSlamService extends MicroService {
      */
     public FusionSlamService(FusionSlam fusionSlam, StatisticalFolder statisticalFolder) {
         super("FusionSlam", statisticalFolder);
-        this.fusionSlam = fusionSlam;
+        this.fusionSlam = FusionSlam.getInstance();
         this.result = new ArrayList<>();
         this.currentTick = 0;
     }
@@ -41,18 +43,27 @@ public class FusionSlamService extends MicroService {
      */
     @Override
     protected void initialize() {
-             subscribeBroadcast(TickBroadcast.class, tick -> {
-                 currentTick = tick.getTick();
-             });
 
-             subscribeEvent(TrackedObjectsEvent.class, event -> {
-                fusionSlam.addTrackedObjects(event.getTrackedObjects());
-                statisticalFolder.incrementLandmarks(event.getTrackedObjects().size());
-             });
+        subscribeEvent(TrackedObjectsEvent.class, event -> {
+            List<TrackedObject> trackedObjects = event.getTrackedObjects();
+            int addedLandmarks = fusionSlam.processTrackedObjects(trackedObjects);
 
-             subscribeEvent(PoseEvent.class, event -> {
-                 fusionSlam.addPose(event.getPose());
-             });
+            // Update the statistical folder with new landmarks
+            for (LandMark landMark : fusionSlam.getLandMarkList()) {
+                statisticalFolder.addOrUpdateLandMark(landMark.getId(), landMark);
+            }
+            statisticalFolder.incrementLandmarks(addedLandmarks);
+
+            System.out.println("[FusionSlamService -> initialize()]: TrackedObjectsEvent processed: " + addedLandmarks + " new landmarks added.");
+
+        });
+
+        subscribeEvent(PoseEvent.class, event -> {
+            Pose pose = event.getPose();
+            fusionSlam.addPose(pose);
+            //statisticalFolder.incrementSystemRuntime();
+            System.out.println("[FusionSlamService -> initialize()]: PoseEvent processed: New pose added.");
+        });
 
         // Subscribe to CrashedBroadcast
         subscribeBroadcast(CrashedBroadcast.class, broadcast -> {
@@ -65,5 +76,50 @@ public class FusionSlamService extends MicroService {
             terminate();
         });
 
+    }
+
+
+    /**
+     * Queries the list of landmarks from FusionSlam.
+     *
+     * @return A list of landmarks in the global map.
+     */
+    public List<LandMark> queryLandmarks() {
+        return fusionSlam.getLandMarkList();
+    }
+
+    /**
+     * Retrieves the number of landmarks currently in the map.
+     *
+     * @return The total count of landmarks.
+     */
+    public int getLandmarkCount() {
+        return fusionSlam.getLandMarkList().size();
+    }
+
+    /**
+     * Retrieves a specific landmark by ID.
+     *
+     * @param id The unique identifier of the landmark.
+     * @return The landmark with the given ID, or null if not found.
+     */
+    public LandMark queryLandmarkById(String id) {
+        return fusionSlam.getLandMarkList().stream()
+                .filter(landmark -> landmark.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * Returns a string representation of the FusionSlamService.
+     *
+     * @return A string representation of the service.
+     */
+    @Override
+    public String toString() {
+        return "FusionSlamService{" +
+                "fusionSlam=" + fusionSlam +
+                ", statisticalFolder=" + statisticalFolder +
+                '}';
     }
 }
