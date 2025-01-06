@@ -1,0 +1,11 @@
+{"systemRuntime":30, "numDetectedObjects":13, "numTrackedObjects":13, "numLandmarks":7,
+"landMarks":{
+    bgu.spl.mics.application.objects.LandMark@2af230af,
+    bgu.spl.mics.application.objects.LandMark@6f02ac72,
+    bgu.spl.mics.application.objects.LandMark@251eed2a,
+    bgu.spl.mics.application.objects.LandMark@751d60a9,
+    bgu.spl.mics.application.objects.LandMark@4e5141ed,
+    bgu.spl.mics.application.objects.LandMark@344a0569,
+    bgu.spl.mics.application.objects.LandMark@66efd977
+    }
+}
