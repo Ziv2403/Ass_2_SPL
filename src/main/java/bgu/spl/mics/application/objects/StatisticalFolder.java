@@ -32,7 +32,8 @@ public class StatisticalFolder {
     
     private final Map<String, LandMark> landMarks = new HashMap<>();
     private final List<Pose> poseOutput = new ArrayList<>();
-    //When there is a main thread that performs writing, and another thread that reads the data occasionally.
+
+    //When there is a main thread that performs writing(pose), and another thread that reads the data occasionally(like copy into report).
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(); 
 
 

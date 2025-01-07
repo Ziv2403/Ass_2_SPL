@@ -18,7 +18,7 @@ public class ErrorLogger {
     
         private ErrorLogger() {} 
 
-        public static void writeFormattedErrorReport(String fileName, String errorDescription, String faultySensor, StatisticalFolder stats) {
+        public static void writeErrorReport(String fileName, String errorDescription, String faultySensor, StatisticalFolder stats) {
             Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
             try (FileWriter writer = new FileWriter(fileName)) {
@@ -73,7 +73,8 @@ public class ErrorLogger {
                 // Add LandMarks to statistics
                 JsonObject landMarks = new JsonObject();
                 stats.getLandMarks().forEach((id, landMark) -> {
-                    landMarks.add(id, gson.toJsonTree(landMark));
+                    // landMarks.add(id, gson.toJsonTree(landMark));
+                    landMarks.add(id, landMark.toJsonTree());
                 });
                 statistics.add("landMarks", landMarks);
 

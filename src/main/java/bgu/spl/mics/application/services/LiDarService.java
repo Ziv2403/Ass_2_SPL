@@ -156,7 +156,7 @@ public class LiDarService extends MicroService {
             sendEvent(newEvent);
             statisticalFolder.incrementTrackedObjects(trackedObjects.size());
             statisticalFolder.addLiDarFrame(liDarWorkerTracker.getLiDarKey(), newEvent.getTrackedObjects().get(newEvent.getTrackedObjects().size() - 1));//NOT SURE ABOUT THE PARAMETERS CORRECNESS
-
+            //System.out.println("LiDarService: addLiDarFrame->" + newEvent.getTrackedObjects().toString());
         }
     }
 
@@ -167,8 +167,7 @@ public class LiDarService extends MicroService {
     */
     private void handleLiDarError(int currentTick) {
         liDarWorkerTracker.setStatus(STATUS.ERROR);
-
-        ErrorLogger.writeFormattedErrorReport( "lidar_error_report.json","Error detected in LiDAR data", liDarWorkerTracker.getLiDarKey(),statisticalFolder);
+        ErrorLogger.writeErrorReport( "error_output.json","LiDAR Disconnected", liDarWorkerTracker.getLiDarKey(),statisticalFolder);
     }
 
     /**

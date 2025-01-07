@@ -128,6 +128,8 @@ public class TimeService extends MicroService {
 
         // Subscribe to CrashedBroadcast
         subscribeBroadcast(CrashedBroadcast.class, broadcast -> {
+            System.out.println("TimeService: crashed -> currentTick:" + currentTick);
+
             System.out.println(getName() + " received CrashedBroadcast from " + broadcast.getComponentType() + " and is terminating.");
             terminate();
         });
@@ -138,11 +140,13 @@ public class TimeService extends MicroService {
                 System.out.println();
                 System.out.println("TimeService broadcasting Tick: " + currentTick);
 
+
                 // Broadcast the current tick
                 sendBroadcast(new TickBroadcast(currentTick));
 
                 // Simulate runtime
-                statisticalFolder.incrementSystemRuntime();
+                // statisticalFolder.incrementSystemRuntime();
+
 
                 // Sleep for the tick duration
                 try {
@@ -153,7 +157,10 @@ public class TimeService extends MicroService {
                     break; // Exit the loop on interruption
                 }
 
-                currentTick++;
+                currentTick++; 
+                statisticalFolder.incrementSystemRuntime();
+
+
             }
 
             // If duration is completed or terminated, notify termination

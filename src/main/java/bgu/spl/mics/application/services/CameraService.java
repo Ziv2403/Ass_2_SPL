@@ -3,7 +3,7 @@ package bgu.spl.mics.application.services;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.objects.*;
-
+import bgu.spl.mics.application.utils.ErrorLogger;
 import java.util.*;
 
 //
@@ -60,6 +60,7 @@ public class CameraService extends MicroService {
                     if (event.getTime() == currentTick) {
                         String description = checkForError(event);
                         if (!description.isEmpty()) {
+                            ErrorLogger.writeErrorReport("error_output.json", description ,camera.getCameraKey(), statisticalFolder);
                             sendBroadcast(new CrashedBroadcast(Thread.currentThread().getName(), description));
                             camera.setStatus(STATUS.ERROR);
                             terminate();
@@ -70,6 +71,7 @@ public class CameraService extends MicroService {
                         int scheduledTime = event.getTime() + camera.getFrequency();
                         if (scheduledTime == currentTick) {
                             sendEvent(new DetectObjectsEvent(event, camera.getId()));
+                            statisticalFolder.addCameraFrame(camera.getCameraKey(), event);
                             statisticalFolder.incrementDetectedObjects(event.getDetectedObjectsList().size());
                         } else {
                             pendingEvents.putIfAbsent(event, scheduledTime); // Store the event for later processing
@@ -108,8 +110,10 @@ public class CameraService extends MicroService {
         while (iterator.hasNext()) {
             Map.Entry<StampedDetectedObjects, Integer> entry = iterator.next();
             if (currentTick >= entry.getValue()) {
-                sendEvent(new DetectObjectsEvent(entry.getKey(), camera.getId()));
+                DetectObjectsEvent newEvent =new DetectObjectsEvent(entry.getKey(), camera.getId());
+                sendEvent(newEvent);
                 statisticalFolder.incrementDetectedObjects(entry.getKey().getDetectedObjectsList().size());
+                statisticalFolder.addCameraFrame(camera.getCameraKey(), newEvent.getDetectedObjects());
                 iterator.remove();
             }
         }
