@@ -46,6 +46,7 @@ public class LiDarWorkerTracker {
     public LiDarWorkerTracker(int id, int frequency){
         this.id = id;
         this.frequency = frequency;
+        this.lastTrackedObjects = new ArrayList<>();
     }
 
     // --------------------- methods --------------------
@@ -109,6 +110,10 @@ public class LiDarWorkerTracker {
      * @post {@code result.size() >= 0}
      */
     public List<TrackedObject> processDetectObjectsEvent(DetectObjectsEvent event, LiDarDataBase liDarDataBase) {
+        if (event == null || liDarDataBase == null) {
+            throw new NullPointerException("Event or LiDarDataBase cannot be null");
+        }
+
         int detectionTime = event.getDetectedObjects().getTime();
         StampedDetectedObjects detectedObjects = event.getDetectedObjects();
         // Check if the worker is active and if the event is ready to process

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="bgu.spl.mics.FusionSlamTest" time="0.009" tests="6" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="bgu.spl.mics.MessageBusImplTest" time="0.027" tests="11" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -58,10 +58,19 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="61.0"/>
   </properties>
-  <testcase name="testNoMatchingPose" classname="bgu.spl.mics.FusionSlamTest" time="0.001"/>
-  <testcase name="testAddPose" classname="bgu.spl.mics.FusionSlamTest" time="0.001"/>
-  <testcase name="testUpdateExistingLandmark" classname="bgu.spl.mics.FusionSlamTest" time="0.003"/>
-  <testcase name="testAddOrUpdateLandMark" classname="bgu.spl.mics.FusionSlamTest" time="0.001"/>
-  <testcase name="testCreateLandMarksNewObject" classname="bgu.spl.mics.FusionSlamTest" time="0.0"/>
-  <testcase name="testConvertPointToGlobalCoordinates" classname="bgu.spl.mics.FusionSlamTest" time="0.001"/>
+  <testcase name="getInstance" classname="bgu.spl.mics.MessageBusImplTest" time="0.005"/>
+  <testcase name="sendBroadcast" classname="bgu.spl.mics.MessageBusImplTest" time="0.002"/>
+  <testcase name="register" classname="bgu.spl.mics.MessageBusImplTest" time="0.002"/>
+  <testcase name="complete" classname="bgu.spl.mics.MessageBusImplTest" time="0.003"/>
+  <testcase name="printSubscribers" classname="bgu.spl.mics.MessageBusImplTest" time="0.001">
+    <system-out><![CDATA[Event Subscribers: {class bgu.spl.mics.application.messages.DetectObjectsEvent=[bgu.spl.mics.MessageBusImplTest$1@45752059]}
+Broadcast Subscribers: {class bgu.spl.mics.application.messages.TickBroadcast=[bgu.spl.mics.MessageBusImplTest$2@34e9fd99]}
+]]></system-out>
+  </testcase>
+  <testcase name="sendEvent" classname="bgu.spl.mics.MessageBusImplTest" time="0.004"/>
+  <testcase name="subscribeBroadcast" classname="bgu.spl.mics.MessageBusImplTest" time="0.001"/>
+  <testcase name="awaitMessage" classname="bgu.spl.mics.MessageBusImplTest" time="0.001"/>
+  <testcase name="unregister" classname="bgu.spl.mics.MessageBusImplTest" time="0.001"/>
+  <testcase name="setTimeServiceThread" classname="bgu.spl.mics.MessageBusImplTest" time="0.001"/>
+  <testcase name="subscribeEvent" classname="bgu.spl.mics.MessageBusImplTest" time="0.001"/>
 </testsuite>

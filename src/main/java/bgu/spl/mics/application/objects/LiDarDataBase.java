@@ -39,7 +39,7 @@ public class LiDarDataBase {
      * Private constructor to enforce singleton pattern and initialize with an empty list.
      * @post {@code this.cloudPoints.isEmpty() == true}
      */
-    private LiDarDataBase(){
+    public LiDarDataBase(){
         this.cloudPoints = new ArrayList<StampedCloudPoints>();
     }
 // --------------------- methods ------------------------
@@ -97,6 +97,31 @@ public class LiDarDataBase {
             }
         }
         return null;
+    }
+
+    /**
+     * Adds cloud points for a specific object ID to the database.
+     *
+     * @param id          The unique identifier of the object.
+     * @param cloudPoints A list of CloudPoint objects associated with the object.
+     * @pre {@code id != null && !id.isEmpty() && cloudPoints != null}
+     * @post {@code this.cloudPoints.size() >= old.size() + 1}
+     */
+    public void addCloudPoints(String id, List<CloudPoint> cloudPoints) {
+        if (id == null || id.isEmpty() || cloudPoints == null) {
+            throw new IllegalArgumentException("Invalid ID or cloud points list");
+        }
+        StampedCloudPoints stampedCloudPoints = new StampedCloudPoints(id, cloudPoints);
+        this.cloudPoints.add(stampedCloudPoints);
+    }
+
+    /**
+     * Clears all stored cloud points from the database.
+     *
+     * @post {@code this.cloudPoints.isEmpty() == true}
+     */
+    public void clear() {
+        this.cloudPoints.clear();
     }
 
 

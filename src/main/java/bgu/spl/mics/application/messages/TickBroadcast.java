@@ -14,6 +14,11 @@ public class TickBroadcast implements Broadcast{
     private final int currentTick;
     // --------------------- constructor --------------------
     public TickBroadcast(int tick) {this.currentTick = tick;}
+
+    public TickBroadcast() {
+        this.currentTick = 0;
+    }
+
     // --------------------- Methods ------------------------
     public int getTick() {return currentTick;}
 }

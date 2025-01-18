@@ -257,4 +257,5 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 
+	public Thread getTimeServiceThread() {return timeServiceThread;}
 }

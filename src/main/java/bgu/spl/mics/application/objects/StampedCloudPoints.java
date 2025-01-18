@@ -1,5 +1,6 @@
 package bgu.spl.mics.application.objects;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -28,6 +29,26 @@ public class StampedCloudPoints {
         this.id = id;
         this.time = time;
         this.cloudPoints = new ArrayList<>();
+    }
+
+    /**
+     * Constructs a StampedCloudPoints object with a given ID and cloud points.
+     *
+     * @param id          The unique identifier of the tracked object.
+     * @param cloudPoints The cloud points associated with the tracked object.
+     * @post {@code this.id.equals(id)}
+     * @post {@code this.time == 0}  // Default time is 0
+     * @post {@code this.cloudPoints.equals(cloudPoints)}
+     */
+    public StampedCloudPoints(String id, List<CloudPoint> cloudPoints) {
+        this.id = id;
+        this.time = 0; // Default time when not specified
+        this.cloudPoints = new ArrayList<>();
+
+        // Convert CloudPoint objects to List<List<Double>> format
+        for (CloudPoint cp : cloudPoints) {
+            this.cloudPoints.add(Arrays.asList(cp.getX(), cp.getY()));
+        }
     }
 // --------------------- methods ------------------------
 
