@@ -51,16 +51,13 @@ public class CloudPoint {
         this.x = (this.x + cloudPoint.getX())/2.0;
         this.y = ( this.y + cloudPoint.getY())/2.0;
     }
-    // public void setCloudPoint(CloudPoint newPoint) {
-    //     this.x = newPoint.getX();
-    //     this.y = newPoint.getY();
-    // }
 
 
     public void setX(double x) {
         this.x = x;
     }
 
+    
     public void setY(double y) {
         this.y = y;
     }

@@ -81,8 +81,6 @@ public class LandMark {
      */
     public void addCloudPoint(CloudPoint cloudPoint) {
         cloudPoints.add(cloudPoint);
-//        System.out.println("[LandMark - addCloudPoint] Adding CloudPoint: " + cloudPoint); //DEBUG
-
     }
 
 
@@ -132,87 +130,22 @@ public class LandMark {
     */
 
     public void updateCloudPoints(List<CloudPoint> newPoints) {
-    if (newPoints == null || newPoints.isEmpty()) {
-//        System.out.println("[LandMark - updateCloudPoints] No new points to update.");
-        return;
-    }
-
-//    System.out.println("[LandMark - updateCloudPoints] Updating CloudPoints for LandMark ID: " + Id);
-
-    Set<String> existingPointsSet = new HashSet<>();
-    for (CloudPoint point : cloudPoints) {
-        existingPointsSet.add(point.getX() + "," + point.getY());
-    }
-
-    for (CloudPoint newPoint : newPoints) {
-        String pointKey = newPoint.getX() + "," + newPoint.getY();
-        if (!existingPointsSet.contains(pointKey)) {
-            cloudPoints.add(newPoint);
-            existingPointsSet.add(pointKey);
-//            System.out.println("[LandMark - updateCloudPoints] Added new CloudPoint: " + newPoint);
-        } else {
-//            System.out.println("[LandMark - updateCloudPoints] Duplicate point skipped: " + newPoint);
+        if (newPoints == null || newPoints.isEmpty()) {
+            return;
         }
-    }
 
+        Set<String> existingPointsSet = new HashSet<>();
+        for (CloudPoint point : cloudPoints) {
+            existingPointsSet.add(point.getX() + "," + point.getY());
+        }
 
-    // public void updateCloudPoints(List<CloudPoint> newPoints) {
-    //     if (newPoints == null || newPoints.isEmpty()) {
-    //         System.out.println("[LandMark - updateCloudPoints] No new points to update.");
-    //         return;
-    //     }
-    
-    //     System.out.println("[LandMark - updateCloudPoints] Updating CloudPoints for LandMark ID: " + Id);
-    
-    //     // Update existing points by calculating their average
-    //     int minSize = Math.min(this.cloudPoints.size(), newPoints.size());
-    //     for (int i = 0; i < minSize; i++) {
-    //         CloudPoint oldPoint = this.cloudPoints.get(i);
-    //         CloudPoint newPoint = newPoints.get(i);
-    
-
-    //         oldPoint.updatePoint(newPoint);
-    //         System.out.println("[LandMark - updateCloudPoints] Updated index " + i + ": Old=" + oldPoint + ", New=" + newPoint);
-    //     }
-    
-    //     // Add only new points 
-    //     for (int i = minSize; i < newPoints.size(); i++) {
-    //         CloudPoint newPoint = newPoints.get(i);
-
-
-    //         //check if point alredy exist
-    //         boolean isDuplicate = this.cloudPoints.stream()
-    //         .anyMatch(existingPoint -> existingPoint.getX() == newPoint.getX() && existingPoint.getY() == newPoint.getY());
-
-    //         if(!isDuplicate){
-    //             this.cloudPoints.add(newPoints.get(i));
-    //             System.out.println("[LandMark - updateCloudPoints] Added new CloudPoint: " + newPoints);
-    //         } else {
-    //             System.out.println("[LandMark - updateCloudPoints] Duplicate point skipped: " + newPoint);
-    //         }
-    //     }
-        
-
-
-        // if (newPoints == null || newPoints.isEmpty()) {
-        //     System.out.println("[LandMark - updateCloudPoints] No new points to update."); //DEBUG
-        //     return;
-        // }
-
-        // System.out.println("[LandMark - updateCloudPoints] Updating CloudPoints for LandMark ID: " + Id);//DEBUG
-
-        // for (int i = 0; i < Math.min(this.cloudPoints.size(), newPoints.size()); i++) {
-        //     System.out.println("[LandMark - updateCloudPoints] Updating index " + i + ": Old=" + this.cloudPoints.get(i) + ", New=" + newPoints.get(i));//DEBUG
-        //     this.cloudPoints.get(i).updatePoint(newPoints.get(i));
-        // }
-    
-        // if (newPoints.size() > this.cloudPoints.size()) {
-        //     System.out.println("[LandMark - updateCloudPoints] Adding new points beyond current size.");//DEBUG
-        //     for (int i = this.cloudPoints.size(); i < newPoints.size(); i++) {
-        //         System.out.println("[LandMark - updateCloudPoints] Adding new CloudPoint: " + newPoints.get(i));//DEBUG
-        //         this.cloudPoints.add(newPoints.get(i));
-        //     }
-        // }
+        for (CloudPoint newPoint : newPoints) {
+            String pointKey = newPoint.getX() + "," + newPoint.getY();
+            if (!existingPointsSet.contains(pointKey)) {
+                cloudPoints.add(newPoint);
+                existingPointsSet.add(pointKey);
+            } 
+        }
     }
     
 }

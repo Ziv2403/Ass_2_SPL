@@ -1,6 +1,14 @@
-package bgu.spl.mics.application.objects;
+package bgu.mics.spl;
 
 import bgu.spl.mics.application.messages.DetectObjectsEvent;
+import bgu.spl.mics.application.objects.CloudPoint;
+import bgu.spl.mics.application.objects.DetectedObject;
+import bgu.spl.mics.application.objects.LiDarDataBase;
+import bgu.spl.mics.application.objects.LiDarWorkerTracker;
+import bgu.spl.mics.application.objects.STATUS;
+import bgu.spl.mics.application.objects.StampedDetectedObjects;
+import bgu.spl.mics.application.objects.TrackedObject;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

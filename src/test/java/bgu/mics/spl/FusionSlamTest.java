@@ -1,8 +1,15 @@
-package bgu.spl.mics;
+package bgu.mics.spl;
 
-import bgu.spl.mics.application.objects.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import bgu.spl.mics.application.objects.CloudPoint;
+import bgu.spl.mics.application.objects.FusionSlam;
+import bgu.spl.mics.application.objects.LandMark;
+import bgu.spl.mics.application.objects.Pose;
+import bgu.spl.mics.application.objects.StatisticalFolder;
+import bgu.spl.mics.application.objects.TrackedObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;

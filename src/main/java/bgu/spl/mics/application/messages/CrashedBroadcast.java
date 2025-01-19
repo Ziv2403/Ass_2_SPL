@@ -14,7 +14,6 @@ public class CrashedBroadcast implements Broadcast{
     private final String componentType;
     private final String errDescription;
 
-
     // --------------------- constructor --------------------
 
     /**
@@ -37,10 +36,14 @@ public class CrashedBroadcast implements Broadcast{
      */
     public String getComponentType() {return componentType;}
 
+
+
     /**
      * @return A description of the error.
      */
     public String getErrorDescription() {return errDescription;}
+
+
 
     /**
      * Generates a string representation of the CrashedBroadcast object.

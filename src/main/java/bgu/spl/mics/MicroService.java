@@ -1,6 +1,5 @@
 package bgu.spl.mics;
 
-//import java.util.HashMap;
 import bgu.spl.mics.application.messages.CrashedBroadcast;
 import bgu.spl.mics.application.objects.StatisticalFolder;
 import bgu.spl.mics.application.services.TimeService;
@@ -186,7 +185,8 @@ public abstract class MicroService implements Runnable {
 
         try {
             while (!terminated) {
-                Message message = MessageBusImpl.getInstance().awaitMessage(this); //If there are no message in the queue, it waits until there is a message.
+                //If there are no message in the queue, it waits until there is a message.
+                Message message = MessageBusImpl.getInstance().awaitMessage(this); 
 
                 if (isTerminated() && !(message instanceof CrashedBroadcast)) {
                     continue;
@@ -198,12 +198,10 @@ public abstract class MicroService implements Runnable {
                 }
             }
         } catch (InterruptedException | NullPointerException e) {
-//            System.err.println(getName() + " was interrupted: " + e.getMessage());
             terminate();
         } finally {
             //Resource cleaning:
             MessageBusImpl.getInstance().unregister(this);
-//            System.out.println(getName() + " has been unregistered.");
         }
     }
 

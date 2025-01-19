@@ -1,9 +1,10 @@
 package bgu.spl.mics.application;
 
+import bgu.spl.mics.application.objects.*;
 import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.objects.*;
 import bgu.spl.mics.application.services.*;
+import bgu.spl.mics.application.utils.ErrorLogger;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -39,9 +40,9 @@ public class GurionRockRunner {
             System.exit(1);
         }
 
-//        String configFilePath = args[0] + " " + args[1];
         String configFilePath = args[0];
-//        System.out.println("Configuration file path: " + configFilePath);
+        FusionSlamService.setOutputFilePath(configFilePath);
+        ErrorLogger.setOutputFilePath(configFilePath);
 
         File configFile = new File(configFilePath);
         if (!configFile.exists()) {

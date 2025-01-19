@@ -1,9 +1,10 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.application.objects.*;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
-import bgu.spl.mics.application.objects.*;
 import bgu.spl.mics.application.utils.ErrorLogger;
+
 import java.util.*;
 
 //
@@ -50,7 +51,6 @@ public class CameraService extends MicroService {
     protected void initialize() {
         // Subscribe to TickBroadcast
         subscribeBroadcast(TickBroadcast.class, tick -> {
-//            System.out.println(getName() + " processing TickBroadcast for tick: " + tick.getTick());
             processedTicks.add(tick);
             int currentTick = tick.getTick();
             processPendingEvents(currentTick);
@@ -85,16 +85,12 @@ public class CameraService extends MicroService {
         subscribeBroadcast(CrashedBroadcast.class, broadcast -> {
             if (camera.getStatus() != STATUS.ERROR) { camera.setStatus(STATUS.DOWN); }
             terminate();
-            System.out.println(getName() + " received CrashedBroadcast from " + broadcast.getComponentType() + " and is terminating.");
-
         });
 
-        // CHECK AGAIN
         // Subscribe to TerminatedBroadcast
         subscribeBroadcast(TerminatedBroadcast.class, terminate -> {
             camera.setStatus(STATUS.DOWN);
             terminate();
-            System.out.println(getName() + " received TerminatedBroadcast. Terminating...");
         });
 
     }

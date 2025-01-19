@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//import java.util.function.Function;
-
 import static java.lang.Math.*;
 
 /**
@@ -169,33 +167,8 @@ public class FusionSlam {
      * @param newCoordinates The new global coordinates to integrate.
      * @pre {@code landmark != null && newCoordinates != null}
      */
-    private void updateExistingLandmark(LandMark landmark, List<CloudPoint> newCoordinates) {
-//        System.out.println("[FusionSlam - updateExistingLandmark] Updating LandMark: " + landmark.getId()); //DEBUG
-//        System.out.println("[FusionSlam - updateExistingLandmark] Existing points: " + landmark.getCloudPoints());//DEBUG
-//        System.out.println("[FusionSlam - updateExistingLandmark] New points: " + newCoordinates);//DEBUG
-    
+    private void updateExistingLandmark(LandMark landmark, List<CloudPoint> newCoordinates) {    
         landmark.updateCloudPoints(newCoordinates);
-
-//        System.out.println("[FusionSlam - updateExistingLandmark] Updated points: " + landmark.getCloudPoints());//DEBUG
-        // List<CloudPoint> existingCoordinates = landmark.getCloudPoints();
-
-        // // Loop over the existing and new points to calculate an average
-        // int minSize = Math.min(existingCoordinates.size(), newCoordinates.size());
-
-        // for (int i = 0; i <  minSize; i++) {
-        //     CloudPoint oldPoint = existingCoordinates.get(i);
-        //     CloudPoint newPoint = newCoordinates.get(i);
-
-        //     double avgX = (oldPoint.getX() + newPoint.getX()) / 2.0;
-        //     double avgY = (oldPoint.getY() + newPoint.getY()) / 2.0;
-        //     oldPoint.setCloudPoint(new CloudPoint(avgX, avgY));
-        // }
-
-        // for (int i = minSize; i < newCoordinates.size(); i++) {
-        //     existingCoordinates.add(newCoordinates.get(i));
-        // }
-
-        // landmark.setCloudPoints(existingCoordinates);
     }
 
 
@@ -230,40 +203,6 @@ public class FusionSlam {
                 ", poses=" + poses +
                 '}';
     }
-
-
-
-    // /**
-    //  * Generates a map containing simulation output data, including runtime statistics, 
-    //  * detected and tracked object counts, and landmark details.
-    //  *
-    //  * @param systemRuntime The total runtime of the system in ticks.
-    //  * @param numDetectedObjects The total number of detected objects.
-    //  * @param numTrackedObjects The total number of tracked objects.
-    //  * @return A map representing the output data with statistics and landmarks.
-    //  */
-    // public List<String> generateOutput() {
-    //     // Map<String, Object> output = new HashMap<>();
-
-    //     // output.put("systemRuntime", systemRuntime);
-    //     // output.put("numDetectedObjects", numDetectedObjects);
-    //     // output.put("numTrackedObjects", numTrackedObjects);
-    //     // output.put("numLandmarks", landmarks.size());
-
-    //     List<String> landmarksStringList = new ArrayList<>();
-    //     for (LandMark landmark : landmarks) {
-    //         System.out.println("landMarks incloud:" + landmark.toString()); //DEBUGGGGGGGG
-    //         // String landmarkDetails = landmark.toString();
-    //         landmarksStringList.add(landmark.toString());
-    //     //     landmarkDetails.put("description", landmark.getDescription());
-    //     //     landmarkDetails.put("coordinates", landmark.getCloudPoints());
-    //     //     landmarksMap.put(landmark.getId(), landmarkDetails);
-    //     }
-    //     // output.put("landMarks", landmarksMap);
-
-    //     return landmarksStringList;
-    // }
-    
 }
 
 

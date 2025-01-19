@@ -2,12 +2,13 @@ package bgu.spl.mics.application.services;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
+import bgu.spl.mics.application.objects.*;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
-import bgu.spl.mics.application.objects.*;
 
 
 /**
@@ -20,6 +21,7 @@ import bgu.spl.mics.application.objects.*;
 public class FusionSlamService extends MicroService {
     // --------------------- fields -------------------------
     private final FusionSlam fusionSlam;
+    private static String outputFilePath;
 
     // --------------------- constructors -------------------
 
@@ -59,20 +61,21 @@ public class FusionSlamService extends MicroService {
         // Subscribe to CrashedBroadcast
         subscribeBroadcast(CrashedBroadcast.class, broadcast -> {
             terminate();
-            System.out.println(getName() + " received CrashedBroadcast from " + broadcast.getComponentType() + " and is terminating.");
         });
 
         // Subscribe to TerminatedBroadcast
         subscribeBroadcast(TerminatedBroadcast.class, terminate -> {
-            System.out.println("FusionSlamService received TerminatedBroadcast. Writing output...");
-            writeSimulationOutput("output_TEST.json", statisticalFolder);
+            writeSimulationOutput("output_file.json", statisticalFolder);
             terminate();
         });
     }
 
 
     public static void writeSimulationOutput(String fileName, StatisticalFolder stats) {
-        try (FileWriter writer = new FileWriter(fileName)) {
+            // Extract directory from input file path
+            String outputDirectory = Paths.get(outputFilePath).getParent().toString();
+            String outputFileName = Paths.get(outputDirectory, "output_file.json").toString();
+        try (FileWriter writer = new FileWriter(outputFileName)) {
             writer.write("{");
 
             writer.write("\"systemRuntime\":" + stats.getSystemRuntime() + ",");
@@ -117,6 +120,10 @@ public class FusionSlamService extends MicroService {
         } catch (IOException e) {
             System.err.println("Error writing compact simulation output: " + e.getMessage());
         }
+    }
+
+    public static void setOutputFilePath(String filePath) {
+        outputFilePath = filePath;
     }
 }
 

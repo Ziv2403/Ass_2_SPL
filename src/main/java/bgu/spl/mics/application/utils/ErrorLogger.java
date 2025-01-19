@@ -11,17 +11,23 @@ import bgu.spl.mics.application.objects.TrackedObject;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
 public class ErrorLogger {
-    
+
+        private static String outputFilePath;
         private ErrorLogger() {} 
 
         public static void writeErrorReport(String fileName, String errorDescription, String faultySensor, StatisticalFolder stats) {
             Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
-            try (FileWriter writer = new FileWriter(fileName)) {
+            String outputDirectory = Paths.get(outputFilePath).getParent().toString();
+            String outputFileName = Paths.get(outputDirectory, "output_file.json").toString();
+
+
+            try (FileWriter writer = new FileWriter(outputFileName)) {
                 // Start the JSON object
                 writer.write("{\"error\":\"" + errorDescription + "\",\n");
                 writer.write("  \"faultySensor\":\"" + faultySensor + "\",\n");
@@ -81,11 +87,15 @@ public class ErrorLogger {
                 writer.write("   \"statistics\": " + gson.toJson(statistics) );
 
                 writer.write("}\n");
-                System.out.println("Formatted error report written to " + fileName);
+                
 
             } catch (IOException e) {
                 System.err.println("Error writing formatted error report: " + e.getMessage());
             }
+        }
+
+        public static void setOutputFilePath(String filePath) {
+            outputFilePath = filePath;
         }
 
 

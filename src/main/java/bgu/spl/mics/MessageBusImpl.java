@@ -130,14 +130,12 @@ public class MessageBusImpl implements MessageBus {
 			BlockingQueue<Message> queue = queues.get(m);
 			if (queue != null) {
 				queue.offer(b);
-//				System.out.println(Thread.currentThread().getName() + " Broadcasting " + b.getClass().getSimpleName() + " to " + m.getName());
 			}
 		}
 
 		// Interrupt TimeService thread if the broadcast is a CrashedBroadcast
 		if (b instanceof CrashedBroadcast && timeServiceThread != null && timeServiceThread.isAlive()) {
 			timeServiceThread.interrupt();
-//			System.out.println("Interrupting TimeService thread: " + timeServiceThread.getName());
 		}
 	}
 
@@ -213,7 +211,6 @@ public class MessageBusImpl implements MessageBus {
 
 		if (m instanceof TimeService) {
 			timeServiceThread = null;
-//			System.out.println(m.getName() + " unregistered and TimeService thread reference cleared.");
 		}
 	}
 
@@ -237,7 +234,6 @@ public class MessageBusImpl implements MessageBus {
 		try {
 			return queue.take(); // Waits until a message is available
 		} catch (InterruptedException e) {
-//			System.out.println(m.getName() + " was interrupted while waiting for a message.");
 			throw e; // Re-throw to allow the service to terminate
 		}
 	}
